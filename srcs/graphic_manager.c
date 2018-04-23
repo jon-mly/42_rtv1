@@ -15,6 +15,9 @@ void		calculate_scene(t_env *env)
 			// - trace ray 
 			// - get color
 			// apply color to pixel
+			pixel_raytracing(x, y, env);
 		}
 	}
+	ft_putendl("Did end calculate scene");
+	mlx_put_image_to_window((void *)env, env->win_ptr, env->img_ptr, 0, 0);
 }

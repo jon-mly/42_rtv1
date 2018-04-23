@@ -16,11 +16,14 @@
 ** ======= macros
 */
 
-# define WIN_HEIGHT 800
-# define WIN_WIDTH 1200
+# define WIN_HEIGHT 400
+# define WIN_WIDTH 600
 # define FOV 0.40
 
 # define KEY_ESC 53
+
+# define TRUE 1
+# define FALSE 0
 
 
 /*
@@ -93,6 +96,7 @@ typedef struct	s_camera
 	t_vector	position;
 	t_vector	direction;
 	t_vector	plane;
+	t_point		spot;
 	t_vector	normal;
 	t_vector	up_left_corner;
 	double		width;
@@ -112,6 +116,8 @@ typedef struct	s_ray
 {
 	t_vector	direction;
 	t_point		origin;
+	int			intersect;
+	double		norm;
 }				t_ray;
 
 typedef struct	s_env
@@ -144,5 +150,16 @@ t_camera		init_camera(t_env *env);
 int				handle_key_event(int key, void *param);
 void			fill_pixel(t_env *env, int x, int y, t_color color);
 void			fill_pixel_value(t_env *env, int x, int y, int color_value);
+t_vector		vector(double x, double y, double z);
+t_point			point(double x, double y, double z);
+t_pixel			pixel(int x, int y);
+t_color			color(unsigned char r, unsigned char g, unsigned char b,
+	unsigned char a);
+double			vector_norm(t_vector vector);
+t_vector		normalize_vector(t_vector vector);
+double			quadratic_discriminant(double a, double b, double c);
+t_ray			sphere_intersection(t_ray ray, t_sphere sphere);
+void			pixel_raytracing(int x, int y, t_env *env);
+t_scene			get_sample_scene(void);
 
 #endif
