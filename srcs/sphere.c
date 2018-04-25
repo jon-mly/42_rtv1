@@ -12,16 +12,13 @@ t_ray		sphere_intersection(t_ray ray, t_sphere sphere)
 	double		b;
 	double		c;
 	double		discriminant;
+	t_vector	distance;
 
-	a = pow(ray.direction.x, 2) + pow(ray.direction.y, 2) +
-		pow(ray.direction.y, 2);
-	b = 2 * (ray.direction.x * (ray.origin.x - sphere.center.x) +
-			ray.direction.y * (ray.origin.y - sphere.center.y) +
-			ray.direction.z * (ray.origin.z - sphere.center.z));
-	c = pow(ray.origin.x - sphere.center.x, 2) + pow(ray.origin.y -
-		sphere.center.y, 2) + pow(ray.origin.z - sphere.center.z, 2) -
-		pow(sphere.radius, 2);
-	discriminant = quadratic_discriminant(a, b, c);
+	distance = vector_points(sphere.center, ray.origin);
+	a = dot_product(ray.direction, ray.direction);
+	b = 2 * dot_product(ray.direction, distance);
+	c = dot_product(distance, distance) - pow(sphere.radius, 2);
+	discriminant = b * b - 4 * a * c;
 	if (discriminant < 0)
 		ray.intersect = FALSE;
 	else

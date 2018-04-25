@@ -14,10 +14,12 @@ static void		setup_window(t_env *env)
 	if (env->mlx_ptr == NULL || env->win_ptr == NULL)
 		exit_error(env);
 	env->img_ptr = mlx_new_image(env->mlx_ptr, env->win_width, env->win_height);
-	env->img_width = env->win_width;
-	env->img_height = env->win_height;
+	env->img_width = WIN_WIDTH;
+	env->img_height = WIN_HEIGHT;
 	env->img_str = (unsigned char*)(mlx_get_data_addr(env->img_ptr, &bpp, &s_l,
 		&endian));
+	if (env->img_ptr == NULL || env->img_str == NULL)
+		exit_error(env);
 	env->line_size = s_l / 4;
 	env->bpp = bpp;
 	env->endian = endian;

@@ -151,12 +151,14 @@ int				handle_key_event(int key, void *param);
 void			fill_pixel(t_env *env, int x, int y, t_color color);
 void			fill_pixel_value(t_env *env, int x, int y, int color_value);
 t_vector		vector(double x, double y, double z);
+t_vector		vector_points(t_point p1, t_point p2);
 t_point			point(double x, double y, double z);
 t_pixel			pixel(int x, int y);
 t_color			color(unsigned char r, unsigned char g, unsigned char b,
 	unsigned char a);
 double			vector_norm(t_vector vector);
 t_vector		normalize_vector(t_vector vector);
+double			dot_product(t_vector vect_1, t_vector vect_2);
 double			quadratic_discriminant(double a, double b, double c);
 t_ray			sphere_intersection(t_ray ray, t_sphere sphere);
 void			pixel_raytracing(int x, int y, t_env *env);

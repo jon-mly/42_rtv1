@@ -10,6 +10,16 @@ t_vector	vector(double x, double y, double z)
 	return (vector);
 }
 
+t_vector	vector_points(t_point p1, t_point p2)
+{
+	t_vector	vector;
+
+	vector.x = p2.x - p1.x;
+	vector.y = p2.y - p1.y;
+	vector.z = p2.z - p1.z;
+	return (vector);
+}
+
 t_point		point(double x, double y, double z)
 {
 	t_point		point;

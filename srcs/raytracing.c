@@ -3,14 +3,16 @@
 static t_ray		init_ray(int x, int y, t_camera camera)
 {
 	t_ray		ray;
+	t_point		projector_point;
 
-	ray.origin.x = camera.up_left_corner.x + (double)x * camera.horizontal_step;
-	ray.origin.y = camera.up_left_corner.y - (double)y * camera.vertical_step;
-	ray.origin.z = camera.position.z;
-	ray.direction.x = ray.origin.x - camera.spot.x;
-	ray.direction.y = ray.origin.y - camera.spot.y;
-	ray.direction.z = ray.origin.z - camera.spot.z;
+	projector_point.x = camera.up_left_corner.x + (double)x * camera.horizontal_step;
+	projector_point.y = camera.up_left_corner.y - (double)y * camera.vertical_step;
+	projector_point.z = camera.position.z;
+//	printf("origin x:%.2f, y:%.2f, z:%.2f\n", ray.origin.x, ray.origin.y, ray.origin.z);
+	ray.direction = vector_points(camera.spot, projector_point);
 	ray.direction = normalize_vector(ray.direction);
+	ray.origin = camera.spot;
+//	printf("direction x=%.2f, y=%.2f, z=%.2f\n", ray.direction.x, ray.direction.y, ray.direction.z);
 	ray.intersect = FALSE;
 	return (ray);
 }
@@ -34,7 +36,6 @@ void				pixel_raytracing(int x, int y, t_env *env)
 		if (object.type == SPHERE)
 			ray = sphere_intersection(ray, *((t_sphere*)(object.object)));
 	}
-	ft_putendl(ray.intersect ? "Should print" : "No intersect");
 	if (ray.intersect)
-		fill_pixel(env, x, y, color(255, 255, 255, 255));
+		fill_pixel(env, x, y, color(150, 150, 150, 0));
 }

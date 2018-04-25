@@ -8,6 +8,16 @@ double		vector_norm(t_vector vector)
 	return (norm);
 }
 
+double		dot_product(t_vector vect_1, t_vector vect_2)
+{
+	double		product;
+
+	product = (vect_1.x * vect_2.x) +
+				(vect_1.y * vect_2.y) +
+				(vect_1.z * vect_2.z);
+	return (product);
+}
+
 t_vector	normalize_vector(t_vector vector)
 {
 	double		norm;
