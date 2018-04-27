@@ -11,6 +11,8 @@ HELPER_REP = helpers/
 SRCS = $(SRCS_REP)main.c \
 		$(SRCS_REP)sphere.c \
 		$(SRCS_REP)plane.c \
+		$(SRCS_REP)cylinder.c \
+		$(SRCS_REP)cone.c \
 		$(SRCS_REP)env_init.c \
 		$(SRCS_REP)graphic_manager.c \
 		$(SRCS_REP)exit.c \

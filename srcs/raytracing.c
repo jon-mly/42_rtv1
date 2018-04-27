@@ -35,6 +35,12 @@ void				pixel_raytracing(int x, int y, t_env *env)
 		object = env->scene.objects[object_index];
 		if (object.type == SPHERE)
 			ray = sphere_intersection(ray, *((t_sphere*)(object.object)));
+		else if (object.type == PLANE)
+			ray = plane_intersection(ray, *((t_plane*)(object.object)));
+		else if (object.type == CYLINDER)
+			ray = cylinder_intersection(ray, *((t_cylinder*)(object.object)));
+		else if (object.type == CONE)
+			ray = cone_intersection(ray, *((t_cone*)(object.object)));
 	}
 	if (ray.intersect)
 		fill_pixel(env, x, y, color(150, 150, 150, 0));

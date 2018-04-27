@@ -16,8 +16,8 @@
 ** ======= macros
 */
 
-# define WIN_HEIGHT 400
-# define WIN_WIDTH 600
+# define WIN_HEIGHT 800
+# define WIN_WIDTH 1200
 # define FOV 0.40
 
 # define KEY_ESC 53
@@ -43,12 +43,14 @@ typedef enum	e_object_type
 ** ======= structures
 */
 
+/*
 typedef struct	s_point
 {
 	double		x;
 	double		y;
 	double		z;
 }				t_point;
+*/
 
 typedef struct	s_pixel
 {
@@ -62,6 +64,8 @@ typedef struct	s_vector
 	double		y;
 	double		z;
 }				t_vector;
+
+typedef t_vector	t_point;
 
 typedef struct	s_color
 {
@@ -90,6 +94,22 @@ typedef struct	s_plane
 	t_point		point;
 	t_color		color;
 }				t_plane;
+
+typedef struct	s_cylinder
+{
+	t_color		color;
+	t_point		point;
+	t_vector	direction;
+	double		radius;
+}				t_cylinder;
+
+typedef struct	s_cone
+{
+	t_color		color;
+	t_vector	direction;
+	t_point		center;
+	double		angle;
+}				t_cone;
 
 typedef struct	s_camera
 {
@@ -161,6 +181,9 @@ t_vector		normalize_vector(t_vector vector);
 double			dot_product(t_vector vect_1, t_vector vect_2);
 double			quadratic_discriminant(double a, double b, double c);
 t_ray			sphere_intersection(t_ray ray, t_sphere sphere);
+t_ray			plane_intersection(t_ray ray, t_plane plane);
+t_ray			cylinder_intersection(t_ray ray, t_cylinder cylinder);
+t_ray			cone_intersection(t_ray ray, t_cone cone);
 void			pixel_raytracing(int x, int y, t_env *env);
 t_scene			get_sample_scene(void);
 
