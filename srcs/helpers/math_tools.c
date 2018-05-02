@@ -18,6 +18,16 @@ double		dot_product(t_vector vect_1, t_vector vect_2)
 	return (product);
 }
 
+t_vector	cross_product(t_vector vect_1, t_vector vect_2)
+{
+	t_vector	product;
+
+	product.x = vect_1.y * vect_2.z - vect_2.y * vect_1.z;
+	product.y = vect_1.z * vect_2.x - vect_2.z * vect_1.x;
+	product.z = vect_1.x * vect_2.y - vect_2.x * vect_1.y;
+	return (product);
+}
+
 t_vector	normalize_vector(t_vector vector)
 {
 	double		norm;

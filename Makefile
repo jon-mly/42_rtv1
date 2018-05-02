@@ -9,10 +9,8 @@ INCLUDE_FLAG = -I includes/
 SRCS_REP = srcs/
 HELPER_REP = helpers/
 SRCS = $(SRCS_REP)main.c \
-		$(SRCS_REP)sphere.c \
-		$(SRCS_REP)plane.c \
-		$(SRCS_REP)cylinder.c \
-		$(SRCS_REP)cone.c \
+		$(SRCS_REP)shapes_intersection.c \
+		$(SRCS_REP)shapes_normal.c \
 		$(SRCS_REP)env_init.c \
 		$(SRCS_REP)graphic_manager.c \
 		$(SRCS_REP)exit.c \
@@ -21,6 +19,7 @@ SRCS = $(SRCS_REP)main.c \
 		$(SRCS_REP)pixel_drawing.c \
 		$(SRCS_REP)scene_init.c \
 		$(SRCS_REP)raytracing.c \
+		$(SRCS_REP)lighting.c \
 		$(SRCS_REP)$(HELPER_REP)constructors.c \
 		$(SRCS_REP)$(HELPER_REP)math_tools.c
 

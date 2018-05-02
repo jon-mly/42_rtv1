@@ -38,6 +38,10 @@ typedef enum	e_object_type
 	CONE
 }				t_object_type;
 
+typedef enum	e_light_type
+{
+	OMNI
+}				t_light_type;
 
 /*
 ** ======= structures
@@ -78,6 +82,7 @@ typedef struct	s_color
 typedef struct	s_object
 {
 	t_object_type	type;
+	t_color			color;
 	void			*object;
 }				t_object;
 
@@ -111,6 +116,15 @@ typedef struct	s_cone
 	double		angle;
 }				t_cone;
 
+typedef struct	s_light
+{
+	t_light_type	type;
+	t_point			position;
+	t_vector		direction;
+	double			angle;
+	t_color			color;
+}				t_light;
+
 typedef struct	s_camera
 {
 	t_vector	position;
@@ -130,6 +144,8 @@ typedef struct	s_scene
 {
 	t_object	*objects;
 	int			objects_count;
+	t_light		*lights;
+	int			lights_count;
 }				t_scene;
 
 typedef struct	s_ray
@@ -137,7 +153,9 @@ typedef struct	s_ray
 	t_vector	direction;
 	t_point		origin;
 	int			intersect;
+	t_point		intersection;
 	double		norm;
+	t_color		color;
 }				t_ray;
 
 typedef struct	s_env
@@ -180,10 +198,7 @@ double			vector_norm(t_vector vector);
 t_vector		normalize_vector(t_vector vector);
 double			dot_product(t_vector vect_1, t_vector vect_2);
 double			quadratic_discriminant(double a, double b, double c);
-t_ray			sphere_intersection(t_ray ray, t_sphere sphere);
-t_ray			plane_intersection(t_ray ray, t_plane plane);
-t_ray			cylinder_intersection(t_ray ray, t_cylinder cylinder);
-t_ray			cone_intersection(t_ray ray, t_cone cone);
+t_ray			intersect_object(t_ray ray, t_object object);
 void			pixel_raytracing(int x, int y, t_env *env);
 t_scene			get_sample_scene(void);
 

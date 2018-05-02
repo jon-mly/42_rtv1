@@ -1,5 +1,10 @@
 #include "rtv1.h"
 
+/*
+** Initialize the ray with the coordinates of the camera (both position and
+** directional vector).
+*/
+
 static t_ray		init_ray(int x, int y, t_camera camera)
 {
 	t_ray		ray;
@@ -8,11 +13,9 @@ static t_ray		init_ray(int x, int y, t_camera camera)
 	projector_point.x = camera.up_left_corner.x + (double)x * camera.horizontal_step;
 	projector_point.y = camera.up_left_corner.y - (double)y * camera.vertical_step;
 	projector_point.z = camera.position.z;
-//	printf("origin x:%.2f, y:%.2f, z:%.2f\n", ray.origin.x, ray.origin.y, ray.origin.z);
 	ray.direction = vector_points(camera.spot, projector_point);
 	ray.direction = normalize_vector(ray.direction);
 	ray.origin = camera.spot;
-//	printf("direction x=%.2f, y=%.2f, z=%.2f\n", ray.direction.x, ray.direction.y, ray.direction.z);
 	ray.intersect = FALSE;
 	return (ray);
 }
@@ -27,21 +30,26 @@ void				pixel_raytracing(int x, int y, t_env *env)
 	t_ray		ray;
 	t_object	object;
 	int			object_index;
+	t_object	*closest_object;
+	double		closest_distance;
 
 	ray = init_ray(x, y, env->camera);
+	closest_object = NULL;
 	object_index = -1;
 	while (++object_index < env->scene.objects_count)
 	{
-		object = env->scene.objects[object_index];
-		if (object.type == SPHERE)
-			ray = sphere_intersection(ray, *((t_sphere*)(object.object)));
-		else if (object.type == PLANE)
-			ray = plane_intersection(ray, *((t_plane*)(object.object)));
-		else if (object.type == CYLINDER)
-			ray = cylinder_intersection(ray, *((t_cylinder*)(object.object)));
-		else if (object.type == CONE)
-			ray = cone_intersection(ray, *((t_cone*)(object.object)));
+		ray = intersect_object(ray, env->scene.objects[object_index]);
+		if (closest_object == NULL && ray.intersect)
+		{
+			closest_object = &(env->scene.objects[object_index]);
+			closest_distance = ray.norm;
+		}
+		else if (ray.intersect && ray.norm < closest_distance && ray.norm > 0)
+			closest_distance = ray.norm;
 	}
-	if (ray.intersect)
-		fill_pixel(env, x, y, color(150, 150, 150, 0));
+	if (closest_object != NULL)
+		fill_pixel(env, x, y, get_color_on_intersection(ray, closest_object,
+			env));
+	else
+		fill_pixel(env, x, y, color(20, 0, 0, 0));// TODO: apply diffuse color
 }
