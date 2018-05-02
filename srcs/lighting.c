@@ -5,10 +5,8 @@ static t_ray	init_light_ray(t_light light, t_ray ray)
 	t_ray		light_ray;
 	t_vector	direction;
 
-	direction.x = ray.origin.x + ray.direction.x * norm - light_ray.origin.x;
-	direction.y = ray.origin.y + ray.direction.y * norm - light_ray.origin.y;
-	direction.x = ray.origin.z + ray.direction.z * norm - light_ray.origin.z;
 	light_ray.origin = light.position;
+	direction = vector_points(light_ray.origin, ray.intersection);
 	light_ray.direction = normalize_vector(direction);
 	light_ray.intersect = FALSE;
 	light_ray.color = color(0, 0, 0, 0);
@@ -22,11 +20,22 @@ static t_ray	intersect_with_object(t_ray light_ray, t_object object)
 }
 
 static t_color	light_for_intersection(t_ray light_ray, t_ray ray, t_object
-	object)
+	object, t_light light)
 {
 	t_vector	normal;
-}
+	double		cosinus;
+	t_color		color;
 
+	normal = shape_normal(ray, object);
+	ft_putendl("did get normal");
+	cosinus = dot_product(light_ray.direction, normal);
+	if (cosinus <= 0)
+		return (light_ray.color);
+	color.r = (int)(fmin((double)object.color.r + cosinus * (double)light.color.r, 255));
+	color.g = (int)(fmin((double)object.color.g + cosinus * (double)light.color.g, 255));
+	color.b = (int)(fmin((double)object.color.b + cosinus * (double)light.color.b, 255));
+	return (color);
+}
 
 t_color			get_color_on_intersection(t_ray ray, t_object *closest_object,
 	t_env *env)
@@ -43,12 +52,13 @@ t_color			get_color_on_intersection(t_ray ray, t_object *closest_object,
 		light = env->scene.lights[light_index];
 		light_ray = init_light_ray(light, ray);
 		object_index = -1;
+		ray.color = light_for_intersection(light_ray, ray, object, light);
 		while (++object_index < env->scene.objects_count)
 		{
-			object = env->scene.objects[object_index]
+			object = env->scene.objects[object_index];
 			if (&object != closest_object && (light_ray =
 				intersect_object(light_ray, object)).intersect == FALSE)
-				
+				ray.color = light_for_intersection(light_ray, ray, object, light);
 		}
 	}
 	return (ray.color);

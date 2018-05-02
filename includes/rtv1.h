@@ -197,9 +197,12 @@ t_color			color(unsigned char r, unsigned char g, unsigned char b,
 double			vector_norm(t_vector vector);
 t_vector		normalize_vector(t_vector vector);
 double			dot_product(t_vector vect_1, t_vector vect_2);
-double			quadratic_discriminant(double a, double b, double c);
+double			points_norm(t_point p1, t_point p2);
 t_ray			intersect_object(t_ray ray, t_object object);
+t_vector		shape_normal(t_ray ray, t_object object);
 void			pixel_raytracing(int x, int y, t_env *env);
 t_scene			get_sample_scene(void);
+t_color			get_color_on_intersection(t_ray ray, t_object *closest_object,
+	t_env *env);
 
 #endif

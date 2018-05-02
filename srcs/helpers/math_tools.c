@@ -39,10 +39,11 @@ t_vector	normalize_vector(t_vector vector)
 	return (vector);
 }
 
-double		quadratic_discriminant(double a, double b, double c)
+double		points_norm(t_point p1, t_point p2)
 {
-	double		discriminant;
+	double		distance;
 
-	discriminant = pow(b, 2) - 4 * a * c;
-	return (discriminant);
+	distance= sqrt(pow(p2.x - p1.x, 2) + pow(p2.y - p1.y, 2) +
+			pow(p2.z - p1.z, 2));
+	return (distance);
 }

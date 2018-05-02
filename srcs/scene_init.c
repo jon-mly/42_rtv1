@@ -11,7 +11,7 @@ static t_object		get_sample_cone(void)
 	cone->angle = M_PI / 12;
 	cone->direction = normalize_vector(vector(0, -1, 0));
 	cone->center = point(0, 0, 100);
-	cone->color = color(100, 100, 255, 0);
+	object.color = color(100, 100, 255, 0);
 	return (object);
 }
 
@@ -26,7 +26,7 @@ static t_object		get_sample_cylinder(void)
 	cylinder->radius = 0.8;
 	cylinder->direction = normalize_vector(vector(1, 1, 1));
 	cylinder->point = point(0, 0, 10);
-	cylinder->color = color(100, 100, 255, 0);
+	object.color = color(100, 100, 255, 0);
 	return (object);
 }
 
@@ -40,7 +40,7 @@ static t_object		get_sample_sphere(void)
 	object.object = (void*)(sphere);
 	sphere->radius = 0.8;
 	sphere->center = point(2.0, 0.0, 8.0);
-	sphere->color = color(100, 200, 200, 0);
+	object.color = color(100, 200, 200, 0);
 	return (object);
 }
 
@@ -54,8 +54,18 @@ static t_object		get_sample_plane(void)
 	object.object = (void*)(plane);
 	plane->normal = vector(0, 1, 0);
 	plane->point = point(0, 0, 0);
-	plane->color = color(20, 200, 100, 0);
+	object.color = color(20, 200, 100, 0);
 	return (object);
+}
+
+static t_light		get_sample_lighting(void)
+{
+	t_light		light;
+
+	light.type = OMNI;
+	light.position = point(-3, 0, -3);
+	light.color = color(255, 255, 255, 0);
+	return (light);
 }
 
 t_scene		get_sample_scene(void)
@@ -64,6 +74,9 @@ t_scene		get_sample_scene(void)
 
 	scene.objects_count = 1;
 	scene.objects = (t_object*)malloc(sizeof(t_object));
-	scene.objects[0] = get_sample_cone();
+	scene.objects[0] = get_sample_sphere();
+	scene.lights_count = 1;
+	scene.lights = (t_light*)malloc(sizeof(t_light));
+	scene.lights[0] = get_sample_lighting();
 	return (scene);
 }
