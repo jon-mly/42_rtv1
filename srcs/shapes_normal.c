@@ -52,7 +52,7 @@ static t_vector		plane_normal(t_ray ray, t_plane plane)
 {
 	t_vector	normal;
 
-	if (cos(dot_product(ray.direction, plane.normal)) <= 0)
+	if (dot_product(ray.direction, plane.normal) <= 0)
 		return (normalize_vector(plane.normal));
 	normal.x = -(plane.normal.x);
 	normal.y = -(plane.normal.y);

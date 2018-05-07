@@ -2,6 +2,7 @@
 
 /*
 ** Initialize the ray with the coordinates of the camera (both position and
+ri
 ** directional vector).
 */
 
@@ -39,17 +40,15 @@ void				pixel_raytracing(int x, int y, t_env *env)
 	while (++object_index < env->scene.objects_count)
 	{
 		ray = intersect_object(ray, env->scene.objects[object_index]);
-		if (closest_object == NULL && ray.intersect)
+		if (ray.intersect && ((closest_object != NULL && ray.norm < closest_distance) || closest_object == NULL) && ray.norm > 0)
 		{
 			closest_object = &(env->scene.objects[object_index]);
 			closest_distance = ray.norm;
 		}
-		else if (ray.intersect && ray.norm < closest_distance && ray.norm > 0)
-			closest_distance = ray.norm;
 	}
 	if (closest_object != NULL)
 		fill_pixel(env, x, y, get_color_on_intersection(ray, closest_object,
 			env));
 	else
-		fill_pixel(env, x, y, color(20, 0, 0, 0));// TODO: apply diffuse color
+		fill_pixel(env, x, y, color(50, 0, 0, 0));// TODO: apply diffuse color
 }

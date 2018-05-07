@@ -81,7 +81,7 @@ static t_ray	plane_intersection(t_ray ray, t_plane plane)
 	distance = vector_points(plane.point, ray.origin);
 	norm = dot_product(plane.normal, plane.point) - dot_product(plane.normal,
 			ray.origin) / dot_product(plane.normal, ray.direction);
-	if (norm < 0.0001 || norm > 1000)
+	if (norm < 0.0001 || norm > 10000)
 		ray.intersect = FALSE;
 	else
 	{
