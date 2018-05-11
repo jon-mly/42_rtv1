@@ -22,10 +22,10 @@ static t_color	light_for_intersection(t_ray light_ray, t_ray ray, t_object
 	t_color		color;
 
 	normal = shape_normal(ray, object);
+//	printf("normal x:%.2f, y:%.2f, z:%.2f\n", normal.x, normal.y, normal.z);
 	cosinus = dot_product(light_ray.direction, normal);
 	if (cosinus >= 0)
 		return (light_ray.color);
-	cosinus += 0.2;
 	color.r = (int)(fmax(fmin((double)object.color.r / (3) - cosinus * (double)light.color.r / 2, 255), 0));
 	color.g = (int)(fmax(fmin((double)object.color.g / (3) - cosinus * (double)light.color.g / 2, 255), 0));
 	color.b = (int)(fmax(fmin((double)object.color.b / (3) - cosinus * (double)light.color.b / 2, 255), 0));
@@ -42,6 +42,7 @@ t_color			get_color_on_intersection(t_ray ray, t_object *closest_object,
 	t_light		light;
 	t_object	object;
 	double		norm;
+	t_color		coloration;
 
 	light_index = -1;
 	while (++light_index < env->scene.lights_count)
@@ -49,6 +50,8 @@ t_color			get_color_on_intersection(t_ray ray, t_object *closest_object,
 		light = env->scene.lights[light_index];
 		light_ray = init_light_ray(light, ray, *closest_object);
 		norm = light_ray.norm;
+		object = *closest_object;
+		coloration = light_for_intersection(light_ray, ray, *closest_object, light);
 		object_index = -1;
 		// Each object of the scene is tested to check if it stands between
 		// the light source and the closest object relative to the camera.
@@ -62,12 +65,8 @@ t_color			get_color_on_intersection(t_ray ray, t_object *closest_object,
 				// the object we want to calculate the light for :
 				if (light_ray.intersect == TRUE && light_ray.norm < norm && light_ray.norm > 0)
 					return (light_ray.color);
-				light_ray.intersect = FALSE;
-				light_ray.norm = norm;
 			}
 		}
-		object = *closest_object;
-		light_ray.color = light_for_intersection(light_ray, ray, object, light);
 	}
-	return (light_ray.color);
+	return (coloration);
 }

@@ -84,6 +84,7 @@ typedef struct	s_object
 	t_object_type	type;
 	t_color			color;
 	void			*object;
+	char			*name;
 }				t_object;
 
 typedef struct	s_sphere

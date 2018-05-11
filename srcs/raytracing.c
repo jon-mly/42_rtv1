@@ -47,8 +47,13 @@ void				pixel_raytracing(int x, int y, t_env *env)
 		}
 	}
 	if (closest_object != NULL)
+	{
+		ray.intersection.x = ray.origin.x + ray.direction.x * closest_distance;
+		ray.intersection.y = ray.origin.y + ray.direction.y * closest_distance;
+		ray.intersection.z = ray.origin.z + ray.direction.z * closest_distance;
 		fill_pixel(env, x, y, get_color_on_intersection(ray, closest_object,
 			env));
+	}
 	else
-		fill_pixel(env, x, y, color(50, 0, 0, 0));// TODO: apply diffuse color
+		fill_pixel(env, x, y, color(0, 0, 0, 0));// TODO: apply diffuse color
 }
