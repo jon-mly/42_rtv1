@@ -20,6 +20,7 @@ SRCS = $(SRCS_REP)main.c \
 		$(SRCS_REP)scene_init.c \
 		$(SRCS_REP)raytracing.c \
 		$(SRCS_REP)lighting.c \
+		$(SRCS_REP)deinit.c \
 		$(SRCS_REP)$(HELPER_REP)constructors.c \
 		$(SRCS_REP)$(HELPER_REP)math_tools.c
 

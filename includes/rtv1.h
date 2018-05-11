@@ -47,15 +47,6 @@ typedef enum	e_light_type
 ** ======= structures
 */
 
-/*
-typedef struct	s_point
-{
-	double		x;
-	double		y;
-	double		z;
-}				t_point;
-*/
-
 typedef struct	s_pixel
 {
 	int			x;
@@ -205,5 +196,6 @@ void			pixel_raytracing(int x, int y, t_env *env);
 t_scene			get_sample_scene(void);
 t_color			get_color_on_intersection(t_ray ray, t_object *closest_object,
 	t_env *env);
+void			deinit_env(t_env *env);
 
 #endif
