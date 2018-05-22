@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   deinit.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/05/22 11:46:21 by jmlynarc          #+#    #+#             */
+/*   Updated: 2018/05/22 11:46:22 by jmlynarc         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "rtv1.h"
 
 static void		deinit_scene(t_scene scene)
@@ -13,6 +25,7 @@ static void		deinit_scene(t_scene scene)
 
 void			deinit_env(t_env *env)
 {
+	ft_putendl("Deinit triggered");
 	deinit_scene(env->scene);
 	ft_putendl("Scene is deinited");
 	if (env->img_ptr && env->mlx_ptr)

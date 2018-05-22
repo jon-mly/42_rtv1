@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env_init.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/05/22 11:46:27 by jmlynarc          #+#    #+#             */
+/*   Updated: 2018/05/22 11:46:28 by jmlynarc         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "rtv1.h"
 
 static void		setup_window(t_env *env)
@@ -37,6 +49,8 @@ t_env			*init_env(void)
 	env->win_ptr = NULL;
 	setup_window(env);
 	env->camera = init_camera(env);
+	ft_putendl("Camera successfully set up");
 	env->scene = get_sample_scene();
+	ft_putendl("Scene successfully set up");
 	return (env);
 }

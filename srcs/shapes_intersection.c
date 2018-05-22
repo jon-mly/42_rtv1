@@ -51,8 +51,8 @@ static t_ray	cylinder_intersection(t_ray ray, t_cylinder cylinder)
 	distance = vector_points(cylinder.point, ray.origin);
 	a = dot_product(ray.direction, ray.direction) -
 		pow(dot_product(ray.direction, cylinder.direction), 2);
-	b = 2 * (dot_product(ray.direction, distance) - dot_product(ray.direction,
-				cylinder.direction) * dot_product(distance, cylinder.direction));
+	b = 2 * (dot_product(ray.direction, distance) - (dot_product(ray.direction,
+				cylinder.direction) * dot_product(distance, cylinder.direction)));
 	c = dot_product(distance, distance) - pow(dot_product(distance,
 				cylinder.direction), 2) - pow(cylinder.radius, 2);
 	discriminant = b * b - 4 * a * c;
@@ -75,13 +75,11 @@ static t_ray	cylinder_intersection(t_ray ray, t_cylinder cylinder)
 
 static t_ray	plane_intersection(t_ray ray, t_plane plane)
 {
-	t_vector		distance;
 	double			norm;
 
 	norm = (dot_product(plane.normal, plane.point) - dot_product(plane.normal,
 			ray.origin)) / dot_product(plane.normal, ray.direction);
-//	printf("norm = %.2f\n", norm);
-	if (norm < 0.0001 || norm > 10000)
+	if (norm < 0.0001 || norm > 100000)
 		ray.intersect = FALSE;
 	else
 	{
@@ -114,9 +112,9 @@ static t_ray	sphere_intersection(t_ray ray, t_sphere sphere)
 		ray.intersect = FALSE;
 	else
 	{
-		ray.intersect = TRUE;
 		ray.norm = (fmin((-b - sqrt(discriminant)) / (2 * a),
 					(-b + sqrt(discriminant) / (2 * a))));
+		ray.intersect = TRUE;
 	}
 	return (ray);
 }

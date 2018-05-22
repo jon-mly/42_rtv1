@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   raytracing.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/05/22 11:46:54 by jmlynarc          #+#    #+#             */
+/*   Updated: 2018/05/22 13:57:12 by jmlynarc         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "rtv1.h"
 
 /*
@@ -13,7 +25,7 @@ static t_ray		init_ray(int x, int y, t_camera camera)
 
 	projector_point.x = camera.up_left_corner.x + (double)x * camera.horizontal_step;
 	projector_point.y = camera.up_left_corner.y - (double)y * camera.vertical_step;
-	projector_point.z = camera.position.z;
+	projector_point.z = camera.up_left_corner.z;
 	ray.direction = vector_points(camera.spot, projector_point);
 	ray.direction = normalize_vector(ray.direction);
 	ray.origin = camera.spot;
@@ -29,7 +41,6 @@ static t_ray		init_ray(int x, int y, t_camera camera)
 void				pixel_raytracing(int x, int y, t_env *env)
 {
 	t_ray		ray;
-	t_object	object;
 	int			object_index;
 	t_object	*closest_object;
 	double		closest_distance;

@@ -8,23 +8,25 @@ INCLUDE_FLAG = -I includes/
 
 SRCS_REP = srcs/
 HELPER_REP = helpers/
-SRCS = $(SRCS_REP)main.c \
-		$(SRCS_REP)shapes_intersection.c \
-		$(SRCS_REP)shapes_normal.c \
-		$(SRCS_REP)env_init.c \
-		$(SRCS_REP)graphic_manager.c \
-		$(SRCS_REP)exit.c \
-		$(SRCS_REP)camera_init.c \
-		$(SRCS_REP)events.c \
-		$(SRCS_REP)pixel_drawing.c \
-		$(SRCS_REP)scene_init.c \
-		$(SRCS_REP)raytracing.c \
-		$(SRCS_REP)lighting.c \
-		$(SRCS_REP)deinit.c \
-		$(SRCS_REP)$(HELPER_REP)constructors.c \
-		$(SRCS_REP)$(HELPER_REP)math_tools.c
+SRCS = main.c \
+		shapes_intersection.c \
+		shapes_normal.c \
+		env_init.c \
+		graphic_manager.c \
+		exit.c \
+		camera_init.c \
+		events.c \
+		pixel_drawing.c \
+		scene_init.c \
+		raytracing.c \
+		lighting.c \
+		deinit.c \
+		$(HELPER_REP)constructors.c \
+		$(HELPER_REP)math_tools.c
 
-O_SRCS = $(SRCS:.c=.o)
+SRC = $(addprefix $(SRCS_REP), $(SRCS))
+
+O_SRCS = $(SRC:.c=.o)
 
 W_FLAGS = -Wall -Wextra -Werror
 
@@ -33,12 +35,12 @@ MLX_FLAGS = -I ~/Library -g -L ~/Library -lmlx -framework OpenGL -framework \
 
 MATH_FLAG = -lm
 
-%.o: %.c
-	@gcc $(W_FLAGS) -c $< -o $@
-
-$(NAME):
+$(NAME): $(O_SRCS)
 	make -C $(LIBFT_REP)
-	gcc $(INCLUDE_FLAG) $(MLX_FLAGS) $(MATH_FLAG) $(SRCS) $(LIBFT) -o $(NAME)
+	gcc -g -fsanitize=address $(INCLUDE_FLAG) $(MLX_FLAGS) $(MATH_FLAG) $(SRC) $(LIBFT) -o $(NAME)
+
+%.o: %.c
+	@gcc  $(INCLUDE_FLAG) -c $< -o $@
 
 all: $(NAME)
 

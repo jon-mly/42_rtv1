@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   graphic_manager.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/05/22 11:45:59 by jmlynarc          #+#    #+#             */
+/*   Updated: 2018/05/22 11:46:01 by jmlynarc         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "rtv1.h"
 
 void		calculate_scene(t_env *env)
@@ -5,16 +17,15 @@ void		calculate_scene(t_env *env)
 	int			x;
 	int			y;
 
+	printf("img_ptr %p, img_str %p, win_ptr %p, mlx_ptr %p\n", env->img_ptr, env->img_str, env->win_ptr, env->mlx_ptr);
 	y = -1;
 	while (++y < env->win_height)
 	{
 		x = -1;
 		while (++x < env->win_width)
-		{
 			pixel_raytracing(x, y, env);
-		}
 	}
-//	printf("IMG width : %d, height : %d, ptr : %p, str : %p", env->img_width, env->img_height, env->img_ptr, env->img_str);
-	mlx_put_image_to_window(env->mlx_ptr, env->win_ptr, env->img_ptr, 0, 0);
 	ft_putendl("Did end calculate scene");
+	mlx_put_image_to_window(env->mlx_ptr, env->win_ptr, env->img_ptr, 0, 0);
+	ft_putendl("Did put image on window");
 }
