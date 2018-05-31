@@ -9,8 +9,6 @@ static t_vector		cone_normal(t_ray ray, t_cone cone)
 	double		distance;
 
 	distance = cos(cone.angle) * points_norm(ray.intersection, cone.center);
-//	distance *= (dot_product(ray.direction, cone.direction) >= 0) ?
-//		-1 : 1;
 	pt_dir.x = cone.center.x + distance * cone.direction.x;
 	pt_dir.y = cone.center.y + distance * cone.direction.y;
 	pt_dir.z = cone.center.z + distance * cone.direction.z;
@@ -21,8 +19,6 @@ static t_vector		cone_normal(t_ray ray, t_cone cone)
 				pt_dir_bis))
 		pt_dir = pt_dir_bis;
 	distance = points_norm(pt_dir, ray.intersection) * tan(cone.angle);
-	distance *= (dot_product(normalize_vector(vector_points(ray.intersection, cone.center)), cone.direction) >= 0) ?
-		-1 : 1;
 	pt_normal.x = pt_dir.x + distance * ray.direction.x;
 	pt_normal.y = pt_dir.y + distance * ray.direction.y;
 	pt_normal.z = pt_dir.z + distance * ray.direction.z;
@@ -39,8 +35,6 @@ static t_vector		cylinder_normal(t_ray ray, t_cylinder cylinder)
 
 	dist_normal = sqrt(pow(points_norm(ray.intersection, cylinder.point), 2) -
 			pow(cylinder.radius, 2));
-//	dist_normal *= (dot_product(ray.direction, cylinder.direction) >= 0) ?
-//		-1 : 1;
 	pt_normal.x = cylinder.point.x + dist_normal * cylinder.direction.x;
 	pt_normal.y = cylinder.point.y + dist_normal * cylinder.direction.y;
 	pt_normal.z = cylinder.point.z + dist_normal * cylinder.direction.z;

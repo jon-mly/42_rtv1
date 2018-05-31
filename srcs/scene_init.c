@@ -6,7 +6,7 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/22 11:46:57 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/05/22 16:27:56 by jmlynarc         ###   ########.fr       */
+/*   Updated: 2018/05/31 17:30:06 by jmlynarc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,9 @@ static t_object		get_sample_cone(void)
 	object.name = "cone";
 	cone = (t_cone*)malloc(sizeof(t_cone));
 	object.object = (void*)cone;
-	cone->angle = M_PI / 12;
-	cone->direction = normalize_vector(vector(0, -2, -1));
-	cone->center = point(-9, 8, 20);
+	cone->angle = M_PI / 10;
+	cone->direction = normalize_vector(vector(0, -2, 0));
+	cone->center = point(-9, -25, 20);
 	object.color = color(100, 100, 255, 0);
 	cone->color = object.color;
 	return (object);
@@ -38,9 +38,9 @@ static t_object		get_sample_cylinder(void)
 	object.name = "cylinder";
 	cylinder = (t_cylinder*)malloc(sizeof(t_cylinder));
 	object.object = (void*)cylinder;
-	cylinder->radius = 0.8;
-	cylinder->direction = normalize_vector(vector(0, 1, 1));
-	cylinder->point = point(2, 1, 2);
+	cylinder->radius = 1;
+	cylinder->direction = normalize_vector(vector(0.2, -1, -0.2));
+	cylinder->point = point(-5, -20, 0);
 	object.color = color(255, 10, 10, 0);
 	cylinder->color = object.color;
 	return (object);
@@ -54,8 +54,8 @@ static t_object		get_sample_sphere(void)
 	object.type = SPHERE;
 	object.name = "sphere";
 	sphere = (t_sphere*)malloc(sizeof(t_sphere));
-	sphere->radius = 4;
-	sphere->center = point(2, 1, 2);
+	sphere->radius = 5;
+	sphere->center = point(10, 11.5, 6);
 	object.object = (void*)(sphere);
 	object.color = color(100, 200, 255, 0);
 	sphere->color = object.color;
@@ -98,7 +98,7 @@ static t_light		get_sample_lighting(void)
 	t_light		light;
 
 	light.type = OMNI;
-	light.position = point(-6, 3, 3);
+	light.position = point(-10, 3, -20);
 	light.color = color(255, 255, 255, 0);
 	return (light);
 }

@@ -6,7 +6,7 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/22 11:46:40 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/05/22 15:05:30 by jmlynarc         ###   ########.fr       */
+/*   Updated: 2018/05/22 16:34:32 by jmlynarc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static t_ray	init_light_ray(t_light light, t_ray ray, t_object object)
 	light_ray.norm = vector_norm(direction);
 	light_ray.direction = normalize_vector(direction);
 	light_ray.intersect = FALSE;
-	light_ray.color = color(object.color.r / 5, object.color.g / 5, object.color.b / 5, 0);
+	light_ray.color = color(object.color.r / 4, object.color.g / 4, object.color.b / 4, 0);
 	return (light_ray);
 }
 
