@@ -6,7 +6,7 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/22 12:31:54 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/05/22 13:56:56 by jmlynarc         ###   ########.fr       */
+/*   Updated: 2018/06/02 15:25:15 by jmlynarc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,8 @@
 ** ======= macros
 */
 
-# define WIN_HEIGHT 800
-# define WIN_WIDTH 1200
+# define WIN_HEIGHT 1000
+# define WIN_WIDTH 1500
 # define FOV 0.40
 
 # define KEY_ESC 53
@@ -192,6 +192,7 @@ t_env			*init_env(void);
 void			calculate_scene(t_env *env);
 t_camera		init_camera(t_env *env);
 int				handle_key_event(int key, void *param);
+int				expose_event(void *param);
 void			fill_pixel(t_env *env, int x, int y, t_color color);
 void			fill_pixel_value(t_env *env, int x, int y, int color_value);
 t_vector		vector(double x, double y, double z);

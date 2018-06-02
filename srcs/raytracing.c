@@ -6,7 +6,7 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/22 11:46:54 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/05/22 13:57:12 by jmlynarc         ###   ########.fr       */
+/*   Updated: 2018/05/31 17:32:37 by jmlynarc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,5 +66,5 @@ void				pixel_raytracing(int x, int y, t_env *env)
 			env));
 	}
 	else
-		fill_pixel(env, x, y, color(0, 0, 0, 0));// TODO: apply diffuse color
+		fill_pixel(env, x, y, color(0, 0, 0, 0));
 }

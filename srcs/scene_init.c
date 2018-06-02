@@ -6,7 +6,7 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/22 11:46:57 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/05/31 17:30:06 by jmlynarc         ###   ########.fr       */
+/*   Updated: 2018/06/01 15:20:26 by jmlynarc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,9 @@ static t_object		get_sample_cone(void)
 	object.name = "cone";
 	cone = (t_cone*)malloc(sizeof(t_cone));
 	object.object = (void*)cone;
-	cone->angle = M_PI / 10;
-	cone->direction = normalize_vector(vector(0, -2, 0));
-	cone->center = point(-9, -25, 20);
+	cone->angle = M_PI / 9;
+	cone->direction = normalize_vector(vector(4, -2, 3));
+	cone->center = point(-9, 10, 70);
 	object.color = color(100, 100, 255, 0);
 	cone->color = object.color;
 	return (object);
@@ -38,9 +38,9 @@ static t_object		get_sample_cylinder(void)
 	object.name = "cylinder";
 	cylinder = (t_cylinder*)malloc(sizeof(t_cylinder));
 	object.object = (void*)cylinder;
-	cylinder->radius = 1;
-	cylinder->direction = normalize_vector(vector(0.2, -1, -0.2));
-	cylinder->point = point(-5, -20, 0);
+	cylinder->radius = 2;
+	cylinder->direction = normalize_vector(vector(1, 1, 1));
+	cylinder->point = point(0, 10, 70);
 	object.color = color(255, 10, 10, 0);
 	cylinder->color = object.color;
 	return (object);
@@ -107,13 +107,13 @@ t_scene		get_sample_scene(void)
 {
 	t_scene		scene;
 
-	scene.objects_count = 5;
+	scene.objects_count = 1;
 	scene.objects = (t_object*)malloc(sizeof(t_object) * scene.objects_count);
-	scene.objects[3] = get_sample_plane();
-	scene.objects[4] = get_sample_plane_2();
-	scene.objects[2] = get_sample_sphere();
+//	scene.objects[3] = get_sample_plane();
+//	scene.objects[4] = get_sample_plane_2();
+//	scene.objects[2] = get_sample_sphere();
 	scene.objects[0] = get_sample_cylinder();
-	scene.objects[1] = get_sample_cone();
+//	scene.objects[1] = get_sample_cone();
 	scene.lights_count = 1;
 	scene.lights = (t_light*)malloc(sizeof(t_light) * scene.lights_count);
 	scene.lights[0] = get_sample_lighting();

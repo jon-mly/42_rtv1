@@ -6,7 +6,7 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/22 11:46:40 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/05/22 16:34:32 by jmlynarc         ###   ########.fr       */
+/*   Updated: 2018/05/31 17:52:57 by jmlynarc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ t_color			get_color_on_intersection(t_ray ray, t_object *closest_object,
 				// If the light ray interesct with an object before reaching
 				// the object we want to calculate the light for, it means that
 				// the initial object is shadowed.
-				if (light_ray.intersect == TRUE && light_ray.norm < norm &&
+				if (light_ray.intersect && light_ray.norm < norm &&
 						light_ray.norm > 0)
 					return (light_ray.color);
 			}

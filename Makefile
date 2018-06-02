@@ -8,6 +8,7 @@ INCLUDE_FLAG = -I includes/
 
 SRCS_REP = srcs/
 HELPER_REP = helpers/
+PARSER_REP = parser/
 SRCS = main.c \
 		shapes_intersection.c \
 		shapes_normal.c \
@@ -22,7 +23,11 @@ SRCS = main.c \
 		lighting.c \
 		deinit.c \
 		$(HELPER_REP)constructors.c \
-		$(HELPER_REP)math_tools.c
+		$(HELPER_REP)math_tools.c \
+		$(PARSER_REP)light_creation.c \
+		$(PARSER_REP)object_creation.c \
+		$(PARSER_REP)scene_creation.c
+
 
 SRC = $(addprefix $(SRCS_REP), $(SRCS))
 
