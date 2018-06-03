@@ -37,7 +37,7 @@ static void			extend_lights(t_light **lights, int count)
 		i = -1;
 		while (++i < count)
 			new_lights[i] = (*lights)[i];
-		// TODO: dealloc lights
+		ft_memdel(lights);
 		*lights = new_lights;
 	}
 }
@@ -53,13 +53,13 @@ t_light				*add_light(int fd, t_light *existing_lights, int count)
 	new_light->color = color(255, 255, 255, 0);
 	while ((line = split_new_line(fd)) && ft_strequ(line[0], "}") == FALSE)
 	{
-		if (ft_strequ(line[0], "position")) //TODO: check nb of coord.
+		if (line_len(line) == 4 && ft_strequ(line[0], "position")) //TODO: check nb of coord.
 			new_light->position = point(ft_atoi(line[1], ft_atoi(line[2],
 							ft_atoi[3])));
-		else if (ft_strequ(line[0], "color"))
+		else if (line_len(line) == 4 && ft_strequ(line[0], "color"))
 			new_light->color = color(ft_atoi(line[1]), ft_atoi(line[2],
 						ft_atoi(line[3]), 0));
-		// TODO: clear line
+		clear_line(line);
 	}
 	existing_lights[count] = new_light;
 	return (existing_lights);

@@ -25,14 +25,15 @@ static t_object		add_new_sphere(int fd)
 	sphere->color = color(255, 255, 255, 0);
 	while ((line = split_new_line(fd)) && ft_strequ(line[0], "}") == FALSE)
 	{
-		if (ft_strequ(line[0], "radius"))
+		if (line_len(line) == 2 && ft_strequ(line[0], "radius"))
 			sphere->radius = ft_atoi(line[1]);
-		else if (ft_strequ(line[0], "position"))
+		else if (line_len(line) == 4 && ft_strequ(line[0], "position"))
 			sphere->position = point(ft_atoi(line[1]), ft_atoi(line[2]),
 					ft_atoi(line[3]));
-		else if (ft_strequ(line[0], "color"))
+		else if (line_len(line) == 4 && ft_strequ(line[0], "color"))
 			sphere->color = color(ft_atoi(line[1]), ft_atoi(line[2]),
 					ft_atoi(line[3]), 0);
+		clear_line(line);
 	}
 	object.object = (void*)sphere;
 	return (object);
@@ -51,15 +52,16 @@ static t_object		add_new_plane(int fd)
 	plane->color = color(255, 255, 255, 0);
 	while ((line = split_new_line(fd)) && ft_strequ(line[0], "}") == FALSE)
 	{
-		if (ft_strequ(line[0], "normal"))
+		if (line_len(line) == 4 && ft_strequ(line[0], "normal"))
 			plane->normal = normalize_vector(vector(ft_atoi(line[1]),
 						ft_atoi(line[2]), ft_atoi(line[3])));
-		else if (ft_strequ(line[0], "point"))
+		else if (line_len(line) == 4 && ft_strequ(line[0], "point"))
 			plane->point = point(ft_atoi(line[1]), ft_atoi(line[2]),
 					ft_atoi(line[3]));
-		else if (ft_strequ(line[0], "color"))
+		else if (line_len(line) == 4 && ft_strequ(line[0], "color"))
 			plane->color = color(ft_atoi(line[1]), ft_atoi(line[2]),
 					ft_atoi(line[3]), 0);
+		clear_line(line);
 	}
 	object.object = (void*)plane;
 	return (object);
@@ -79,17 +81,18 @@ static t_object		add_new_cone(int fd)
 	cone->color = color(255, 255, 255, 0);
 	while ((line = split_new_line(fd)) && ft_strequ(line[0], "}") == FALSE)
 	{
-		if (ft_strequ(line[0], "pi_divider"))
+		if (line_len(line) == 2 && ft_strequ(line[0], "pi_divider"))
 			cone->angle = M_PI / ft_atoi(line[1]);
-		else if (ft_strequ(line[0], "direction"))
+		else if (line_len(line) == 4 && ft_strequ(line[0], "direction"))
 			cone->direction = normalize_vector(vector(ft_atoi(line[1]),
 						ft_atoi(line[2]), ft_atoi(line[3])));
-		else if (ft_strequ(line[0], "center"))
+		else if (line_len(line) == 4 && ft_strequ(line[0], "center"))
 			cone->center = point(ft_atoi(line[1]), ft_atoi(line[2]),
 					ft_atoi(line[3]));
-		else if (ft_strequ(line[0]), "color")
+		else if (line_len(line) == 4 && ft_strequ(line[0]), "color")
 			cone->color = color(ft_atoi(line[1]), ft_atoi(line[2]),
 					ft_atoi(line[3]), 0);
+		clear_line(line);
 	}
 	object.object = cone;
 	return (object);
@@ -109,17 +112,18 @@ static t_object		add_new_cylinder(int fd)
 	cylinder->color = color(255, 255, 255, 0);
 	while ((line = split_new_line(fd)) && ft_strequ(line[0], "}") == FALSE)
 	{
-		if (ft_strequ(line[0], "radius"))
+		if (line_len(line) == 2 && ft_strequ(line[0], "radius"))
 			cylinder->radius = ft_atoi(line[1]);
-		else if (ft_strequ(line[0]), "position")
+		else if (line_len(line) == 4 && ft_strequ(line[0]), "position")
 			cylinder->point = point(ft_atoi(line[1]), ft_atoi(line[2]),
 					ft_atoi(line[3]));
-		else if (ft_strequ(line[0], "direction"))
+		else if (line_len(line) == 4 && ft_strequ(line[0], "direction"))
 			cylinder->direction = normalize_vector(vector(ft_atoi(line[1]),
 						ft_atoi(line[2]), ft_atoi(line[3])));
-		else if (ft_strequ(line[0], "color"))
+		else if (line_len(line) == 4 && ft_strequ(line[0], "color"))
 			cylinder->color = color(ft_atoi(line[1]), ft_atoi(line[2]),
 					ft_atoi(line[3]), 0);
+		clear_line(line);
 	}
 	object.object = cylinder;
 	return (object);

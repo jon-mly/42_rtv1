@@ -1,0 +1,37 @@
+#include "rtv1.h"
+
+int			line_len(char **line)
+{
+	int			count;
+
+	count = 0;
+	while (line[count])
+		count++;
+	return (count);
+}
+
+void		clear_line(char **line)
+{
+	int			i;
+
+	i = -1;
+	while (line[++i])
+		ft_memdel((void**)(&line[i]));
+	ft_memdel(&line);
+}
+
+char		**split_new_line(int fd)
+{
+	char		**line;
+	char		**splited_content;
+	int			res;
+
+	if (!(line = (char**)malloc(sizeof(char*))))
+		return (NULL);
+	res = get_next_line(fd, line);
+	if (res == 1)
+		splited_content = ft_strsplit(*line, ' ');
+	ft_memdel((void**)line);
+	ft_memdel((void**)(&line));
+	return (splited_content);
+}
