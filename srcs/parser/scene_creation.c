@@ -6,7 +6,7 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/02 16:48:17 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/06/02 17:52:58 by jmlynarc         ###   ########.fr       */
+/*   Updated: 2018/07/18 15:06:51 by jmlynarc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,24 @@
 ** objects or lights.
 ** By default, the scene is empty.
 */
+
+static t_object *expand_objects(t_object *objects, int previous_count)
+{
+	t_object		*new_list;
+	int				i;
+
+	if (!(new_list = (t_object*)malloc(sizeof(t_object)
+					* (previous_count + 1))))
+		return (NULL);
+	if (objects)
+	{
+		i = -1;
+		while (++i < previous_count)
+			new_list[i] = objects[i];
+		ft_memdel((void**)&objects);
+	}
+	return (new_list);
+}
 
 static t_scene	extend_scene(int fd, t_scene scene, char **line)
 {
@@ -32,8 +50,8 @@ static t_scene	extend_scene(int fd, t_scene scene, char **line)
 		ft_strequ(line[0], "cylinder") || ft_strequ(line[0], "plane"))
 	{
 		scene.objects_count++;
-		// TODO: extend scene
-		// TODO: append new object
+		scene.objects = expand_objects(scene.objects, scene.objects_count);
+		scene.objects[scene.objects_count - 1] = add_new_object(fd, line[0]);
 	}
 	return (scene);
 }

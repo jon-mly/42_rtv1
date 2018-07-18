@@ -45,7 +45,7 @@ $(NAME): $(O_SRCS)
 	make -C $(LIBFT_REP)
 	gcc -g -fsanitize=address $(INCLUDE_FLAG) $(MLX_FLAGS) $(MATH_FLAG) $(SRC) $(LIBFT) -o $(NAME)
 
-%.o: %.c
+%.o: %.c includes/rtv1.h Makefile
 	@gcc  $(INCLUDE_FLAG) -c $< -o $@
 
 all: $(NAME)

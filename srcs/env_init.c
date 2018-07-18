@@ -6,7 +6,7 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/22 11:46:27 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/05/22 11:46:28 by jmlynarc         ###   ########.fr       */
+/*   Updated: 2018/07/18 15:17:58 by jmlynarc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static void		setup_window(t_env *env)
 	env->endian = endian;
 }
 
-t_env			*init_env(void)
+t_env			*init_env(char *file_name)
 {
 	t_env	*env;
 
@@ -50,7 +50,7 @@ t_env			*init_env(void)
 	setup_window(env);
 	env->camera = init_camera(env);
 	ft_putendl("Camera successfully set up");
-	env->scene = get_sample_scene();
+	env->scene = create_scene(env, file_name);
 	ft_putendl("Scene successfully set up");
 	return (env);
 }

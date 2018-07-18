@@ -6,7 +6,7 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/02 16:09:07 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/06/02 17:53:01 by jmlynarc         ###   ########.fr       */
+/*   Updated: 2018/07/18 15:15:20 by jmlynarc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,8 @@ static t_object		add_new_sphere(int fd)
 	{
 		if (line_len(line) == 2 && ft_strequ(line[0], "radius"))
 			sphere->radius = ft_atoi(line[1]);
-		else if (line_len(line) == 4 && ft_strequ(line[0], "position"))
-			sphere->position = point(ft_atoi(line[1]), ft_atoi(line[2]),
+		else if (line_len(line) == 4 && ft_strequ(line[0], "center"))
+			sphere->center = point(ft_atoi(line[1]), ft_atoi(line[2]),
 					ft_atoi(line[3]));
 		else if (line_len(line) == 4 && ft_strequ(line[0], "color"))
 			sphere->color = color(ft_atoi(line[1]), ft_atoi(line[2]),
@@ -43,7 +43,7 @@ static t_object		add_new_plane(int fd)
 {
 	char		**line;
 	t_object	object;
-	t_sphere	*sphere;
+	t_plane		*plane;
 
 	object.type = PLANE;
 	plane = (t_plane*)malloc(sizeof(t_plane));
@@ -89,7 +89,7 @@ static t_object		add_new_cone(int fd)
 		else if (line_len(line) == 4 && ft_strequ(line[0], "center"))
 			cone->center = point(ft_atoi(line[1]), ft_atoi(line[2]),
 					ft_atoi(line[3]));
-		else if (line_len(line) == 4 && ft_strequ(line[0]), "color")
+		else if (line_len(line) == 4 && ft_strequ(line[0], "color"))
 			cone->color = color(ft_atoi(line[1]), ft_atoi(line[2]),
 					ft_atoi(line[3]), 0);
 		clear_line(line);
@@ -114,7 +114,7 @@ static t_object		add_new_cylinder(int fd)
 	{
 		if (line_len(line) == 2 && ft_strequ(line[0], "radius"))
 			cylinder->radius = ft_atoi(line[1]);
-		else if (line_len(line) == 4 && ft_strequ(line[0]), "position")
+		else if (line_len(line) == 4 && ft_strequ(line[0], "position"))
 			cylinder->point = point(ft_atoi(line[1]), ft_atoi(line[2]),
 					ft_atoi(line[3]));
 		else if (line_len(line) == 4 && ft_strequ(line[0], "direction"))
@@ -129,4 +129,14 @@ static t_object		add_new_cylinder(int fd)
 	return (object);
 }
 
-
+t_object			add_new_object(int fd, char *type)
+{
+	if (ft_strequ(type, "cylinder"))
+		return (add_new_cylinder(fd));
+	else if (ft_strequ(type, "sphere"))
+		return (add_new_sphere(fd));
+	else if (ft_strequ(type, "plane"))
+		return (add_new_plane(fd));
+	else
+		return (add_new_cone(fd));
+}

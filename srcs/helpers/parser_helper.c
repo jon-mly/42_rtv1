@@ -17,7 +17,7 @@ void		clear_line(char **line)
 	i = -1;
 	while (line[++i])
 		ft_memdel((void**)(&line[i]));
-	ft_memdel(&line);
+	ft_memdel((void**)&line);
 }
 
 char		**split_new_line(int fd)

@@ -6,7 +6,7 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/22 12:31:54 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/06/02 15:25:15 by jmlynarc         ###   ########.fr       */
+/*   Updated: 2018/07/18 15:18:30 by jmlynarc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,7 +188,7 @@ typedef struct	s_env
 void			exit_error(t_env *env);
 void			exit_normally(t_env *env);
 void			exit_usage(void);
-t_env			*init_env(void);
+t_env			*init_env(char *file_name);
 void			calculate_scene(t_env *env);
 t_camera		init_camera(t_env *env);
 int				handle_key_event(int key, void *param);
@@ -215,5 +215,8 @@ void			deinit_env(t_env *env);
 int				line_len(char **line);
 void			clear_line(char **line);
 char			**split_new_line(int fd);
+t_light			*add_light(int fd, t_light *existing_lights, int count);
+t_object		add_new_object(int fd, char *type);
+t_scene			create_scene(t_env *env, char *file_name);
 
 #endif
