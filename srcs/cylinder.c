@@ -12,6 +12,8 @@
 
 #include "rtv1.h"
 
+// UNUSED
+
 /*
 ** Calculate the norm of the ray from the origin of it to the intersection
 ** with the cylinder given in parameter.

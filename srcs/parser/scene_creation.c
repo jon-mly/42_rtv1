@@ -39,7 +39,7 @@ static t_object *expand_objects(t_object *objects, int previous_count)
 
 static t_scene	extend_scene(int fd, t_scene scene, char **line)
 {
-	if (line_len(line) != 2 || ft_strequ(line[1], "{") == FALSE)
+	if (line_len(line) != 2 || !(ft_strequ(line[1], "{")))
 		return (scene);
 	if (ft_strequ(line[0], "light"))
 	{

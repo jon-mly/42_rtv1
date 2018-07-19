@@ -44,6 +44,16 @@ static t_light		*extend_lights(t_light **lights, int count)
 	}
 }
 
+/*
+** light
+** required structure (only omni type)
+**
+** light {
+** position [x] [y] [z]
+** color [r] [g] [b]
+** }
+*/
+
 t_light				*add_light(int fd, t_light *existing_lights, int count)
 {
 	char		**line;
@@ -55,7 +65,7 @@ t_light				*add_light(int fd, t_light *existing_lights, int count)
 	new_light.color = color(255, 255, 255, 0);
 	while ((line = split_new_line(fd)) && ft_strequ(line[0], "}") == FALSE)
 	{
-		if (line_len(line) == 4 && ft_strequ(line[0], "position")) //TODO: check nb of coord.
+		if (line_len(line) == 4 && ft_strequ(line[0], "position"))
 			new_light.position = point(ft_atoi(line[1]), ft_atoi(line[2]),
 							ft_atoi(line[3]));
 		else if (line_len(line) == 4 && ft_strequ(line[0], "color"))

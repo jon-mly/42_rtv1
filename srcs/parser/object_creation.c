@@ -12,6 +12,17 @@
 
 #include "rtv1.h"
 
+/*
+** sphere
+** required structure
+**
+** sphere {
+** radius [radius]
+** center [x] [y] [z]
+** color [r] [g] [b]
+** }
+*/
+
 static t_object		add_new_sphere(int fd)
 {
 	char		**line;
@@ -31,13 +42,24 @@ static t_object		add_new_sphere(int fd)
 			sphere->center = point(ft_atoi(line[1]), ft_atoi(line[2]),
 					ft_atoi(line[3]));
 		else if (line_len(line) == 4 && ft_strequ(line[0], "color"))
-			sphere->color = color(ft_atoi(line[1]), ft_atoi(line[2]),
+			object.color = color(ft_atoi(line[1]), ft_atoi(line[2]),
 					ft_atoi(line[3]), 0);
 		clear_line(line);
 	}
 	object.object = (void*)sphere;
 	return (object);
 }
+
+/*
+** plane
+** required structure
+**
+** plane {
+** normal [x] [y] [z]
+** point [x] [y] [z]
+** color [r] [g] [b]
+** }
+*/
 
 static t_object		add_new_plane(int fd)
 {
@@ -59,13 +81,25 @@ static t_object		add_new_plane(int fd)
 			plane->point = point(ft_atoi(line[1]), ft_atoi(line[2]),
 					ft_atoi(line[3]));
 		else if (line_len(line) == 4 && ft_strequ(line[0], "color"))
-			plane->color = color(ft_atoi(line[1]), ft_atoi(line[2]),
+			object.color = color(ft_atoi(line[1]), ft_atoi(line[2]),
 					ft_atoi(line[3]), 0);
 		clear_line(line);
 	}
 	object.object = (void*)plane;
 	return (object);
 }
+
+/*
+** cone
+** required structure
+**
+** cone {
+** pi_divider [PI / x -> x value expected]
+** direction [x] [y] [z]
+** center [x] [y] [z]
+** color [r] [g] [b]
+** }
+*/
 
 static t_object		add_new_cone(int fd)
 {
@@ -90,13 +124,25 @@ static t_object		add_new_cone(int fd)
 			cone->center = point(ft_atoi(line[1]), ft_atoi(line[2]),
 					ft_atoi(line[3]));
 		else if (line_len(line) == 4 && ft_strequ(line[0], "color"))
-			cone->color = color(ft_atoi(line[1]), ft_atoi(line[2]),
+			object.color = color(ft_atoi(line[1]), ft_atoi(line[2]),
 					ft_atoi(line[3]), 0);
 		clear_line(line);
 	}
 	object.object = cone;
 	return (object);
 }
+
+/*
+** cylinder
+** required structure
+**
+** cylinder {
+** radius [radius]
+** position [x] [y] [z]
+** direction [x] [y] [z]
+** color [r] [g] [b]
+** }
+*/
 
 static t_object		add_new_cylinder(int fd)
 {
@@ -121,7 +167,7 @@ static t_object		add_new_cylinder(int fd)
 			cylinder->direction = normalize_vector(vector(ft_atoi(line[1]),
 						ft_atoi(line[2]), ft_atoi(line[3])));
 		else if (line_len(line) == 4 && ft_strequ(line[0], "color"))
-			cylinder->color = color(ft_atoi(line[1]), ft_atoi(line[2]),
+			object.color = color(ft_atoi(line[1]), ft_atoi(line[2]),
 					ft_atoi(line[3]), 0);
 		clear_line(line);
 	}

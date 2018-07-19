@@ -5,6 +5,8 @@ int			line_len(char **line)
 	int			count;
 
 	count = 0;
+	if (!(line) || !(*line))
+		return (0);
 	while (line[count])
 		count++;
 	return (count);
@@ -26,6 +28,7 @@ char		**split_new_line(int fd)
 	char		**splited_content;
 	int			res;
 
+	splited_content = NULL;
 	if (!(line = (char**)malloc(sizeof(char*))))
 		return (NULL);
 	res = get_next_line(fd, line);

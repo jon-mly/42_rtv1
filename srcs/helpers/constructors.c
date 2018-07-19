@@ -12,6 +12,11 @@
 
 #include "rtv1.h"
 
+/*
+** Some constructors to emulate a oriented-object programming, that is clearer
+** to read.
+*/
+
 t_vector	vector(double x, double y, double z)
 {
 	t_vector	vector;
@@ -51,14 +56,13 @@ t_pixel		pixel(int x, int y)
 	return (pixel);
 }
 
-t_color		color(unsigned char r, unsigned char g, unsigned char b,
-	unsigned char a)
+t_color		color(int r, int g, int b, int a)
 {
 	t_color		color;
 
-	color.r = r;
-	color.g = g;
-	color.b = b;
-	color.a = a;
+	color.r = (unsigned char)r;
+	color.g = (unsigned char)g;
+	color.b = (unsigned char)b;
+	color.a = (unsigned char)a;
 	return (color);
 }

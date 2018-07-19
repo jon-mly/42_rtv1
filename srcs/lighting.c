@@ -12,6 +12,14 @@
 
 #include "rtv1.h"
 
+/*
+** A light ray is ignited, beginning from the position of the light itself,
+** and directed to the intersection between the initial ray and the closest
+** object.
+** A base color (shadow color) is given so that, if an object stands
+** between the light spot and the intersection, the latter is shadowed.
+*/
+
 static t_ray	init_light_ray(t_light light, t_ray ray, t_object object)
 {
 	t_ray		light_ray;
@@ -26,6 +34,15 @@ static t_ray	init_light_ray(t_light light, t_ray ray, t_object object)
 	return (light_ray);
 }
 
+/*
+** Supposing there is no object between the light and the intersection, the
+** color on this point is calculated, based on the angle between the normal
+** of the object on a particular point.
+** TODO: so far, the distance between the two points has no influence on
+** the enlightment of the intersection. Should be added by calculating the
+** distance and dividing by an arbitrary factor.
+*/
+
 static t_color	light_for_intersection(t_ray light_ray, t_ray ray, t_object
 	object, t_light light)
 {
@@ -35,6 +52,7 @@ static t_color	light_for_intersection(t_ray light_ray, t_ray ray, t_object
 
 	normal = shape_normal(ray, object);
 	cosinus = dot_product(light_ray.direction, normal);
+	// if angle is higher than PI/2, the point is shadowed whatsoever.
 	if (cosinus >= 0)
 		return (light_ray.color);
 	color.r = (int)(fmax(fmin((double)object.color.r / (3) - cosinus * (double)light.color.r / 2, 255), 0));
@@ -43,6 +61,14 @@ static t_color	light_for_intersection(t_ray light_ray, t_ray ray, t_object
 	color.a = 0;
 	return (color);
 }
+
+/*
+** For each light (FIXME: multi-spots not supported so far), light ray created.
+** For each object that is not the intersected one, check if the ray
+** intersects with the object. If so, the point on closest_object is shadowed.
+** Else, the coloration calculated in the case there is no object in between is
+** returned and applied.
+*/
 
 t_color			get_color_on_intersection(t_ray ray, t_object *closest_object,
 	t_env *env)

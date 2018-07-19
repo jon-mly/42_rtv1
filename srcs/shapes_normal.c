@@ -1,5 +1,9 @@
 #include "rtv1.h"
 
+/*
+** See proofs on paper for explainations.
+*/
+
 static t_vector		cone_normal(t_ray ray, t_cone cone)
 {
 	t_vector	normal;

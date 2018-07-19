@@ -12,6 +12,11 @@
 
 #include "rtv1.h"
 
+/*
+** WARNING : SAMPLE CODE THAT IS NOT USED ANYMORE.
+** TO BE REMOVED
+*/
+
 static t_object		get_sample_cone(void)
 {
 	t_object	object;

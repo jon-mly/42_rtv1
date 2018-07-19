@@ -18,7 +18,7 @@
 */
 
 # include "../libft/libft.h"
-# include "mlx.h"
+# include "../minilibx/mlx.h"
 # include <fcntl.h>
 # include <sys/types.h>
 # include <sys/stat.h>
@@ -199,8 +199,7 @@ t_vector		vector(double x, double y, double z);
 t_vector		vector_points(t_point p1, t_point p2);
 t_point			point(double x, double y, double z);
 t_pixel			pixel(int x, int y);
-t_color			color(unsigned char r, unsigned char g, unsigned char b,
-	unsigned char a);
+t_color			color(int r, int g, int b, int a);
 double			vector_norm(t_vector vector);
 t_vector		normalize_vector(t_vector vector);
 double			dot_product(t_vector vect_1, t_vector vect_2);

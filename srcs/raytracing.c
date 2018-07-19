@@ -35,7 +35,11 @@ static t_ray		init_ray(int x, int y, t_camera camera)
 
 /*
 ** The function tries to find the closest intersection between the ray and
-** each of the objects in the scene.
+** each of the objects in the scene. To do so, it tracks the closest distance
+** calculated so far and compares (+ replaces) it to a new distance if there
+** is an intersection.
+** If an intersection has been found, the color that should be applied on
+** the given pixel is calculated (cf. lighting.c) and applied.
 */
 
 void				pixel_raytracing(int x, int y, t_env *env)
