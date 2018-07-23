@@ -59,3 +59,41 @@ double		points_norm(t_point p1, t_point p2)
 			pow(p2.z - p1.z, 2));
 	return (distance);
 }
+
+double		degrees_to_radian(int degrees)
+{
+	double	radian;
+
+	radian = ((double)degrees * M_PI) / 180;
+	return (radian);
+}
+
+t_vector	vect_rotate_x(t_vector vector, double angle)
+{
+	t_vector	rotated;
+
+	rotated.x = vector.x;
+	rotated.y = vector.y * cos(angle) + vector.z * sin(angle);
+	rotated.z = -vector.y * sin(angle) + vector.z * cos(angle);
+	return (rotated);
+}
+
+t_vector	vect_rotate_z(t_vector vector, double angle)
+{
+	t_vector	rotated;
+
+	rotated.x = vector.x * cos(angle) + vector.y * sin(angle);
+	rotated.y = -vector.x * sin(angle) + vector.y * cos(angle);
+	rotated.z = vector.z;
+	return (rotated);
+}
+
+t_vector	vect_rotate_y(t_vector vector, double angle)
+{
+	t_vector	rotated;
+
+	rotated.x = vector.x * cos(angle) - vector.z * sin(angle);
+	rotated.y = vector.y;
+	rotated.z = vector.x * sin(angle) + vector.z * cos(angle);
+	return (rotated);
+}

@@ -1,13 +1,13 @@
 SCENE : SAMPLE SCENE
 
-#light {
-#position 0 10 -20
-#color 255 255 255
-#}
-
-cylinder {
-position 0 0 40
-direction 1 0 0
+light {
+position 0 10 -20
 color 255 255 255
-radius 2
+}
+
+cone {
+pi_divider 12
+angles 60 20
+center 0 0 40
+color 255 255 255
 }

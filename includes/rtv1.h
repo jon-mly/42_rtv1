@@ -88,6 +88,8 @@ typedef struct	s_object
 {
 	t_object_type	type;
 	t_color			color;
+	double			y_angle;
+	double			x_angle;
 	void			*object;
 	char			*name;
 }				t_object;
@@ -111,6 +113,8 @@ typedef struct	s_cylinder
 	t_color		color;
 	t_point		point;
 	t_vector	direction;
+	double		y_angle;
+	double		x_angle;
 	double		radius;
 }				t_cylinder;
 
@@ -120,6 +124,8 @@ typedef struct	s_cone
 	t_vector	direction;
 	t_point		center;
 	double		angle;
+	double		y_angle;
+	double		x_angle;
 }				t_cone;
 
 typedef struct	s_light
@@ -218,5 +224,10 @@ t_light			*add_light(int fd, t_light *existing_lights, int count);
 t_object		add_new_object(int fd, char *type);
 t_scene			create_scene(t_env *env, char *file_name);
 t_ray			cylinder_intersection(t_ray ray, t_cylinder cylinder);
+t_ray			cone_intersection(t_ray ray, t_cone cone);
+double			degrees_to_radian(int degrees);
+t_vector		vect_rotate_x(t_vector vector, double angle);
+t_vector		vect_rotate_z(t_vector vector, double angle);
+t_vector		vect_rotate_y(t_vector vector, double angle);
 
 #endif

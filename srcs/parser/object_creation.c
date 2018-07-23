@@ -126,6 +126,13 @@ static t_object		add_new_cone(int fd)
 		else if (line_len(line) == 4 && ft_strequ(line[0], "color"))
 			object.color = color(ft_atoi(line[1]), ft_atoi(line[2]),
 					ft_atoi(line[3]), 0);
+		else if (line_len(line) == 3 && ft_strequ(line[0], "angles"))
+		{
+			object.y_angle = degrees_to_radian(ft_atoi(line[1]));
+			object.x_angle = degrees_to_radian(ft_atoi(line[2]));
+			cone->y_angle = object.y_angle;
+			cone->x_angle = object.x_angle;
+		}
 		clear_line(line);
 	}
 	object.object = cone;
@@ -141,6 +148,7 @@ static t_object		add_new_cone(int fd)
 ** position [x] [y] [z]
 ** direction [x] [y] [z]
 ** color [r] [g] [b]
+** angles [y_angle / longitude °] [x_angle / latitude °]
 ** }
 */
 
@@ -156,6 +164,7 @@ static t_object		add_new_cylinder(int fd)
 	cylinder->direction = normalize_vector(vector(0, 1, 0));
 	cylinder->point = point(0, 0, 0);
 	cylinder->color = color(255, 255, 255, 0);
+	// TODO: add default values for angles
 	while ((line = split_new_line(fd)) && ft_strequ(line[0], "}") == FALSE)
 	{
 		if (line_len(line) == 2 && ft_strequ(line[0], "radius"))
@@ -169,6 +178,13 @@ static t_object		add_new_cylinder(int fd)
 		else if (line_len(line) == 4 && ft_strequ(line[0], "color"))
 			object.color = color(ft_atoi(line[1]), ft_atoi(line[2]),
 					ft_atoi(line[3]), 0);
+		else if (line_len(line) == 3 && ft_strequ(line[0], "angles"))
+		{
+			object.y_angle = degrees_to_radian(ft_atoi(line[1]));
+			object.x_angle = degrees_to_radian(ft_atoi(line[2]));
+			cylinder->y_angle = object.y_angle;
+			cylinder->x_angle = object.x_angle;
+		}
 		clear_line(line);
 	}
 	object.object = cylinder;

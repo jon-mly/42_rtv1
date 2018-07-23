@@ -31,7 +31,8 @@ SRCS = main.c \
 		$(PARSER_REP)light_creation.c \
 		$(PARSER_REP)object_creation.c \
 		$(PARSER_REP)scene_creation.c \
-		cylinder.c
+		cylinder.c \
+		cone.c
 
 
 SRC = $(addprefix $(SRCS_REP), $(SRCS))

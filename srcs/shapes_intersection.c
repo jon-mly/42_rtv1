@@ -6,6 +6,7 @@
  ** Returns the ray with "intersect" and "norm" values set up
  */
 
+/*
 static t_ray	cone_intersection(t_ray ray, t_cone cone)
 {
 	t_vector	distance;
@@ -32,7 +33,7 @@ static t_ray	cone_intersection(t_ray ray, t_cone cone)
 					(-b + sqrt(discriminant) / (2 * a))));
 	}
 	return (ray);
-}
+}*/
 
 /*
  ** Calculate the norm of the ray from the origin of it to the intersection
