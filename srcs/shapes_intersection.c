@@ -77,6 +77,11 @@ static t_ray	plane_intersection(t_ray ray, t_plane plane)
 {
 	double			norm;
 
+	if (dot_product(plane.normal, ray.direction) == 0)
+	{
+		ray.intersect = FALSE;
+		return (ray);
+	}
 	norm = (dot_product(plane.normal, plane.point) - dot_product(plane.normal,
 			ray.origin)) / dot_product(plane.normal, ray.direction);
 	if (norm < 0.0001 || norm > 100000)
