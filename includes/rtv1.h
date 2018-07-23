@@ -6,7 +6,7 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/22 12:31:54 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/07/18 15:18:30 by jmlynarc         ###   ########.fr       */
+/*   Updated: 2018/07/23 13:40:07 by jmlynarc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,8 @@
 ** ======= macros
 */
 
-# define WIN_HEIGHT 1000
-# define WIN_WIDTH 1500
+# define WIN_HEIGHT 800
+# define WIN_WIDTH 1200
 # define FOV 0.40
 
 # define KEY_ESC 53
@@ -217,5 +217,6 @@ char			**split_new_line(int fd);
 t_light			*add_light(int fd, t_light *existing_lights, int count);
 t_object		add_new_object(int fd, char *type);
 t_scene			create_scene(t_env *env, char *file_name);
+t_ray			cylinder_intersection(t_ray ray, t_cylinder cylinder);
 
 #endif
