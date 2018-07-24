@@ -12,6 +12,7 @@ INCLUDE_FLAG = -I includes/
 SRCS_REP = srcs/
 HELPER_REP = helpers/
 PARSER_REP = parser/
+SHAPES_REP = shapes/
 SRCS = main.c \
 		shapes_intersection.c \
 		shapes_normal.c \
@@ -31,8 +32,11 @@ SRCS = main.c \
 		$(PARSER_REP)light_creation.c \
 		$(PARSER_REP)object_creation.c \
 		$(PARSER_REP)scene_creation.c \
-		cylinder.c \
-		cone.c
+		$(SHAPES_REP)cylinder.c \
+		$(SHAPES_REP)cone.c \
+		$(SHAPES_REP)plane.c \
+		$(SHAPES_REP)sphere.c \
+		debug.c
 
 
 SRC = $(addprefix $(SRCS_REP), $(SRCS))

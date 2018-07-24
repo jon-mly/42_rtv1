@@ -3,7 +3,7 @@
 /*
 ** See proofs on paper for explainations.
 */
-
+/*
 static t_vector		cone_normal(t_ray ray, t_cone cone)
 {
 	t_vector	normal;
@@ -71,6 +71,7 @@ static t_vector		plane_normal(t_ray ray, t_plane plane)
 	normal.z = -(plane.normal.z);
 	return (normalize_vector(normal));
 }
+*/
 
 t_vector			shape_normal(t_ray ray, t_object object)
 {

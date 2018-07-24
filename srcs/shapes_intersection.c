@@ -73,7 +73,7 @@ static t_ray	cylinder_intersection(t_ray ray, t_cylinder cylinder)
  ** with the plane given in parameter.
  ** Returns the ray with "intersect" and "norm" values set up
  */
-
+/*
 static t_ray	plane_intersection(t_ray ray, t_plane plane)
 {
 	double			norm;
@@ -93,14 +93,14 @@ static t_ray	plane_intersection(t_ray ray, t_plane plane)
 		ray.norm = norm;
 	}
 	return (ray);
-}
+}*/
 
 /*
  ** Calculate the norm of the ray from the origin of it to the intersection
  ** with the sphere given in parameter.
  ** Returns the ray with "intersect" and "norm" values set up
  */
-
+/*
 static t_ray	sphere_intersection(t_ray ray, t_sphere sphere)
 {
 	double		a;
@@ -123,7 +123,7 @@ static t_ray	sphere_intersection(t_ray ray, t_sphere sphere)
 		ray.intersect = TRUE;
 	}
 	return (ray);
-}
+}*/
 
 t_ray			intersect_object(t_ray ray, t_object object)
 {

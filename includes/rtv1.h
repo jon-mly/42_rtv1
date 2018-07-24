@@ -30,8 +30,8 @@
 ** ======= macros
 */
 
-# define WIN_HEIGHT 800
-# define WIN_WIDTH 1200
+# define WIN_HEIGHT 600
+# define WIN_WIDTH 900
 # define FOV 0.40
 
 # define KEY_ESC 53
@@ -225,9 +225,18 @@ t_object		add_new_object(int fd, char *type);
 t_scene			create_scene(t_env *env, char *file_name);
 t_ray			cylinder_intersection(t_ray ray, t_cylinder cylinder);
 t_ray			cone_intersection(t_ray ray, t_cone cone);
+t_ray			plane_intersection(t_ray ray, t_plane plane);
+t_ray			sphere_intersection(t_ray ray, t_sphere sphere);
+t_vector		cone_normal(t_ray ray, t_cone cone);
+t_vector		cylinder_normal(t_ray ray, t_cylinder cylinder);
+t_vector		plane_normal(t_ray ray, t_plane plane);
+t_vector		sphere_normal(t_ray ray, t_sphere sphere);
 double			degrees_to_radian(int degrees);
 t_vector		vect_rotate_x(t_vector vector, double angle);
 t_vector		vect_rotate_z(t_vector vector, double angle);
 t_vector		vect_rotate_y(t_vector vector, double angle);
+t_ray			init_ray(int x, int y, t_camera camera);
+int		debug_mouse_event(int event, int x, int y, void *param);
+double			closest_distance_quadratic(double a, double b, double c);
 
 #endif

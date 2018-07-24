@@ -1,13 +1,38 @@
 SCENE : SAMPLE SCENE
 
 light {
-position 0 10 -20
+position 0 3 -20
 color 255 255 255
 }
 
+sphere {
+radius 3
+center 0 8 6
+color 130 255 130
+}
+
+plane {
+point 0 0 10
+normal 0 0 -1
+color 130 130 255
+}
+
+plane {
+point 0 0 0
+normal 0 1 0
+color 255 255 100
+}
+
+cylinder {
+radius 1
+position 0 8 6
+color 255 130 130
+angles 0 90
+}
+
 cone {
-pi_divider 12
-angles 60 20
-center 0 0 40
-color 255 255 255
+pi_divider 10
+center 0 8 6
+color 255 0 130
+angles 90 0
 }

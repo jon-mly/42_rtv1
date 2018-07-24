@@ -80,6 +80,7 @@ t_color			get_color_on_intersection(t_ray ray, t_object *closest_object,
 	t_color		coloration;
 
 	light_index = -1;
+	coloration = closest_object->color;
 	while (++light_index < env->scene.lights_count)
 	{
 		light_ray = init_light_ray(env->scene.lights[light_index], ray,

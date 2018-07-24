@@ -47,6 +47,7 @@ static t_object		add_new_sphere(int fd)
 		clear_line(line);
 	}
 	object.object = (void*)sphere;
+	object.name = "Sphere";
 	return (object);
 }
 
@@ -86,6 +87,7 @@ static t_object		add_new_plane(int fd)
 		clear_line(line);
 	}
 	object.object = (void*)plane;
+	object.name = "Plane";
 	return (object);
 }
 
@@ -136,6 +138,7 @@ static t_object		add_new_cone(int fd)
 		clear_line(line);
 	}
 	object.object = cone;
+	object.name = "Cone";
 	return (object);
 }
 
@@ -188,6 +191,7 @@ static t_object		add_new_cylinder(int fd)
 		clear_line(line);
 	}
 	object.object = cylinder;
+	object.name = "Cylinder";
 	return (object);
 }
 

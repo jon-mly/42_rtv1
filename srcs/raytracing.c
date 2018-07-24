@@ -18,7 +18,7 @@ ri
 ** directional vector).
 */
 
-static t_ray		init_ray(int x, int y, t_camera camera)
+t_ray		init_ray(int x, int y, t_camera camera)
 {
 	t_ray		ray;
 	t_point		projector_point;
@@ -63,6 +63,7 @@ void				pixel_raytracing(int x, int y, t_env *env)
 	}
 	if (closest_object != NULL)
 	{
+		ray.norm = closest_distance;
 		ray.intersection.x = ray.origin.x + ray.direction.x * closest_distance;
 		ray.intersection.y = ray.origin.y + ray.direction.y * closest_distance;
 		ray.intersection.z = ray.origin.z + ray.direction.z * closest_distance;

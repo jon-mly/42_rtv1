@@ -97,3 +97,27 @@ t_vector	vect_rotate_y(t_vector vector, double angle)
 	rotated.z = vector.x * sin(angle) + vector.z * cos(angle);
 	return (rotated);
 }
+
+/*
+** Solves a quadratic equation but with the aim of returning a distance, which
+** has to be a positive value.
+** If the value is negative, the equation has no solution
+*/
+
+double		closest_distance_quadratic(double a, double b, double c)
+{
+	double		discriminant;
+	double		x1;
+	double		x2;
+
+	discriminant = b * b - 4 * a * c;
+	if (discriminant < 0)
+		return (-1);
+	x1 = (-b - sqrt(discriminant)) / (2 * a);
+	x2 = (-b + sqrt(discriminant)) / (2 * a);
+	if (x1 < 0 && x2 < 0)
+		return (-1);
+	x1 = fmax(x1, 0);
+	x2 = fmax(x2, 0);
+	return (fmin(x1, x2));
+}

@@ -12,9 +12,6 @@
 
 #include "rtv1.h"
 
-// UNUSED
-
-
 /*
 ** Ref is supposed to be (0,0,1) in the new referential.
 ** - lat : lattitude of the reference, Oz rotation
@@ -61,6 +58,9 @@ t_ray		cylinder_intersection(t_ray ray, t_cylinder cylinder)
 	a = pow(ray_dir.x, 2) + pow(ray_dir.y, 2);
 	b = 2 * (distance.x * ray_dir.x + distance.y * ray_dir.y);
 	c = pow(distance.x, 2) + pow(distance.y, 2) - pow(cylinder.radius, 2);
+	ray.norm = closest_distance_quadratic(a, b, c);
+	ray.intersect = ray.norm > 0;
+	/*
 	discriminant = b * b - 4 * a * c;
 	if (discriminant < 0)
 		ray.intersect = FALSE;
@@ -69,6 +69,29 @@ t_ray		cylinder_intersection(t_ray ray, t_cylinder cylinder)
 		ray.intersect = TRUE;
 		ray.norm = (fmin((-b - sqrt(discriminant)) / (2 * a),
 					(-b + sqrt(discriminant) / (2 * a))));
-	}
+	}*/
 	return (ray);
 }
+
+t_vector		cylinder_normal(t_ray ray, t_cylinder cylinder)
+{
+	t_vector	normal;
+	t_point		pt_normal;
+	t_point		pt_normal_bis;
+	double		dist_normal;
+
+	dist_normal = sqrt(pow(points_norm(ray.intersection, cylinder.point), 2) -
+			pow(cylinder.radius, 2));
+	pt_normal.x = cylinder.point.x + dist_normal * cylinder.direction.x;
+	pt_normal.y = cylinder.point.y + dist_normal * cylinder.direction.y;
+	pt_normal.z = cylinder.point.z + dist_normal * cylinder.direction.z;
+	pt_normal_bis.x = cylinder.point.x - dist_normal * cylinder.direction.x;
+	pt_normal_bis.y = cylinder.point.y - dist_normal * cylinder.direction.y;
+	pt_normal_bis.z = cylinder.point.z - dist_normal * cylinder.direction.z;
+	if (points_norm(ray.intersection, pt_normal) > points_norm(ray.intersection,
+				pt_normal_bis))
+		pt_normal = pt_normal_bis;
+	normal = vector_points(pt_normal, ray.intersection);
+	return (normalize_vector(normal));
+}
+
