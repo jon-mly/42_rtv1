@@ -6,7 +6,7 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/22 11:46:40 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/05/31 17:52:57 by jmlynarc         ###   ########.fr       */
+/*   Updated: 2018/07/25 16:07:30 by jmlynarc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ static t_color	light_for_intersection(t_ray light_ray, t_ray ray, t_object
 
 	normal = shape_normal(ray, object);
 	cosinus = dot_product(light_ray.direction, normal);
-	// if angle is higher than PI/2, the point is shadowed whatsoever.
+	// if angle is higher than +/-PI/2, the point is shadowed whatsoever.
 	if (cosinus >= 0)
 		return (light_ray.color);
 	color.r = (int)(fmax(fmin((double)object.color.r / (3) - cosinus * (double)light.color.r / 2, 255), 0));

@@ -6,7 +6,7 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/22 11:46:14 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/05/22 11:46:15 by jmlynarc         ###   ########.fr       */
+/*   Updated: 2018/07/25 17:17:55 by jmlynarc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,23 +55,6 @@ t_ray		cone_intersection(t_ray ray, t_cone cone)
 	ray.norm = closest_distance_quadratic(a, b, c);
 	ray.intersect = ray.norm > 0;
 	return (ray);
-/*	discriminant = b * b - 4 * a * c;
-	if (discriminant < 0)
-		ray.intersect = FALSE;
-	else
-	{
-		ray.intersect = TRUE;
-		double x1 = (-b - sqrt(discriminant)) / (2 * a);
-		double x2 = (-b + sqrt(discriminant)) / (2 * a);
-		if (x1 < 0)
-			x1 = 0;
-		if (x2 < 0)
-			x2 = 0;
-		ray.norm = fmin(x1, x2);
-//		ray.norm = (fmin((-b - sqrt(discriminant)) / (2 * a),
-//					(-b + sqrt(discriminant) / (2 * a))));
-	}
-	return (ray);*/
 }
 
 t_vector		cone_normal(t_ray ray, t_cone cone)
@@ -99,3 +82,27 @@ t_vector		cone_normal(t_ray ray, t_cone cone)
 	normal = vector_points(pt_normal, ray.intersection);
 	return (normalize_vector(normal));
 }
+
+/*
+t_vector		cone_normal(t_ray ray, t_cone cone)
+{
+	t_vector	distance;
+	double		normal_dist;
+	double		variated_dist;
+	t_point		normal_point;
+	t_point		normal_point_2;
+	t_vector	normal;
+
+	distance = vector_points(cone.center, ray.intersection);
+	distance = rotate_cone_angles(cone, distance, 0);
+	normal_dist = sqrt(1 - pow(sin(cone.angle), 2)) * vector_norm(distance);
+	variated_dist = tan(cone.angle) * sin(cone.angle) * vector_norm(distance);
+	normal_point = (t_point){0, 0, normal_dist + variated_dist};
+	normal_point_2 = (t_point){0, 0, -normal_dist - variated_dist};
+	if (points_norm(normal_point, ray.intersection) > points_norm(normal_point_2, ray.intersection))
+		normal_point = normal_point_2;
+	normal = vector_points(normal_point, ray.intersection);
+	normal = rotate_cone_angles(cone, normal, 1);
+	return (normalize_vector(normal));
+}
+*/

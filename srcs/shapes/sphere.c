@@ -21,17 +21,6 @@ t_ray	sphere_intersection(t_ray ray, t_sphere sphere)
 	ray.norm = closest_distance_quadratic(a, b, c);
 	ray.intersect = ray.norm > 0;
 	return (ray);
-/*
-	discriminant = b * b - 4 * a * c;
-	if (discriminant < 0)
-		ray.intersect = FALSE;
-	else
-	{
-		ray.norm = (fmin((-b - sqrt(discriminant)) / (2 * a),
-					(-b + sqrt(discriminant) / (2 * a))));
-		ray.intersect = TRUE;
-	}
-	return (ray);*/
 }
 
 t_vector		sphere_normal(t_ray ray, t_sphere sphere)

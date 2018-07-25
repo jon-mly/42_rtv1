@@ -6,7 +6,7 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/22 11:46:18 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/07/23 16:27:46 by jmlynarc         ###   ########.fr       */
+/*   Updated: 2018/07/25 16:04:16 by jmlynarc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,16 +60,6 @@ t_ray		cylinder_intersection(t_ray ray, t_cylinder cylinder)
 	c = pow(distance.x, 2) + pow(distance.y, 2) - pow(cylinder.radius, 2);
 	ray.norm = closest_distance_quadratic(a, b, c);
 	ray.intersect = ray.norm > 0;
-	/*
-	discriminant = b * b - 4 * a * c;
-	if (discriminant < 0)
-		ray.intersect = FALSE;
-	else
-	{
-		ray.intersect = TRUE;
-		ray.norm = (fmin((-b - sqrt(discriminant)) / (2 * a),
-					(-b + sqrt(discriminant) / (2 * a))));
-	}*/
 	return (ray);
 }
 
@@ -100,19 +90,21 @@ t_vector		cylinder_normal(t_ray ray, t_cylinder cylinder)
 t_vector		cylinder_normal(t_ray ray, t_cylinder cylinder)
 {
 	t_vector	distance;
-	double		normal_distance;
+//	double		normal_distance;
 	t_point		normal_point;
 	t_vector	normal;
 
 	distance = vector_points(cylinder.point, ray.intersection);
 	distance = rotate_cylinder_angles(cylinder, distance, 0);
-	normal_distance = sqrt(pow(vector_norm(distance), 2) - pow(cylinder.radius, 2));
+//	printf("distance %.2f, %.2f, %.2f\n", distance.x, distance.y, distance.z);
+//	normal_distance = sqrt(pow(vector_norm(distance), 2) - pow(cylinder.radius, 2));
 	normal_point.x = 0;
 	normal_point.y = 0;
-	normal_point.z += normal_distance;
-	if (points_norm(normal_point, distance) > cylinder.radius)
-		normal_point.z -= 2 * normal_distance;
+	normal_point.z = distance.z;
+//	if (points_norm(normal_point, distance) > cylinder.radius)
+//		normal_point.z -= 2 * normal_distance;
 	normal = vector_points(normal_point, distance);
+//	printf("norm = %.2f, z_coord = %.2f\n", vector_norm(normal), normal.z);
 	normal = rotate_cylinder_angles(cylinder, distance, 1);
 	return (normalize_vector(normal));
 }
