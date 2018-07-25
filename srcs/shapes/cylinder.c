@@ -73,6 +73,7 @@ t_ray		cylinder_intersection(t_ray ray, t_cylinder cylinder)
 	return (ray);
 }
 
+/*
 t_vector		cylinder_normal(t_ray ray, t_cylinder cylinder)
 {
 	t_vector	normal;
@@ -94,4 +95,24 @@ t_vector		cylinder_normal(t_ray ray, t_cylinder cylinder)
 	normal = vector_points(pt_normal, ray.intersection);
 	return (normalize_vector(normal));
 }
+*/
 
+t_vector		cylinder_normal(t_ray ray, t_cylinder cylinder)
+{
+	t_vector	distance;
+	double		normal_distance;
+	t_point		normal_point;
+	t_vector	normal;
+
+	distance = vector_points(cylinder.point, ray.intersection);
+	distance = rotate_cylinder_angles(cylinder, distance, 0);
+	normal_distance = sqrt(pow(vector_norm(distance), 2) - pow(cylinder.radius, 2));
+	normal_point.x = 0;
+	normal_point.y = 0;
+	normal_point.z += normal_distance;
+	if (points_norm(normal_point, distance) > cylinder.radius)
+		normal_point.z -= 2 * normal_distance;
+	normal = vector_points(normal_point, distance);
+	normal = rotate_cylinder_angles(cylinder, distance, 1);
+	return (normalize_vector(normal));
+}
