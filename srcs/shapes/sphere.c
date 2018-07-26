@@ -8,10 +8,9 @@
 
 t_ray	sphere_intersection(t_ray ray, t_sphere sphere)
 {
-	double		a;
-	double		b;
-	double		c;
-	double		discriminant;
+	float		a;
+	float		b;
+	float		c;
 	t_vector	distance;
 
 	distance = vector_points(sphere.center, ray.origin);

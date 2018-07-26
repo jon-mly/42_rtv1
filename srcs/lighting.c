@@ -47,7 +47,7 @@ static t_color	light_for_intersection(t_ray light_ray, t_ray ray, t_object
 	object, t_light light)
 {
 	t_vector	normal;
-	double		cosinus;
+	float		cosinus;
 	t_color		color;
 
 	normal = shape_normal(ray, object);
@@ -55,11 +55,21 @@ static t_color	light_for_intersection(t_ray light_ray, t_ray ray, t_object
 	// if angle is higher than +/-PI/2, the point is shadowed whatsoever.
 	if (cosinus >= 0)
 		return (light_ray.color);
-	color.r = (int)(fmax(fmin((double)object.color.r / (3) - cosinus * (double)light.color.r / 2, 255), 0));
-	color.g = (int)(fmax(fmin((double)object.color.g / (3) - cosinus * (double)light.color.g / 2, 255), 0));
-	color.b = (int)(fmax(fmin((double)object.color.b / (3) - cosinus * (double)light.color.b / 2, 255), 0));
+	color.r = (int)(fmax(fmin((float)object.color.r / (3) - cosinus * (float)light.color.r / 2, 255), 0));
+	color.g = (int)(fmax(fmin((float)object.color.g / (3) - cosinus * (float)light.color.g / 2, 255), 0));
+	color.b = (int)(fmax(fmin((float)object.color.b / (3) - cosinus * (float)light.color.b / 2, 255), 0));
 	color.a = 0;
 	return (color);
+}
+
+static int		should_shadow(t_ray light_ray, float norm, t_object *closest_object, t_object concurrent)
+{
+	light_ray = intersect_object(light_ray, concurrent);
+	if (&concurrent == closest_object && light_ray.intersect && light_ray.norm < norm)
+		return (TRUE);
+	else if (&concurrent != closest_object && light_ray.intersect && light_ray.norm < norm)
+		return (TRUE);
+	return (FALSE);
 }
 
 /*
@@ -76,7 +86,7 @@ t_color			get_color_on_intersection(t_ray ray, t_object *closest_object,
 	t_ray		light_ray;
 	int			light_index;
 	int			object_index;
-	double		norm;
+	float		norm;
 	t_color		coloration;
 
 	light_index = -1;
@@ -89,11 +99,12 @@ t_color			get_color_on_intersection(t_ray ray, t_object *closest_object,
 		coloration = light_for_intersection(light_ray, ray, *closest_object,
 				env->scene.lights[light_index]);
 		object_index = -1;
-		// Each object of the scene is tested to check if it stands between
-		// the light source and the closest object relative to the camera.
 		while (++object_index < env->scene.objects_count)
 		{
-			if (&(env->scene.objects[object_index]) != closest_object)
+		/*	if (should_shadow(light_ray, norm - 0.0000001, closest_object, env->scene.objects[object_index]
+))
+				return (light_ray.color);
+			*/if (&(env->scene.objects[object_index]) != closest_object)
 			{
 				light_ray = intersect_object(light_ray,
 						env->scene.objects[object_index]);

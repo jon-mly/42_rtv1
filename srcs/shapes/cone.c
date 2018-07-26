@@ -15,16 +15,8 @@
 t_vector	rotate_cone_angles(t_cone cone, t_vector vect,
 			int reverse)
 {
-	if (!reverse)
-	{
-		vect = vect_rotate_y(vect, -cone.y_angle);
-		vect = vect_rotate_x(vect, -cone.x_angle);
-	}
-	else
-	{
-		vect = vect_rotate_y(vect, cone.y_angle);
-		vect = vect_rotate_x(vect, cone.x_angle);
-	}
+	vect = vect_rotate_y(vect, -cone.y_angle, reverse);
+	vect = vect_rotate_x(vect, -cone.x_angle, reverse);
 	return (vect);
 }
 
@@ -39,11 +31,10 @@ t_ray		cone_intersection(t_ray ray, t_cone cone)
 {
 	t_vector	distance;
 	t_vector	ray_dir;
-	double		a;
-	double		b;
-	double		c;
-	double		k;
-//	double		discriminant;
+	float		a;
+	float		b;
+	float		c;
+	float		k;
 
 	distance = vector_points(cone.center, ray.origin);
 	ray_dir = rotate_cone_angles(cone, ray.direction, 0);
@@ -59,50 +50,24 @@ t_ray		cone_intersection(t_ray ray, t_cone cone)
 
 t_vector		cone_normal(t_ray ray, t_cone cone)
 {
-	t_vector	normal;
-	t_point		pt_dir;
-	t_point		pt_dir_bis;
-	t_point		pt_normal;
-	double		distance;
-
-	distance = cos(cone.angle) * points_norm(ray.intersection, cone.center);
-	pt_dir.x = cone.center.x + distance * cone.direction.x;
-	pt_dir.y = cone.center.y + distance * cone.direction.y;
-	pt_dir.z = cone.center.z + distance * cone.direction.z;
-	pt_dir_bis.x = cone.center.x - distance * cone.direction.x;
-	pt_dir_bis.y = cone.center.y - distance * cone.direction.y;
-	pt_dir_bis.z = cone.center.z - distance * cone.direction.z;
-	if (points_norm(ray.intersection, pt_dir) > points_norm(ray.intersection,
-				pt_dir_bis))
-		pt_dir = pt_dir_bis;
-	distance = points_norm(pt_dir, ray.intersection) * tan(cone.angle);
-	pt_normal.x = pt_dir.x + distance * ray.direction.x;
-	pt_normal.y = pt_dir.y + distance * ray.direction.y;
-	pt_normal.z = pt_dir.z + distance * ray.direction.z;
-	normal = vector_points(pt_normal, ray.intersection);
-	return (normalize_vector(normal));
-}
-
-/*
-t_vector		cone_normal(t_ray ray, t_cone cone)
-{
 	t_vector	distance;
-	double		normal_dist;
-	double		variated_dist;
+	float		normal_dist;
 	t_point		normal_point;
 	t_point		normal_point_2;
 	t_vector	normal;
 
 	distance = vector_points(cone.center, ray.intersection);
+//	printf("before : %.2f, %.2f, %.2f (intersection %.2f %.2f, %.2f)\n", distance.x, distance.y, distance.z, ray.intersection.x, ray.intersection.y, ray.intersection.z);
 	distance = rotate_cone_angles(cone, distance, 0);
-	normal_dist = sqrt(1 - pow(sin(cone.angle), 2)) * vector_norm(distance);
-	variated_dist = tan(cone.angle) * sin(cone.angle) * vector_norm(distance);
-	normal_point = (t_point){0, 0, normal_dist + variated_dist};
-	normal_point_2 = (t_point){0, 0, -normal_dist - variated_dist};
-	if (points_norm(normal_point, ray.intersection) > points_norm(normal_point_2, ray.intersection))
+	normal_dist = (cos(cone.angle) + tan(cone.angle) * sin(cone.angle)) *
+		vector_norm(distance);
+	normal_point = (t_point){0, 0, normal_dist};
+	normal_point_2 = (t_point){0, 0, -normal_dist};
+	if (points_norm(normal_point, distance) > points_norm(normal_point_2, distance))
 		normal_point = normal_point_2;
-	normal = vector_points(normal_point, ray.intersection);
+	normal = vector_points(normal_point, distance);
 	normal = rotate_cone_angles(cone, normal, 1);
+	distance = rotate_cone_angles(cone, distance, 1);
+//	printf("after : %.2f, %.2f, %.2f (intersection %.2f %.2f, %.2f)\n", distance.x, distance.y, distance.z, ray.intersection.x, ray.intersection.y, ray.intersection.z);
 	return (normalize_vector(normal));
 }
-*/

@@ -24,16 +24,8 @@
 t_vector	rotate_cylinder_angles(t_cylinder cylinder, t_vector vect,
 			int reverse)
 {
-	if (!reverse)
-	{
-		vect = vect_rotate_y(vect, -cylinder.y_angle);
-		vect = vect_rotate_x(vect, -cylinder.x_angle);
-	}
-	else
-	{
-		vect = vect_rotate_y(vect, cylinder.y_angle);
-		vect = vect_rotate_x(vect, cylinder.x_angle);
-	}
+	vect = vect_rotate_y(vect, -cylinder.y_angle, reverse);
+	vect = vect_rotate_x(vect, -cylinder.x_angle, reverse);
 	return (vect);
 }
 
@@ -47,10 +39,9 @@ t_ray		cylinder_intersection(t_ray ray, t_cylinder cylinder)
 {
 	t_vector	distance;
 	t_vector	ray_dir;
-	double		a;
-	double		b;
-	double		c;
-	double		discriminant;
+	float		a;
+	float		b;
+	float		c;
 
 	distance = vector_points(cylinder.point, ray.origin);
 	ray_dir = rotate_cylinder_angles(cylinder, ray.direction, 0);
@@ -90,21 +81,13 @@ t_vector		cylinder_normal(t_ray ray, t_cylinder cylinder)
 t_vector		cylinder_normal(t_ray ray, t_cylinder cylinder)
 {
 	t_vector	distance;
-//	double		normal_distance;
 	t_point		normal_point;
 	t_vector	normal;
 
 	distance = vector_points(cylinder.point, ray.intersection);
 	distance = rotate_cylinder_angles(cylinder, distance, 0);
-//	printf("distance %.2f, %.2f, %.2f\n", distance.x, distance.y, distance.z);
-//	normal_distance = sqrt(pow(vector_norm(distance), 2) - pow(cylinder.radius, 2));
-	normal_point.x = 0;
-	normal_point.y = 0;
-	normal_point.z = distance.z;
-//	if (points_norm(normal_point, distance) > cylinder.radius)
-//		normal_point.z -= 2 * normal_distance;
+	normal_point = (t_point){0, 0, distance.z};
 	normal = vector_points(normal_point, distance);
-//	printf("norm = %.2f, z_coord = %.2f\n", vector_norm(normal), normal.z);
-	normal = rotate_cylinder_angles(cylinder, distance, 1);
+	normal = rotate_cylinder_angles(cylinder, normal, 1);
 	return (normalize_vector(normal));
 }

@@ -47,7 +47,7 @@ void				pixel_raytracing(int x, int y, t_env *env)
 	t_ray		ray;
 	int			object_index;
 	t_object	*closest_object;
-	double		closest_distance;
+	float		closest_distance;
 
 	ray = init_ray(x, y, env->camera);
 	closest_object = NULL;

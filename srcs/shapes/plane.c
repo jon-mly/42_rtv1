@@ -20,7 +20,7 @@
 
 t_ray	plane_intersection(t_ray ray, t_plane plane)
 {
-	double			norm;
+	float			norm;
 
 	if (dot_product(plane.normal, ray.direction) == 0)
 	{
@@ -30,14 +30,6 @@ t_ray	plane_intersection(t_ray ray, t_plane plane)
 	ray.norm = (dot_product(plane.normal, plane.point) - dot_product(plane.normal,
 			ray.origin)) / dot_product(plane.normal, ray.direction);
 	ray.intersect = (ray.norm > 0 || ray.norm < 10000000);
-	/*
-	if (norm < 0.0000001 || norm > 1000000)
-		ray.intersect = FALSE;
-	else
-	{
-		ray.intersect = TRUE;
-		ray.norm = norm;
-	}*/
 	return (ray);
 }
 

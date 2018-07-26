@@ -17,7 +17,7 @@
 ** to read.
 */
 
-t_vector	vector(double x, double y, double z)
+t_vector	vector(float x, float y, float z)
 {
 	t_vector	vector;
 
@@ -37,7 +37,7 @@ t_vector	vector_points(t_point p1, t_point p2)
 	return (vector);
 }
 
-t_point		point(double x, double y, double z)
+t_point		point(float x, float y, float z)
 {
 	t_point		point;
 

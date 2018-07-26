@@ -30,8 +30,8 @@
 ** ======= macros
 */
 
-# define WIN_HEIGHT 600
-# define WIN_WIDTH 900
+# define WIN_HEIGHT 1000
+# define WIN_WIDTH 1500
 # define FOV 0.40
 
 # define KEY_ESC 53
@@ -69,9 +69,9 @@ typedef struct	s_pixel
 
 typedef struct	s_vector
 {
-	double		x;
-	double		y;
-	double		z;
+	float		x;
+	float		y;
+	float		z;
 }				t_vector;
 
 typedef t_vector	t_point;
@@ -88,8 +88,8 @@ typedef struct	s_object
 {
 	t_object_type	type;
 	t_color			color;
-	double			y_angle;
-	double			x_angle;
+	float			y_angle;
+	float			x_angle;
 	void			*object;
 	char			*name;
 }				t_object;
@@ -97,7 +97,7 @@ typedef struct	s_object
 typedef struct	s_sphere
 {
 	t_point		center;
-	double		radius;
+	float		radius;
 	t_color		color;
 }				t_sphere;
 
@@ -113,9 +113,9 @@ typedef struct	s_cylinder
 	t_color		color;
 	t_point		point;
 	t_vector	direction;
-	double		y_angle;
-	double		x_angle;
-	double		radius;
+	float		y_angle;
+	float		x_angle;
+	float		radius;
 }				t_cylinder;
 
 typedef struct	s_cone
@@ -123,9 +123,9 @@ typedef struct	s_cone
 	t_color		color;
 	t_vector	direction;
 	t_point		center;
-	double		angle;
-	double		y_angle;
-	double		x_angle;
+	float		angle;
+	float		y_angle;
+	float		x_angle;
 }				t_cone;
 
 typedef struct	s_light
@@ -133,7 +133,7 @@ typedef struct	s_light
 	t_light_type	type;
 	t_point			position;
 	t_vector		direction;
-	double			angle;
+	float			angle;
 	t_color			color;
 }				t_light;
 
@@ -145,11 +145,11 @@ typedef struct	s_camera
 	t_point		spot;
 	t_vector	normal;
 	t_vector	up_left_corner;
-	double		width;
-	double		height;
-	double		plane_dist;
-	double		horizontal_step;
-	double		vertical_step;
+	float		width;
+	float		height;
+	float		plane_dist;
+	float		horizontal_step;
+	float		vertical_step;
 }				t_camera;
 
 typedef struct	s_scene
@@ -166,7 +166,7 @@ typedef struct	s_ray
 	t_point		origin;
 	int			intersect;
 	t_point		intersection;
-	double		norm;
+	float		norm;
 	t_color		color;
 }				t_ray;
 
@@ -201,15 +201,15 @@ int				handle_key_event(int key, void *param);
 int				expose_event(void *param);
 void			fill_pixel(t_env *env, int x, int y, t_color color);
 void			fill_pixel_value(t_env *env, int x, int y, int color_value);
-t_vector		vector(double x, double y, double z);
+t_vector		vector(float x, float y, float z);
 t_vector		vector_points(t_point p1, t_point p2);
-t_point			point(double x, double y, double z);
+t_point			point(float x, float y, float z);
 t_pixel			pixel(int x, int y);
 t_color			color(int r, int g, int b, int a);
-double			vector_norm(t_vector vector);
+float			vector_norm(t_vector vector);
 t_vector		normalize_vector(t_vector vector);
-double			dot_product(t_vector vect_1, t_vector vect_2);
-double			points_norm(t_point p1, t_point p2);
+float			dot_product(t_vector vect_1, t_vector vect_2);
+float			points_norm(t_point p1, t_point p2);
 t_ray			intersect_object(t_ray ray, t_object object);
 t_vector		shape_normal(t_ray ray, t_object object);
 void			pixel_raytracing(int x, int y, t_env *env);
@@ -231,12 +231,12 @@ t_vector		cone_normal(t_ray ray, t_cone cone);
 t_vector		cylinder_normal(t_ray ray, t_cylinder cylinder);
 t_vector		plane_normal(t_ray ray, t_plane plane);
 t_vector		sphere_normal(t_ray ray, t_sphere sphere);
-double			degrees_to_radian(int degrees);
-t_vector		vect_rotate_x(t_vector vector, double angle);
-t_vector		vect_rotate_z(t_vector vector, double angle);
-t_vector		vect_rotate_y(t_vector vector, double angle);
+float			degrees_to_radian(int degrees);
+t_vector		vect_rotate_x(t_vector vector, float angle, int inverse);
+t_vector		vect_rotate_z(t_vector vector, float angle, int inverse);
+t_vector		vect_rotate_y(t_vector vector, float angle, int inverse);
 t_ray			init_ray(int x, int y, t_camera camera);
 int		debug_mouse_event(int event, int x, int y, void *param);
-double			closest_distance_quadratic(double a, double b, double c);
+float			closest_distance_quadratic(float a, float b, float c);
 
 #endif
