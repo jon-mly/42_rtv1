@@ -43,11 +43,26 @@ static t_ray	init_light_ray(t_light light, t_ray ray, t_object object)
 ** distance and dividing by an arbitrary factor.
 */
 
+static int		color_coord(float cosinus, float distance, int obj_color,
+	int light_color)
+{
+	float	distance_factor;
+	float	k;
+	float	color_value;
+
+	distance_factor = 0.01 * pow(distance / 1.4, 2) + 1;//sqrt(distance * 0.66 + 1);
+	k = cosinus / distance_factor;
+	color_value = (float)obj_color / 3 - k * (float)light_color;
+	color_value = fmax(fmin(color_value, 255), 0);
+	return ((int)color_value);
+}
+
 static t_color	light_for_intersection(t_ray light_ray, t_ray ray, t_object
 	object, t_light light)
 {
 	t_vector	normal;
 	float		cosinus;
+	float		distance;
 	t_color		color;
 
 	normal = shape_normal(ray, object);
@@ -55,9 +70,10 @@ static t_color	light_for_intersection(t_ray light_ray, t_ray ray, t_object
 	// if angle is higher than +/-PI/2, the point is shadowed whatsoever.
 	if (cosinus >= 0)
 		return (light_ray.color);
-	color.r = (int)(fmax(fmin((float)object.color.r / (3) - cosinus * (float)light.color.r / 2, 255), 0));
-	color.g = (int)(fmax(fmin((float)object.color.g / (3) - cosinus * (float)light.color.g / 2, 255), 0));
-	color.b = (int)(fmax(fmin((float)object.color.b / (3) - cosinus * (float)light.color.b / 2, 255), 0));
+	distance = points_norm(ray.intersection, light_ray.origin);
+	color.r = color_coord(cosinus, distance, object.color.r, light.color.r);
+	color.g = color_coord(cosinus, distance, object.color.g, light.color.g);
+	color.b = color_coord(cosinus, distance, object.color.b, light.color.b);
 	color.a = 0;
 	return (color);
 }

@@ -64,7 +64,7 @@ float		degrees_to_radian(int degrees)
 {
 	float	radian;
 
-	radian = ((float)degrees * M_PI) / 180;
+	radian = ((float)degrees * M_PI) / 180.f;
 	return (radian);
 }
 

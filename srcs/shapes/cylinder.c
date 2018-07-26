@@ -23,9 +23,16 @@
 
 t_vector	rotate_cylinder_angles(t_cylinder cylinder, t_vector vect,
 			int reverse)
-{
-	vect = vect_rotate_y(vect, -cylinder.y_angle, reverse);
-	vect = vect_rotate_x(vect, -cylinder.x_angle, reverse);
+{	if (!reverse)
+	{
+		vect = vect_rotate_y(vect, cylinder.y_angle, reverse);
+		vect = vect_rotate_x(vect, cylinder.x_angle, reverse);
+	}
+	else
+	{
+		vect = vect_rotate_x(vect, cylinder.x_angle, reverse);
+		vect = vect_rotate_y(vect, cylinder.y_angle, reverse);
+	}
 	return (vect);
 }
 

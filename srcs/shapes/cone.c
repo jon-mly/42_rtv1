@@ -15,8 +15,16 @@
 t_vector	rotate_cone_angles(t_cone cone, t_vector vect,
 			int reverse)
 {
-	vect = vect_rotate_y(vect, -cone.y_angle, reverse);
-	vect = vect_rotate_x(vect, -cone.x_angle, reverse);
+	if (!reverse)
+	{
+		vect = vect_rotate_y(vect, cone.y_angle, reverse);
+		vect = vect_rotate_x(vect, cone.x_angle, reverse);
+	}
+	else
+	{
+		vect = vect_rotate_x(vect, cone.x_angle, reverse);
+		vect = vect_rotate_y(vect, cone.y_angle, reverse);
+	}
 	return (vect);
 }
 
@@ -67,7 +75,7 @@ t_vector		cone_normal(t_ray ray, t_cone cone)
 		normal_point = normal_point_2;
 	normal = vector_points(normal_point, distance);
 	normal = rotate_cone_angles(cone, normal, 1);
-	distance = rotate_cone_angles(cone, distance, 1);
-//	printf("after : %.2f, %.2f, %.2f (intersection %.2f %.2f, %.2f)\n", distance.x, distance.y, distance.z, ray.intersection.x, ray.intersection.y, ray.intersection.z);
+//	distance = rotate_cone_angles(cone, distance, 1);
+//	printf("after  : %.2f, %.2f, %.2f (intersection %.2f %.2f, %.2f)\n", distance.x, distance.y, distance.z, ray.intersection.x, ray.intersection.y, ray.intersection.z);
 	return (normalize_vector(normal));
 }

@@ -105,6 +105,20 @@ void	debug_raytracing(int x, int y, t_env *env)
 	}
 }
 
+void	test_rotations(void)
+{
+	t_vector vector = (t_vector){1, 1, 1};
+	printf("Vector %.2f %.2f %.2f -> ", vector.x, vector.y, vector.z);
+	vector = vect_rotate_x(vector, M_PI/3, 0);
+	vector = vect_rotate_y(vector, M_PI/3, 0);
+	vector = vect_rotate_z(vector, M_PI/3, 0);
+	printf("%.2f %.2f %.2f -> ", vector.x, vector.y, vector.z);
+	vector = vect_rotate_z(vector, M_PI/3, 1);
+	vector = vect_rotate_y(vector, M_PI/3, 1);
+	vector = vect_rotate_x(vector, M_PI/3, 1);
+	printf("%.2f %.2f %.2f \n", vector.x, vector.y, vector.z);
+}
+
 int		debug_mouse_event(int event, int x, int y, void *param)
 {
 	t_env *env;
@@ -112,6 +126,7 @@ int		debug_mouse_event(int event, int x, int y, void *param)
 	env = (t_env*)param;
 	if (event != 1)
 		return 0;
-	debug_raytracing(x, y, env);
+//	debug_raytracing(x, y, env);
+	test_rotations();
 	return 0;
 }
