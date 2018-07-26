@@ -12,7 +12,7 @@
 
 #include "rtv1.h"
 
-double		vector_norm(t_vector vector)
+float		vector_norm(t_vector vector)
 {
 	double		norm;
 
@@ -20,7 +20,7 @@ double		vector_norm(t_vector vector)
 	return (norm);
 }
 
-double		dot_product(t_vector vect_1, t_vector vect_2)
+float		dot_product(t_vector vect_1, t_vector vect_2)
 {
 	double		product;
 
@@ -42,7 +42,7 @@ t_vector	cross_product(t_vector vect_1, t_vector vect_2)
 
 t_vector	normalize_vector(t_vector vector)
 {
-	double		norm;
+	float		norm;
 
 	norm = vector_norm(vector);
 	vector.x /= norm;
@@ -51,50 +51,77 @@ t_vector	normalize_vector(t_vector vector)
 	return (vector);
 }
 
-double		points_norm(t_point p1, t_point p2)
+float		points_norm(t_point p1, t_point p2)
 {
-	double		distance;
+	float		distance;
 
 	distance= sqrt(pow(p2.x - p1.x, 2) + pow(p2.y - p1.y, 2) +
 			pow(p2.z - p1.z, 2));
 	return (distance);
 }
 
-double		degrees_to_radian(int degrees)
+float		degrees_to_radian(int degrees)
 {
-	double	radian;
+	float	radian;
 
-	radian = ((double)degrees * M_PI) / 180;
+	radian = ((float)degrees * M_PI) / 180.f;
 	return (radian);
 }
 
-t_vector	vect_rotate_x(t_vector vector, double angle)
+t_vector	vect_rotate_x(t_vector vector, float angle, int inverse)
 {
 	t_vector	rotated;
 
-	rotated.x = vector.x;
-	rotated.y = vector.y * cos(angle) + vector.z * sin(angle);
-	rotated.z = -vector.y * sin(angle) + vector.z * cos(angle);
+	if (!inverse)
+	{
+		rotated.x = vector.x;
+		rotated.y = vector.y * cos(angle) + vector.z * sin(angle);
+		rotated.z = -vector.y * sin(angle) + vector.z * cos(angle);
+	}
+	else
+	{
+		rotated.x = vector.x;
+		rotated.y = cos(angle) * vector.y - sin(angle) * vector.z;
+		rotated.z = sin(angle) * vector.y + cos(angle) * vector.z;
+	}
 	return (rotated);
 }
 
-t_vector	vect_rotate_z(t_vector vector, double angle)
+t_vector	vect_rotate_z(t_vector vector, float angle, int inverse)
 {
 	t_vector	rotated;
 
-	rotated.x = vector.x * cos(angle) + vector.y * sin(angle);
-	rotated.y = -vector.x * sin(angle) + vector.y * cos(angle);
-	rotated.z = vector.z;
+	if (!inverse)
+	{
+		rotated.x = vector.x * cos(angle) + vector.y * sin(angle);
+		rotated.y = -vector.x * sin(angle) + vector.y * cos(angle);
+		rotated.z = vector.z;
+	}
+	else
+	{
+		rotated.x = cos(angle) * vector.x - sin(angle) * vector.y;
+		rotated.y = sin(angle) * vector.x + cos(angle) * vector.y;
+		rotated.z = vector.z;
+	}
 	return (rotated);
 }
 
-t_vector	vect_rotate_y(t_vector vector, double angle)
+t_vector	vect_rotate_y(t_vector vector, float angle, int inverse)
 {
 	t_vector	rotated;
 
-	rotated.x = vector.x * cos(angle) - vector.z * sin(angle);
-	rotated.y = vector.y;
-	rotated.z = vector.x * sin(angle) + vector.z * cos(angle);
+	if (!inverse)
+	{
+		rotated.x = vector.x * cos(angle) - vector.z * sin(angle);
+		rotated.y = vector.y;
+		rotated.z = vector.x * sin(angle) + vector.z * cos(angle);
+	}
+	else
+	{
+		rotated.x = cos(angle) * vector.x + sin(angle) * vector.z;
+		rotated.y = vector.y;
+		rotated.z = -sin(angle) * vector.x + cos(angle) * vector.z;
+	}
 	return (rotated);
 }
 
@@ -104,11 +131,11 @@ t_vector	vect_rotate_y(t_vector vector, double angle)
 ** If the value is negative, the equation has no solution
 */
 
-double		closest_distance_quadratic(double a, double b, double c)
+float		closest_distance_quadratic(float a, float b, float c)
 {
-	double		discriminant;
-	double		x1;
-	double		x2;
+	float		discriminant;
+	float		x1;
+	float		x2;
 
 	discriminant = b * b - 4 * a * c;
 	if (discriminant < 0)
