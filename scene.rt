@@ -1,5 +1,10 @@
 SCENE : SAMPLE SCENE
 
+camera {
+position -50 10 -10
+angles 0 -95 20
+}
+
 light {
 position -18 20 -25
 color 255 255 255
@@ -30,8 +35,8 @@ color 255 130 130
 angles 120 60
 }
 
-cone {
-pi_divider 8
+#cone {
+pi_divider 4
 center 0 8 6
 color 255 0 130
 angles 90 45

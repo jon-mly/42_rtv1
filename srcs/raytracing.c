@@ -23,9 +23,9 @@ t_ray		init_ray(int x, int y, t_camera camera)
 	t_ray		ray;
 	t_point		projector_point;
 
-	projector_point.x = camera.up_left_corner.x + (double)x * camera.horizontal_step;
-	projector_point.y = camera.up_left_corner.y - (double)y * camera.vertical_step;
-	projector_point.z = camera.up_left_corner.z;
+	projector_point.x = camera.up_left_corner.x + (double)x * camera.horizontal_vect.x + (double)y * camera.vertical_vect.x;
+	projector_point.y = camera.up_left_corner.y + (double)x * camera.horizontal_vect.y + (double)y * camera.vertical_vect.y;
+	projector_point.z = camera.up_left_corner.z + (double)x * camera.horizontal_vect.z + (double)y * camera.vertical_vect.z;
 	ray.direction = vector_points(camera.spot, projector_point);
 	ray.direction = normalize_vector(ray.direction);
 	ray.origin = camera.spot;

@@ -150,6 +150,11 @@ typedef struct	s_camera
 	float		plane_dist;
 	float		horizontal_step;
 	float		vertical_step;
+	t_vector	horizontal_vect;
+	t_vector	vertical_vect;
+	float		x_angle;
+	float		y_angle;
+	float		z_angle;
 }				t_camera;
 
 typedef struct	s_scene
@@ -238,5 +243,6 @@ t_vector		vect_rotate_y(t_vector vector, float angle, int inverse);
 t_ray			init_ray(int x, int y, t_camera camera);
 int		debug_mouse_event(int event, int x, int y, void *param);
 float			closest_distance_quadratic(float a, float b, float c);
+t_camera		set_camera(int fd, t_env *env);
 
 #endif

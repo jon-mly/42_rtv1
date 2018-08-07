@@ -29,7 +29,7 @@ t_ray	plane_intersection(t_ray ray, t_plane plane)
 	}
 	ray.norm = (dot_product(plane.normal, plane.point) - dot_product(plane.normal,
 			ray.origin)) / dot_product(plane.normal, ray.direction);
-	ray.intersect = (ray.norm > 0 || ray.norm < 10000000);
+	ray.intersect = (ray.norm > 0 );//|| ray.norm < 10000000);
 	return (ray);
 }
 

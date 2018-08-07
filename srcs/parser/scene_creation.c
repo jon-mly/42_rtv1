@@ -37,7 +37,7 @@ static t_object *expand_objects(t_object *objects, int previous_count)
 	return (new_list);
 }
 
-static t_scene	extend_scene(int fd, t_scene scene, char **line)
+static t_scene	extend_scene(int fd, t_scene scene, char **line, t_env *env)
 {
 	if (line_len(line) != 2 || !(ft_strequ(line[1], "{")))
 		return (scene);
@@ -53,6 +53,8 @@ static t_scene	extend_scene(int fd, t_scene scene, char **line)
 		scene.objects = expand_objects(scene.objects, scene.objects_count);
 		scene.objects[scene.objects_count - 1] = add_new_object(fd, line[0]);
 	}
+	else if (ft_strequ(line[0], "camera"))
+		env->camera = set_camera(fd, env);
 	return (scene);
 }
 
@@ -70,7 +72,7 @@ t_scene			create_scene(t_env *env, char *file_name)
 	scene.lights = NULL;
 	while ((line = split_new_line(fd)))
 	{
-		scene = extend_scene(fd, scene, line);
+		scene = extend_scene(fd, scene, line, env);
 		clear_line(line);
 	}
 	return (scene);
