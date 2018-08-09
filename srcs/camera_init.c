@@ -6,14 +6,14 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/22 11:46:10 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/07/23 13:26:37 by jmlynarc         ###   ########.fr       */
+/*   Updated: 2018/08/09 15:54:16 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rtv1.h"
 
 /*
-** Is used to init a default camera before parsing the file.
+** TODO: read camera position from a file
 */
 
 t_camera	init_camera(t_env *env)

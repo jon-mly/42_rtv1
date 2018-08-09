@@ -6,7 +6,7 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/02 15:36:32 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/07/18 15:30:30 by jmlynarc         ###   ########.fr       */
+/*   Updated: 2018/08/09 18:05:55 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,13 +60,13 @@ t_light				*add_light(int fd, t_light *existing_lights, int count)
 	t_light		new_light;
 
 	existing_lights = extend_lights(&existing_lights, count - 1);
-	new_light.type = OMNI;
-	new_light.position = point(0, 0, 0);
+	new_light.typpe = OMNI;
+	new_light.posiition = point(0, 0, 0);
 	new_light.color = color(255, 255, 255, 0);
 	while ((line = split_new_line(fd)) && ft_strequ(line[0], "}") == FALSE)
 	{
 		if (line_len(line) == 4 && ft_strequ(line[0], "position"))
-			new_light.position = point(ft_atoi(line[1]), ft_atoi(line[2]),
+			new_light.posiition = point(ft_atoi(line[1]), ft_atoi(line[2]),
 							ft_atoi(line[3]));
 		else if (line_len(line) == 4 && ft_strequ(line[0], "color"))
 			new_light.color = color(ft_atoi(line[1]), ft_atoi(line[2]),

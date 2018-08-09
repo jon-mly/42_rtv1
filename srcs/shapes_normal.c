@@ -73,14 +73,14 @@ static t_vector		plane_normal(t_ray ray, t_plane plane)
 }
 */
 
-t_vector			shape_normal(t_ray ray, t_object object)
+t_vector			shape_normal(t_object ray, t_object object)
 {
 	if (object.type == SPHERE)
-		return (sphere_normal(ray, *((t_sphere*)(object.object))));
+		return (sphere_normal(ray, object));
 	else if (object.type == PLANE)
-		return (plane_normal(ray, *((t_plane*)(object.object))));
+		return (plane_normal(ray, object));
 	else if (object.type == CYLINDER)
-		return (cylinder_normal(ray, *((t_cylinder*)(object.object))));
+		return (cylinder_normal(ray, object));
 	else
-		return (cone_normal(ray, *((t_cone*)(object.object))));
+		return (cone_normal(ray, object));
 }

@@ -6,7 +6,7 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/22 11:46:07 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/05/22 11:46:07 by jmlynarc         ###   ########.fr       */
+/*   Updated: 2018/08/09 17:31:27 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ float		points_norm(t_point p1, t_point p2)
 {
 	float		distance;
 
-	distance= sqrt(pow(p2.x - p1.x, 2) + pow(p2.y - p1.y, 2) +
+	distance = sqrt(pow(p2.x - p1.x, 2) + pow(p2.y - p1.y, 2) +
 			pow(p2.z - p1.z, 2));
 	return (distance);
 }

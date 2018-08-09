@@ -6,7 +6,7 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/22 11:46:44 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/07/18 15:19:04 by jmlynarc         ###   ########.fr       */
+/*   Updated: 2018/08/09 13:50:14 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,26 @@
 int		main(int ac, char **av)
 {
 	t_env		*env;
+	int			device;
 
-	if (ac != 2)
+	device = 0;
+	if (ac != 3)
 		exit_usage();
-	env = init_env(av[1]);
-	calculate_scene(env);
+	if (ft_strequ(av[1], "-cpu"))
+		device = 1;
+	env = init_env(av[2]);
+	if (device == 1)
+		calculate_scene(env);
+	else
+	{
+		set_opencl_env(&env->opcl);
+		opencl_init(&env->opcl, env);
+		opencl_draw(&env->opcl, env);
+	}
+	mlx_hook(env->win_ptr, 2, 0, handle_key_event, (void*)env);
+	mlx_hook(env->win_ptr, 17, 0, exit_properly, (void*)env);
+	//mlx_hook(env->win_ptr, 4, (1L<<2), debug_mouse_event, (void*)env);
 	mlx_loop_hook(env->mlx_ptr, expose_event, (void*)env);
-	mlx_key_hook(env->win_ptr, handle_key_event, (void*)env);
-	mlx_hook(env->win_ptr, 4, (1L<<2), debug_mouse_event, (void*)env);
 	mlx_loop(env->mlx_ptr);
 	return (0);
 }

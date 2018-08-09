@@ -125,21 +125,21 @@ static t_ray	sphere_intersection(t_ray ray, t_sphere sphere)
 	return (ray);
 }*/
 
-t_ray			intersect_object(t_ray ray, t_object object)
+t_object			intersect_object(t_object ray, t_object object)
 {
 	if (object.type == SPHERE)
-		ray = sphere_intersection(ray, *((t_sphere*)(object.object)));
+		ray = sphere_intersection(ray, object);
 	else if (object.type == PLANE)
-		ray = plane_intersection(ray, *((t_plane*)(object.object)));
+		ray = plane_intersection(ray, object);
 	else if (object.type == CYLINDER)
-		ray = cylinder_intersection(ray, *((t_cylinder*)(object.object)));
+		ray = cylinder_intersection(ray, object);
 	else if (object.type == CONE)
-		ray = cone_intersection(ray, *((t_cone*)(object.object)));
+		ray = cone_intersection(ray, object);
 	if (ray.intersect)
 	{
-		ray.intersection.x = ray.origin.x + ray.direction.x * ray.norm;
-		ray.intersection.y = ray.origin.y + ray.direction.y * ray.norm;
-		ray.intersection.z = ray.origin.z + ray.direction.z * ray.norm;
+		ray.intersectiion.x = ray.origin.x + ray.direction.x * ray.norm;
+		ray.intersectiion.y = ray.origin.y + ray.direction.y * ray.norm;
+		ray.intersectiion.z = ray.origin.z + ray.direction.z * ray.norm;
 	}
 	return (ray);
 }

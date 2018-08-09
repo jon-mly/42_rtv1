@@ -22,10 +22,14 @@ SRCS = main.c \
 		camera_init.c \
 		events.c \
 		pixel_drawing.c \
-		scene_init.c \
 		raytracing.c \
 		lighting.c \
 		deinit.c \
+		opencl_init.c \
+		opencl_init2.c \
+		opencl_draw.c \
+		opencl_free.c \
+		error_gpu.c \
 		$(HELPER_REP)constructors.c \
 		$(HELPER_REP)math_tools.c \
 		$(HELPER_REP)parser_helper.c \
@@ -37,7 +41,6 @@ SRCS = main.c \
 		$(SHAPES_REP)cone.c \
 		$(SHAPES_REP)plane.c \
 		$(SHAPES_REP)sphere.c \
-		debug.c
 
 
 SRC = $(addprefix $(SRCS_REP), $(SRCS))
@@ -47,17 +50,17 @@ O_SRCS = $(SRC:.c=.o)
 W_FLAGS = -Wall -Wextra -Werror
 
 MLX_FLAGS = -I ~/Library -g -L ~/Library -lmlx -framework OpenGL -framework \
-			AppKit
+			AppKit -framework OpenCL
 
 MLX_FLAGS_LOCAL = -I $(MLX) -g -L $(MLX) -lmlx -framework OpenGL -framework \
-			AppKit
+			AppKit -framework OpenCL
 
 MATH_FLAG = -lm
 
 $(NAME): $(O_SRCS)
 	make -C $(LIBFT_REP)
 	make -C $(MLX)
-	gcc -g -fsanitize=address $(INCLUDE_FLAG) $(MLX_FLAGS_LOCAL) $(MATH_FLAG) $(SRC) $(LIBFT) -o $(NAME)
+	gcc -g $(INCLUDE_FLAG) $(MLX_FLAGS_LOCAL) $(MATH_FLAG) $(SRC) $(LIBFT) -o $(NAME)
 
 %.o: %.c includes/rtv1.h Makefile
 	@gcc  $(INCLUDE_FLAG) -c $< -o $@
