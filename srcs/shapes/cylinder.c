@@ -6,7 +6,7 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/22 11:46:18 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/07/25 16:04:16 by jmlynarc         ###   ########.fr       */
+/*   Updated: 2018/08/07 15:00:24 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 ** - unit : unit vector, either (1,0,0)
 */
 
-t_vector	rotate_cylinder_angles(t_cylinder cylinder, t_vector vect,
+t_vector	rotate_cylinder_angles(t_object cylinder, t_vector vect,
 			int reverse)
 {	if (!reverse)
 	{
@@ -42,7 +42,7 @@ t_vector	rotate_cylinder_angles(t_cylinder cylinder, t_vector vect,
 ** Returns the ray with "intersect" and "norm" values set up
 */
 
-t_ray		cylinder_intersection(t_ray ray, t_cylinder cylinder)
+t_object		cylinder_intersection(t_object ray, t_object cylinder)
 {
 	t_vector	distance;
 	t_vector	ray_dir;
@@ -85,7 +85,7 @@ t_vector		cylinder_normal(t_ray ray, t_cylinder cylinder)
 }
 */
 
-t_vector		cylinder_normal(t_ray ray, t_cylinder cylinder)
+t_vector		cylinder_normal(t_object ray, t_object cylinder)
 {
 	t_vector	distance;
 	t_point		normal_point;

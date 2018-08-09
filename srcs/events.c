@@ -6,11 +6,20 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/22 11:46:31 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/06/02 15:24:48 by jmlynarc         ###   ########.fr       */
+/*   Updated: 2018/08/07 11:21:20 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rtv1.h"
+
+int			exit_properly(void *param)
+{
+	t_env	*env;
+
+	env = (t_env*)param;
+	exit_normally(env);
+	return (0);
+}
 
 int			handle_key_event(int key, void *param)
 {

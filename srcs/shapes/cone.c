@@ -6,13 +6,13 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/22 11:46:14 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/07/25 17:17:55 by jmlynarc         ###   ########.fr       */
+/*   Updated: 2018/08/07 15:01:13 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rtv1.h"
 
-t_vector	rotate_cone_angles(t_cone cone, t_vector vect,
+t_vector	rotate_cone_angles(t_object cone, t_vector vect,
 			int reverse)
 {
 	if (!reverse)
@@ -35,7 +35,7 @@ t_vector	rotate_cone_angles(t_cone cone, t_vector vect,
 ** Returns the ray with "intersect" and "norm" values set up
 */
 
-t_ray		cone_intersection(t_ray ray, t_cone cone)
+t_object		cone_intersection(t_object ray, t_object cone)
 {
 	t_vector	distance;
 	t_vector	ray_dir;
@@ -56,7 +56,7 @@ t_ray		cone_intersection(t_ray ray, t_cone cone)
 	return (ray);
 }
 
-t_vector		cone_normal(t_ray ray, t_cone cone)
+t_vector		cone_normal(t_object ray, t_object cone)
 {
 	t_vector	distance;
 	float		normal_dist;

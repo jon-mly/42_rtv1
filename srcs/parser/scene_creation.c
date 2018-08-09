@@ -6,7 +6,7 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/02 16:48:17 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/07/18 15:06:51 by jmlynarc         ###   ########.fr       */
+/*   Updated: 2018/08/07 17:00:31 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ static t_scene	extend_scene(int fd, t_scene scene, char **line, t_env *env)
 	{
 		scene.objects_count++;
 		scene.objects = expand_objects(scene.objects, scene.objects_count);
-		scene.objects[scene.objects_count - 1] = add_new_object(fd, line[0]);
+		((t_object *)(scene.objects))[scene.objects_count - 1] = add_new_object(fd, line[0]);
 	}
 	else if (ft_strequ(line[0], "camera"))
 		env->camera = set_camera(fd, env);

@@ -6,7 +6,7 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/22 11:46:57 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/06/01 15:20:26 by jmlynarc         ###   ########.fr       */
+/*   Updated: 2018/08/07 14:53:08 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,11 @@
 static t_object		get_sample_cone(void)
 {
 	t_object	object;
-	t_cone		*cone;
+	t_object	*cone;
 
 	object.type = CONE;
 	object.name = "cone";
-	cone = (t_cone*)malloc(sizeof(t_cone));
+	cone = (t_object*)malloc(sizeof(t_object));
 	object.object = (void*)cone;
 	cone->angle = M_PI / 9;
 	cone->direction = normalize_vector(vector(4, -2, 3));

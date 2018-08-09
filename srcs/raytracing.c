@@ -6,21 +6,19 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/22 11:46:54 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/05/31 17:32:37 by jmlynarc         ###   ########.fr       */
+/*   Updated: 2018/08/07 14:37:11 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rtv1.h"
 
 /*
-** Initialize the ray with the coordinates of the camera (both position and
-ri
-** directional vector).
+** Initialize the ray with the coordinates of the camera.
 */
 
-t_ray		init_ray(int x, int y, t_camera camera)
+t_object		init_ray(int x, int y, t_camera camera)
 {
-	t_ray		ray;
+	t_object		ray;
 	t_point		projector_point;
 
 	projector_point.x = camera.up_left_corner.x + (double)x * camera.horizontal_vect.x + (double)y * camera.vertical_vect.x;
@@ -44,7 +42,7 @@ t_ray		init_ray(int x, int y, t_camera camera)
 
 void				pixel_raytracing(int x, int y, t_env *env)
 {
-	t_ray		ray;
+	t_object		ray;
 	int			object_index;
 	t_object	*closest_object;
 	float		closest_distance;
@@ -54,10 +52,10 @@ void				pixel_raytracing(int x, int y, t_env *env)
 	object_index = -1;
 	while (++object_index < env->scene.objects_count)
 	{
-		ray = intersect_object(ray, env->scene.objects[object_index]);
+		ray = intersect_object(ray, ((t_object *)(env->scene.objects))[object_index]);
 		if (ray.intersect && ((closest_object != NULL && ray.norm < closest_distance) || closest_object == NULL) && ray.norm > 0)
 		{
-			closest_object = &(env->scene.objects[object_index]);
+			closest_object = &(((t_object *)(env->scene.objects))[object_index]);
 			closest_distance = ray.norm;
 		}
 	}

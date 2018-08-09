@@ -1,0 +1,35 @@
+Est à supprimer avant de rendre le projet.
+Sert à avoir certaines données de la caméra selon la configuration
+donnée dans le fichier de description de scène.
+
+position 0 10 -40
+angles 0 90 0
+-------------
+Camera position : 0.00, 10.00, -40.00
+Camera direction : -1.00, 0.00, -0.00
+Camera horizontal vect : -0.00000, 0.00000, 0.00167
+Camera vertical vect : -0.00000, -0.00167, 0.00000
+Camera position : -0.80000, 0.50000, -0.75000
+Camera up left corner : -0.80, 10.50, -40.75
+___________________________________________________
+
+position 0 10 -40
+angles 0 0 0
+-------------
+Camera position : 0.00, 10.00, -40.00
+Camera direction : 0.00, 0.00, 1.00
+Camera horizontal vect : 0.00167, 0.00000, 0.00000
+Camera vertical vect : 0.00000, -0.00167, 0.00000
+Camera position : -0.75000, 0.50000, 0.80000
+Camera up left corner : -0.75, 10.50, -39.20
+___________________________________________________
+
+position 0 10 -40
+angles 0 45 0
+-------------
+Camera position : 0.00, 10.00, -40.00
+Camera direction : -0.71, 0.00, 0.71
+Camera horizontal vect : 0.00118, 0.00000, 0.00118
+Camera vertical vect : 0.00000, -0.00167, 0.00000
+Camera position : -1.09602, 0.50000, 0.03536
+Camera up left corner : -1.10, 10.50, -39.96

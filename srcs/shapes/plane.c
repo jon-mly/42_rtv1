@@ -6,7 +6,7 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/22 11:46:51 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/05/22 11:46:52 by jmlynarc         ###   ########.fr       */
+/*   Updated: 2018/08/07 15:01:42 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 ** Returns the ray with "intersect" and "norm" values set up
 */
 
-t_ray	plane_intersection(t_ray ray, t_plane plane)
+t_object	plane_intersection(t_object ray, t_object plane)
 {
 	float			norm;
 
@@ -29,11 +29,11 @@ t_ray	plane_intersection(t_ray ray, t_plane plane)
 	}
 	ray.norm = (dot_product(plane.normal, plane.point) - dot_product(plane.normal,
 			ray.origin)) / dot_product(plane.normal, ray.direction);
-	ray.intersect = (ray.norm > 0 );//|| ray.norm < 10000000);
+	ray.intersect = (ray.norm > 0 || ray.norm < 10000000);
 	return (ray);
 }
 
-t_vector		plane_normal(t_ray ray, t_plane plane)
+t_vector		plane_normal(t_object ray, t_object plane)
 {
 	t_vector	normal;
 
