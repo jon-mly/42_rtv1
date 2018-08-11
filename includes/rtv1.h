@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/07 11:34:03 by aabelque          #+#    #+#             */
-/*   Updated: 2018/08/09 17:52:45 by aabelque         ###   ########.fr       */
+/*   Updated: 2018/08/11 18:13:34 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ typedef struct	s_color
 // les variables de type t_object pour pas se perdre.
 typedef struct	s_object
 {
-	t_object_type	type;
+	t_object_type	typpe;
 	t_color			color;
 	t_point			center;
 	t_point			point;
@@ -165,7 +165,7 @@ typedef struct	s_light
 // Ce type reste, puisqu'il est inclus dans la taille de "env".
 typedef struct	s_camera
 {
-	t_vector	position;
+	t_vector	posiition;
 	t_vector	direction;
 	t_vector	plane;
 	t_point		spot;

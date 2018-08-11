@@ -82,7 +82,7 @@ typedef struct	s_object
 
 typedef struct	s_scene
 {
-	t_object	*objects;
+	void		*objects;
 	int			objects_count;
 	t_light		*lights;
 	int			lights_count;
@@ -499,7 +499,7 @@ t_color			get_color_on_intersection(t_object ray, t_object *closest_object, __gl
 	return (coloration);
 }
 
-__kernel void				pixel_raytracing_gpu(__global int *out, __global t_scene *scene, __global t_camera *camera)
+__kernel void				pixel_raytracing_gpu(__global int *out, __global t_scene *scene, __global t_camera *camera, __global t_object *obj)
 {
 	int					x;
 	int					y;
@@ -512,15 +512,19 @@ __kernel void				pixel_raytracing_gpu(__global int *out, __global t_scene *scene
 	x = get_global_id(0);
 	y = get_global_id(1);
 	idx = get_global_size(0) * get_global_id(1) + get_global_id(0);
+	//printf("ICI\n");
 	ray = init_ray(x, y, *camera);
 	closest_object = NULL;
+	//printf("%f%\n", scene->objects.norm);
+	printf("%u%\n", obj->norm);
+	//printf("LA\n");
 	object_index = -1;
 	while (++object_index < scene->objects_count)
 	{
-		ray = intersect_object(ray, scene->objects[object_index]);
+		ray = intersect_object(ray, obj[object_index]);
 		if (ray.intersect && ((closest_object != NULL && ray.norm < closest_distance) || closest_object == NULL) && ray.norm > 0)
 		{
-			closest_object = &(((t_object *)(scene->objects))[object_index]);
+			closest_object = &obj[object_index];
 			closest_distance = ray.norm;
 		}
 	}

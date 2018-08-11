@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/17 17:07:23 by aabelque          #+#    #+#             */
-/*   Updated: 2018/08/09 14:51:54 by aabelque         ###   ########.fr       */
+/*   Updated: 2018/08/11 17:36:16 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,48 @@
 
 void	opencl_init2(t_opencl *opcl, t_env *e)
 {
+	void * mainmem = NULL;
+	size_t mainsizebuf;
+	t_object	*object = (t_object *)e->scene.objects;
+
 	opcl->img_s = WIN_WIDTH * WIN_HEIGHT;
 	//opcl->bufhst = (int *)ft_memalloc(opcl->img_s * sizeof(int));
-	//opcl->structobj = clCreateBuffer(opcl->context, CL_MEM_READ_ONLY,
-	//		sizeof(t_object) * e->scene.objects_count, NULL, NULL);
+	opcl->structobj = clCreateBuffer(opcl->context,
+			CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
+			sizeof(t_object) * e->scene.objects_count, e->scene.objects, NULL);
+	printf("Type : %u\n", object->typpe);
+
+	clGetMemObjectInfo(opcl->structobj, CL_MEM_SIZE, sizeof(mainsizebuf),
+			&mainsizebuf, NULL);
+	clGetMemObjectInfo(opcl->structobj, CL_MEM_HOST_PTR, sizeof(mainmem),
+			&mainmem, NULL);
+	printf("Object buffer size: %lu\n", mainsizebuf);
+	printf("Object buffer memory address: %p\n", mainmem);
+
 	opcl->input_scene = clCreateBuffer(opcl->context, CL_MEM_READ_ONLY,
 			sizeof(t_scene), NULL, NULL);
+
+	mainmem = NULL;
+	mainsizebuf = 0;
+	clGetMemObjectInfo(opcl->input_scene, CL_MEM_SIZE, sizeof(mainsizebuf),
+			&mainsizebuf, NULL);
+	clGetMemObjectInfo(opcl->input_scene, CL_MEM_HOST_PTR, sizeof(mainmem),
+			&mainmem, NULL);
+	printf("Scene buffer size: %lu\n", mainsizebuf);
+	printf("Scene buffer memory address: %p\n", mainmem);
+
+	mainmem = NULL;
+	mainsizebuf = 0;
 	opcl->input_cam = clCreateBuffer(opcl->context, CL_MEM_READ_ONLY,
 			sizeof(t_camera), NULL, NULL);
+
+	clGetMemObjectInfo(opcl->input_cam, CL_MEM_SIZE, sizeof(mainsizebuf),
+			&mainsizebuf, NULL);
+	clGetMemObjectInfo(opcl->input_cam, CL_MEM_HOST_PTR, sizeof(mainmem),
+			&mainmem, NULL);
+	printf("Camera buffer size: %lu\n", mainsizebuf);
+	printf("Camera buffer memory address: %p\n", mainmem);
+
 	opcl->output = clCreateBuffer(opcl->context, CL_MEM_WRITE_ONLY,
 			sizeof(int) * opcl->img_s, NULL, NULL);
 	create_prog(opcl);

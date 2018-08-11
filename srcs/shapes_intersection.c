@@ -127,13 +127,13 @@ static t_ray	sphere_intersection(t_ray ray, t_sphere sphere)
 
 t_object			intersect_object(t_object ray, t_object object)
 {
-	if (object.type == SPHERE)
+	if (object.typpe == SPHERE)
 		ray = sphere_intersection(ray, object);
-	else if (object.type == PLANE)
+	else if (object.typpe == PLANE)
 		ray = plane_intersection(ray, object);
-	else if (object.type == CYLINDER)
+	else if (object.typpe == CYLINDER)
 		ray = cylinder_intersection(ray, object);
-	else if (object.type == CONE)
+	else if (object.typpe == CONE)
 		ray = cone_intersection(ray, object);
 	if (ray.intersect)
 	{
