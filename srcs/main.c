@@ -6,7 +6,7 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/22 11:46:44 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/08/09 13:50:14 by aabelque         ###   ########.fr       */
+/*   Updated: 2018/08/11 11:05:50 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ int		main(int ac, char **av)
 		opencl_init(&env->opcl, env);
 		opencl_draw(&env->opcl, env);
 	}
+	mlx_put_image_to_window(env->mlx_ptr, env->win_ptr, env->img_ptr, 0, 0);
 	mlx_hook(env->win_ptr, 2, 0, handle_key_event, (void*)env);
 	mlx_hook(env->win_ptr, 17, 0, exit_properly, (void*)env);
 	//mlx_hook(env->win_ptr, 4, (1L<<2), debug_mouse_event, (void*)env);

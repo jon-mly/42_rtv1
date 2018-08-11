@@ -6,7 +6,7 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/22 11:46:51 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/08/09 17:17:51 by aabelque         ###   ########.fr       */
+/*   Updated: 2018/08/09 18:02:16 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,5 +42,3 @@ t_vector		plane_normal(t_object ray, t_object plane)
 	normal.z = -(plane.normal.z);
 	return (normalize_vector(normal));
 }
-
-

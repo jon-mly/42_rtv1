@@ -6,7 +6,7 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/02 16:09:07 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/08/08 14:45:48 by aabelque         ###   ########.fr       */
+/*   Updated: 2018/08/11 11:26:27 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static t_object		add_new_sphere(int fd)
 	char		**line;
 	t_object	sphere;
 
-	sphere.type = SPHERE;
+	sphere.typpe = SPHERE;
 	sphere.radius = 1;
 	sphere.center = point(10, 12, 6);
 	sphere.color = color(255, 255, 255, 0);
@@ -64,7 +64,7 @@ static t_object		add_new_plane(int fd)
 	char		**line;
 	t_object	plane;
 
-	plane.type = PLANE;
+	plane.typpe = PLANE;
 	plane.normal = normalize_vector(vector(0, 1, 0));
 	plane.point = point(0, 0, 0);
 	plane.color = color(255, 255, 255, 0);
@@ -102,7 +102,7 @@ static t_object		add_new_cone(int fd)
 	char		**line;
 	t_object	cone;
 
-	cone.type = CONE;
+	cone.typpe = CONE;
 	cone.angle = M_PI / 6;
 	cone.direction = normalize_vector(vector(0, 1, 0));
 	cone.center = point(0, 0, 0);
@@ -151,7 +151,7 @@ static t_object		add_new_cylinder(int fd)
 	char		**line;
 	t_object	cylinder;
 
-	cylinder.type = CYLINDER;
+	cylinder.typpe = CYLINDER;
 	cylinder.radius = 1;
 	cylinder.direction = normalize_vector(vector(0, 1, 0));
 	cylinder.point = point(0, 0, 0);
