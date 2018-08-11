@@ -30,10 +30,11 @@ int		main(int ac, char **av)
 		set_opencl_env(&env->opcl);
 		opencl_init(&env->opcl, env);
 		opencl_draw(&env->opcl, env);
+		mlx_put_image_to_window(env->mlx_ptr, env->win_ptr, env->img_ptr, 0, 0);
 	}
 	mlx_hook(env->win_ptr, 2, 0, handle_key_event, (void*)env);
 	mlx_hook(env->win_ptr, 17, 0, exit_properly, (void*)env);
-	//mlx_hook(env->win_ptr, 4, (1L<<2), debug_mouse_event, (void*)env);
+	mlx_hook(env->win_ptr, 4, (1L<<2), debug_mouse_event, (void*)env);
 	mlx_loop_hook(env->mlx_ptr, expose_event, (void*)env);
 	mlx_loop(env->mlx_ptr);
 	return (0);

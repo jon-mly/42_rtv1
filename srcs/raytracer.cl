@@ -431,7 +431,7 @@ int		color_coord(float cosinus, float distance, int obj_color,
 	float	k;
 	float	color_value;
 
-	distance_factor = 0.01 * pow(distance / 1.4, 2) + 1;
+	distance_factor = 0.01 * __cl_pow((float)(distance / 1.4), 2.f) + 1;
 	k = cosinus / distance_factor;
 	color_value = (float)obj_color / 3 - k * (float)light_color;
 	color_value = fmax(fmin(color_value, 255), 0);
@@ -524,6 +524,8 @@ __kernel void				pixel_raytracing_gpu(__global int *out, __global t_scene *scene
 			closest_distance = ray.norm;
 		}
 	}
+			ft_putnbr(object_index);
+			ft_putchar('\n');
 	if (closest_object != NULL)
 	{
 		ray.norm = closest_distance;

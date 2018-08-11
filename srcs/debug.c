@@ -1,5 +1,5 @@
 #include "rtv1.h"
-
+/*
 static t_object	debug_init_light_ray(t_light light, t_object ray, t_object object)
 {
 	t_object		light_ray;
@@ -118,6 +118,7 @@ void	test_rotations(void)
 	vector = vect_rotate_x(vector, M_PI/3, 1);
 	printf("%.2f %.2f %.2f \n", vector.x, vector.y, vector.z);
 }
+*/
 
 int		debug_mouse_event(int event, int x, int y, void *param)
 {
@@ -127,6 +128,7 @@ int		debug_mouse_event(int event, int x, int y, void *param)
 	if (event != 1)
 		return 0;
 //	debug_raytracing(x, y, env);
-	test_rotations();
+	ft_putendl("Window is active");
+//	test_rotations();
 	return 0;
 }
