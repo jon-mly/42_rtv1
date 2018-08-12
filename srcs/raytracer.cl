@@ -512,16 +512,20 @@ __kernel void				pixel_raytracing_gpu(__global int *out, __global t_scene *scene
 	x = get_global_id(0);
 	y = get_global_id(1);
 	idx = get_global_size(0) * get_global_id(1) + get_global_id(0);
-	//printf("ICI\n");
 	ray = init_ray(x, y, *camera);
 	closest_object = NULL;
-	//printf("Test2 kernel = %f\n", obj->test);
-	//printf("%f\n", scene->objects.norm);
-	//printf("%u\n", obj->norm);
-	//printf("Width = %f\n", camera->width);
-	//printf("Height = %f\n", camera->height);
-	//printf("Test kernel = %f\n", scene->objects->test);
-	//printf("LA\n");
+	if (x == 0 && y == 0)
+	{
+		// printf("%i\n", scene->objects_count);
+		// for (int i = 0; i < scene->objects_count; i++)
+		// {
+		// 	t_object object = obj[i];
+		// 	printf("type : %s, ", object.name);
+		// 	printf("color r:%d, g:%d, b:%d\n", object.color.r, object.color.g, object.color.b);
+		// }
+		t_light l = light[0];
+		printf("position %.2f, %.2f, %.2f\n", l.posiition.x, l.posiition.y, l.posiition.z);
+	}
 	object_index = -1;
 	while (++object_index < scene->objects_count)
 	{
@@ -543,5 +547,5 @@ __kernel void				pixel_raytracing_gpu(__global int *out, __global t_scene *scene
 	}
 	//printf("%d\n", ray.intersectiion.x);
 	else
-		out[idx] = 0x00ff0000;
+		out[idx] = 0x00000000;
 }

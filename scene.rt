@@ -1,7 +1,7 @@
 SCENE : SAMPLE SCENE
 
 camera {
-position -50 10 -10
+position 0 10 -20
 angles 0 -95 20
 }
 
@@ -12,32 +12,18 @@ color 255 255 255
 
 sphere {
 radius 6
-center 0 8 6
+center 0 8 0
 color 130 255 130
 }
 
-plane {
+#plane {
 point 0 0 10
 normal 0 0 -1
-color 130 130 255
+color 130 180 255
 }
 
-plane {
+#plane {
 point 0 0 0
 normal 0 1 0
 color 255 255 100
-}
-
-cylinder {
-radius 1
-position -12 8 -20
-color 255 130 130
-angles 120 60
-}
-
-#cone {
-pi_divider 4
-center 0 8 6
-color 255 0 130
-angles 90 45
 }

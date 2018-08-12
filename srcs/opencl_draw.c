@@ -21,7 +21,7 @@ void			opencl_draw(t_opencl *opcl, t_env *e)
 	opcl->err = clEnqueueWriteBuffer(opcl->commands, opcl->structlight, CL_TRUE,
 			0, sizeof(t_light) * e->scene.lights_count, (void *)e->scene.lights, 0,
 			NULL, NULL);
-	printf("Test = %f\n", e->scene.objects->test);
+	//printf("Test = %f\n", e->scene.objects->test);
 	opcl->err = clEnqueueWriteBuffer(opcl->commands, opcl->input_cam, CL_TRUE, 0,
 			sizeof(t_camera), (void *)&e->camera, 0, NULL, NULL);
 	opcl->err = clEnqueueWriteBuffer(opcl->commands, opcl->input_scene, CL_TRUE, 0,

@@ -48,7 +48,7 @@ void	opencl_init2(t_opencl *opcl, t_env *e)
 
 	opcl->input_scene = clCreateBuffer(opcl->context,
 			CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
-			sizeof(t_scene), &e->scene, NULL);
+			sizeof(t_scene), &(e->scene), NULL);
 
 	mainmem = NULL;
 	mainsizebuf = 0;
@@ -74,7 +74,7 @@ void	opencl_init2(t_opencl *opcl, t_env *e)
 
 	opcl->output = clCreateBuffer(opcl->context, CL_MEM_WRITE_ONLY,
 			sizeof(int) * opcl->img_s, NULL, NULL);
-			
+
 	create_prog(opcl);
 	create_kernel(opcl->program, &opcl->kernel, "pixel_raytracing_gpu");
 }
