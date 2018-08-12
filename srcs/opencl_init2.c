@@ -20,17 +20,29 @@ void	opencl_init2(t_opencl *opcl, t_env *e)
 
 	opcl->img_s = WIN_WIDTH * WIN_HEIGHT;
 	//opcl->bufhst = (int *)ft_memalloc(opcl->img_s * sizeof(int));
+
 	opcl->structobj = clCreateBuffer(opcl->context,
 			CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
 			sizeof(t_object) * e->scene.objects_count, e->scene.objects, NULL);
 	printf("Type : %u\n", object->typpe);
-
+	mainmem = NULL;
+	mainsizebuf = 0;
 	clGetMemObjectInfo(opcl->structobj, CL_MEM_SIZE, sizeof(mainsizebuf),
 			&mainsizebuf, NULL);
 	clGetMemObjectInfo(opcl->structobj, CL_MEM_HOST_PTR, sizeof(mainmem),
 			&mainmem, NULL);
 	printf("Object buffer size: %lu\n", mainsizebuf);
 	printf("Object buffer memory address: %p\n", mainmem);
+
+	opcl->structlight = clCreateBuffer(opcl->context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(t_light) * e->scene.lights_count, e->scene.lights, NULL);
+	mainmem = NULL;
+	mainsizebuf = 0;
+	clGetMemObjectInfo(opcl->structlight, CL_MEM_SIZE, sizeof(mainsizebuf),
+			&mainsizebuf, NULL);
+	clGetMemObjectInfo(opcl->structlight, CL_MEM_HOST_PTR, sizeof(mainmem),
+			&mainmem, NULL);
+	printf("Light buffer size: %lu\n", mainsizebuf);
+	printf("Light buffer memory address: %p\n", mainmem);
 
 	opcl->input_scene = clCreateBuffer(opcl->context, CL_MEM_READ_ONLY,
 			sizeof(t_scene), NULL, NULL);
@@ -58,6 +70,7 @@ void	opencl_init2(t_opencl *opcl, t_env *e)
 
 	opcl->output = clCreateBuffer(opcl->context, CL_MEM_WRITE_ONLY,
 			sizeof(int) * opcl->img_s, NULL, NULL);
+			
 	create_prog(opcl);
 	create_kernel(opcl->program, &opcl->kernel, "pixel_raytracing_gpu");
 }

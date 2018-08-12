@@ -63,11 +63,13 @@ t_camera		set_camera(int fd, t_env *env)
 		}
 	}
 	camera = convert_camera_vector(camera);
+	/*
 	printf("Camera position : %.2f, %.2f, %.2f\n", camera.spot.x, camera.spot.y, camera.spot.z);
 	printf("Camera direction : %.2f, %.2f, %.2f\n", camera.direction.x, camera.direction.y, camera.direction.z);
 	printf("Camera horizontal vect : %.5f, %.5f, %.5f\n", camera.horizontal_vect.x, camera.horizontal_vect.y, camera.horizontal_vect.z);
 	printf("Camera vertical vect : %.5f, %.5f, %.5f\n", camera.vertical_vect.x, camera.vertical_vect.y, camera.vertical_vect.z);
 	printf("Camera position : %.5f, %.5f, %.5f\n", camera.posiition.x, camera.posiition.y, camera.posiition.z);
 	printf("Camera up left corner : %.2f, %.2f, %.2f\n", camera.up_left_corner.x, camera.up_left_corner.y, camera.up_left_corner.z);
+	*/
 	return (camera);
 }

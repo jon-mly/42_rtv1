@@ -242,6 +242,7 @@ typedef	struct		s_opencl
 	cl_mem				input_cam;
 	cl_mem				output;
 	cl_mem				structobj;
+	cl_mem				structlight;
 	cl_platform_id		platform_id;
 	cl_device_id		device_id;
 	cl_context			context;
