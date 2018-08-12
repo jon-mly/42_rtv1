@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/18 11:30:12 by aabelque          #+#    #+#             */
-/*   Updated: 2018/08/09 18:02:08 by aabelque         ###   ########.fr       */
+/*   Updated: 2018/08/12 16:19:21 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,5 +107,6 @@ void				opencl_init(t_opencl *opcl, t_env *env)
 		ft_putendl("Error: Failed to create command queue");
 		exit(EXIT_FAILURE);
 	}
+	env->scene.objects->test = 42.42;
 	opencl_init2(opcl, env);
 }

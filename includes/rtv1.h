@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/07 11:34:03 by aabelque          #+#    #+#             */
-/*   Updated: 2018/08/11 18:13:34 by aabelque         ###   ########.fr       */
+/*   Updated: 2018/08/12 16:57:19 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,6 @@ typedef struct	s_color
 // les variables de type t_object pour pas se perdre.
 typedef struct	s_object
 {
-	t_object_type	typpe;
 	t_color			color;
 	t_point			center;
 	t_point			point;
@@ -105,12 +104,14 @@ typedef struct	s_object
 	t_point			intersectiion;
 	t_vector		direction;
 	t_vector		normal;
-	int				intersect;
 	float			norm;
+	float			test;
 	float			radius;
 	float			angle;
 	float			y_angle;
 	float			x_angle;
+	t_object_type	typpe;
+	int				intersect;
 	char			*name;
 }				t_object;
 
@@ -155,10 +156,10 @@ typedef struct	s_object
 // on enverra au GPU.
 typedef struct	s_light
 {
-	t_light_type	typpe;
 	t_point			posiition;
 	t_vector		direction;
 	float			angle;
+	t_light_type	typpe;
 	t_color			color;
 }				t_light;
 
@@ -171,13 +172,13 @@ typedef struct	s_camera
 	t_point		spot;
 	t_vector	normal;
 	t_vector	up_left_corner;
+	t_vector	horizontal_vect;
+	t_vector	vertical_vect;
 	float		width;
 	float		height;
 	float		plane_dist;
 	float		horizontal_step;
 	float		vertical_step;
-	t_vector	horizontal_vect;
-	t_vector	vertical_vect;
 	float		x_angle;
 	float		y_angle;
 	float		z_angle;
@@ -189,9 +190,9 @@ typedef struct	s_camera
 // - avec des cast si necessaire, on retrouve les t_object et t_light
 typedef struct	s_scene
 {
-	void		*objects;
+	t_object	*objects;
+	t_light		*lights;
 	int			objects_count;
-	void		*lights;
 	int			lights_count;
 }				t_scene;
 

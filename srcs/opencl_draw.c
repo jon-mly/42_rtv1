@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/17 16:58:44 by aabelque          #+#    #+#             */
-/*   Updated: 2018/08/11 16:07:53 by aabelque         ###   ########.fr       */
+/*   Updated: 2018/08/12 16:45:10 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,11 @@ void			opencl_draw(t_opencl *opcl, t_env *e)
 	opcl->err = 0;
 	opcl->err = clEnqueueWriteBuffer(opcl->commands, opcl->structobj, CL_TRUE,
 			0, sizeof(t_object) * e->scene.objects_count,
-			(void *)&e->scene.objects, 0, NULL, NULL);
+			(void *)e->scene.objects, 0, NULL, NULL);
 	opcl->err = clEnqueueWriteBuffer(opcl->commands, opcl->structlight, CL_TRUE,
-			0, sizeof(t_light) * e->scene.lights_count, (void *)&e->scene.lights, 0,
+			0, sizeof(t_light) * e->scene.lights_count, (void *)e->scene.lights, 0,
 			NULL, NULL);
+	printf("Test = %f\n", e->scene.objects->test);
 	opcl->err = clEnqueueWriteBuffer(opcl->commands, opcl->input_cam, CL_TRUE, 0,
 			sizeof(t_camera), (void *)&e->camera, 0, NULL, NULL);
 	opcl->err = clEnqueueWriteBuffer(opcl->commands, opcl->input_scene, CL_TRUE, 0,

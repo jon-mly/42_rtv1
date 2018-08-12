@@ -40,13 +40,13 @@ typedef struct	s_camera
 	t_point		spot;
 	t_vector	normal;
 	t_vector	up_left_corner;
+	t_vector	horizontal_vect;
+	t_vector	vertical_vect;
 	float		width;
 	float		height;
 	float		plane_dist;
 	float		horizontal_step;
 	float		vertical_step;
-	t_vector	horizontal_vect;
-	t_vector	vertical_vect;
 	float		x_angle;
 	float		y_angle;
 	float		z_angle;
@@ -54,16 +54,15 @@ typedef struct	s_camera
 
 typedef struct	s_light
 {
-	t_light_type	typpe;
 	t_point			posiition;
 	t_vector		direction;
 	float			angle;
+	t_light_type	typpe;
 	t_color			color;
 }				t_light;
 
 typedef struct	s_object
 {
-	t_object_type	typpe;
 	t_color			color;
 	t_point			center;
 	t_point			point;
@@ -71,20 +70,22 @@ typedef struct	s_object
 	t_point			intersectiion;
 	t_vector		direction;
 	t_vector		normal;
-	int				intersect;
 	float			norm;
+	float			test;
 	float			radius;
 	float			angle;
 	float			y_angle;
 	float			x_angle;
+	t_object_type	typpe;
+	int				intersect;
 	char			*name;
 }				t_object;
 
 typedef struct	s_scene
 {
-	void		*objects;
+	t_object	*objects;
+	t_light		*lights;
 	int			objects_count;
-	void		*lights;
 	int			lights_count;
 }				t_scene;
 
@@ -92,7 +93,7 @@ int				color_coord(float cosinus, float distance, int obj_color, int light_color
 t_color			light_for_intersection(t_object light_ray, t_object ray, t_object object, t_light light);
 t_object		init_light_ray(t_light light, t_object ray, t_object object);
 int				color_to_int(t_color color);
-t_color			get_color_on_intersection(t_object ray, __global t_object *closest_object, __global t_scene *scene);
+t_color			get_color_on_intersection(t_object ray, __global t_object *closest_object, __global t_scene *scene, __global t_light *light, __global t_object *obj);
 t_object		intersect_object(t_object ray, t_object object);
 t_vector		normalize_vector(t_vector vec);
 t_vector		vector_points(t_point p1, t_point p2);
@@ -407,7 +408,7 @@ t_object			intersect_object(t_object ray, t_object object)
 
 int			color_to_int(t_color color)
 {
-	return ((int)(color.r | color.g << 8 | color.b << 16));
+	return ((int)((int)color.r << 16  | (int)color.g << 8 | (int)color.b));
 }	
 
 t_object	init_light_ray(t_light light, t_object ray, t_object object)
@@ -466,7 +467,7 @@ t_color			light_for_intersection(t_object light_ray, t_object ray, t_object
 	return (color);
 }
 
-t_color			get_color_on_intersection(t_object ray, __global t_object *closest_object, __global t_scene *scene)
+t_color			get_color_on_intersection(t_object ray, __global t_object *closest_object, __global t_scene *scene, __global t_light *light, __global t_object *obj)
 {
 	t_object	light_ray;
 	int			light_index;
@@ -478,18 +479,17 @@ t_color			get_color_on_intersection(t_object ray, __global t_object *closest_obj
 	coloration = closest_object->color;
 	while (++light_index < scene->lights_count)
 	{
-		light_ray = init_light_ray(((t_light*)(scene->lights))[light_index], ray,
+		light_ray = init_light_ray(light[light_index], ray,
 				*closest_object);
 		norm = light_ray.norm;
-		coloration = light_for_intersection(light_ray, ray, *closest_object,
-				(((t_light*)(scene->lights))[light_index]));
+		coloration = light_for_intersection(light_ray, ray, *closest_object, light[light_index]);
 		object_index = -1;
 		while (++object_index < scene->objects_count)
 		{
-			if (&(((t_object *)(scene->objects))[object_index]) != closest_object)
+			if (&obj[object_index] != closest_object)
 			{
 				light_ray = intersect_object(light_ray,
-						(((t_object *)(scene->objects))[object_index]));
+						obj[object_index]);
 				if (light_ray.intersect && light_ray.norm < norm &&
 						light_ray.norm > 0)
 					return (light_ray.color);
@@ -506,7 +506,7 @@ __kernel void				pixel_raytracing_gpu(__global int *out, __global t_scene *scene
 	int					idx;
 	t_object			ray;
 	int					object_index;
-	__global t_object			*closest_object;
+	__global t_object	*closest_object;
 	float				closest_distance;
 
 	x = get_global_id(0);
@@ -515,8 +515,12 @@ __kernel void				pixel_raytracing_gpu(__global int *out, __global t_scene *scene
 	//printf("ICI\n");
 	ray = init_ray(x, y, *camera);
 	closest_object = NULL;
-	//printf("%f%\n", scene->objects.norm);
-	//printf("%u%\n", obj->norm);
+	//printf("Test2 kernel = %f\n", obj->test);
+	//printf("%f\n", scene->objects.norm);
+	//printf("%u\n", obj->norm);
+	//printf("Width = %f\n", camera->width);
+	//printf("Height = %f\n", camera->height);
+	//printf("Test kernel = %f\n", scene->objects->test);
 	//printf("LA\n");
 	object_index = -1;
 	while (++object_index < scene->objects_count)
@@ -535,8 +539,9 @@ __kernel void				pixel_raytracing_gpu(__global int *out, __global t_scene *scene
 		ray.intersectiion.y = ray.origin.y + ray.direction.y * closest_distance;
 		ray.intersectiion.z = ray.origin.z + ray.direction.z * closest_distance;
 		out[idx] = color_to_int(get_color_on_intersection(ray, closest_object,
-			scene));
+			scene, light, obj));
 	}
+	//printf("%d\n", ray.intersectiion.x);
 	else
-		out[idx] = 0x00000000;
+		out[idx] = 0x00ff0000;
 }
