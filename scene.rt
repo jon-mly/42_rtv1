@@ -16,7 +16,7 @@ center 0 8 0
 color 130 255 130
 }
 
-#plane {
+plane {
 point 0 0 10
 normal 0 0 -1
 color 130 180 255

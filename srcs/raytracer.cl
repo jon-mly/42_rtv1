@@ -408,7 +408,17 @@ t_object			intersect_object(t_object ray, t_object object)
 
 int			color_to_int(t_color color)
 {
-	return ((int)((int)color.r << 16  | (int)color.g << 8 | (int)color.b));
+	int 	r;
+	int 	g;
+	int		b;
+	int 	a;
+
+	r = (int)color.r;
+	g = (int)color.g;
+	b = (int)color.b;
+	a = (int)color.a;
+	// return ((int)((int)color.r << 16  | (int)color.g << 8 | (int)color.b));
+	return (a << 24 | r << 16 | g << 8 | b);
 }	
 
 t_object	init_light_ray(t_light light, t_object ray, t_object object)
@@ -507,6 +517,7 @@ __kernel void				pixel_raytracing_gpu(__global int *out, __global t_scene *scene
 	t_object			ray;
 	int					object_index;
 	__global t_object	*closest_object;
+	int 				closest_object_index;
 	float				closest_distance;
 
 	x = get_global_id(0);
@@ -514,6 +525,7 @@ __kernel void				pixel_raytracing_gpu(__global int *out, __global t_scene *scene
 	idx = get_global_size(0) * get_global_id(1) + get_global_id(0);
 	ray = init_ray(x, y, *camera);
 	closest_object = NULL;
+	closest_object_index = -1;
 	if (x == 0 && y == 0)
 	{
 		// printf("%i\n", scene->objects_count);
@@ -523,29 +535,46 @@ __kernel void				pixel_raytracing_gpu(__global int *out, __global t_scene *scene
 		// 	printf("type : %s, ", object.name);
 		// 	printf("color r:%d, g:%d, b:%d\n", object.color.r, object.color.g, object.color.b);
 		// }
+		printf("Camera : position %.2f, %.2f, %.2f\n", camera->spot.x, camera->spot.y, camera->spot.z);
 		t_light l = light[0];
 		printf("position %.2f, %.2f, %.2f\n", l.posiition.x, l.posiition.y, l.posiition.z);
+		printf("color : %.2f, %.2f, %.2f, %.2f\n", l.color.r, l.color.g, l.color.b, l.color.a);
+		printf("%d objects, %d lights\n", scene->objects_count, scene->lights_count);
+		// WARNING
+		// SPECIFIC CODE TO EXECUTE ONLY WITH scene.rt FOR DEBUGGING
+		t_object plane = (t_object)obj[0];
+		t_object sphere = (t_object)obj[1];
+		printf("PLANE:\nPoint: %.2f, %.2f, %.2f\nNormal: %.2f, %.2f, %.2f\ncolor : %.2f, %.2f, %.2f, %.2f\n", plane.point.x, plane.point.y, plane.point.z, plane.normal.x, plane.normal.y, plane.normal.z, plane.color.r, plane.color.g, plane.color.b);
+		printf("SPHERE:\nCenter: %.2f, %.2f, %.2f\nRadius: %.2f\ncolor : %.2f, %.2f, %.2f, %.2f\n", sphere.center.x, sphere.center.y, sphere.center.z, sphere.radius, sphere.color.r, sphere.color.g, sphere.color.b);
 	}
 	object_index = -1;
 	while (++object_index < scene->objects_count)
 	{
 		ray = intersect_object(ray, obj[object_index]);
-		if (ray.intersect && ((closest_object != NULL && ray.norm < closest_distance) || closest_object == NULL) && ray.norm > 0)
+		// if (ray.intersect && ((closest_object != NULL && ray.norm < closest_distance) || closest_object == NULL) && ray.norm > 0)
+		// {
+		// 	closest_object = &obj[object_index];
+		// 	closest_distance = ray.norm;
+		// }
+		if (ray.intersect && ((closest_object_index != -1 && ray.norm < closest_distance) || closest_object_index == -1) && ray.norm > 0)
 		{
-			closest_object = &obj[object_index];
+			closest_object_index = object_index;
 			closest_distance = ray.norm;
 		}
 	}
-	if (closest_object != NULL)
+	// if (closest_object != NULL)
+	if (closest_object_index != -1)
 	{
+		// printf("closest object : %s\n", closest_object->name);
 		ray.norm = closest_distance;
 		ray.intersectiion.x = ray.origin.x + ray.direction.x * closest_distance;
 		ray.intersectiion.y = ray.origin.y + ray.direction.y * closest_distance;
 		ray.intersectiion.z = ray.origin.z + ray.direction.z * closest_distance;
-		out[idx] = color_to_int(get_color_on_intersection(ray, closest_object,
+		// out[idx] = color_to_int(get_color_on_intersection(ray, closest_object,
+			// scene, light, obj));
+		out[idx] = color_to_int(get_color_on_intersection(ray, &obj[closest_object_index],
 			scene, light, obj));
 	}
-	//printf("%d\n", ray.intersectiion.x);
 	else
-		out[idx] = 0x00000000;
+		out[idx] = 0x00ff0000;
 }
