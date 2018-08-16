@@ -78,14 +78,15 @@ static t_color	light_for_intersection(t_object light_ray, t_object ray, t_object
 	return (color);
 }
 
-static int		should_shadow(t_object light_ray, float norm, t_object *closest_object, t_object concurrent)
+static t_color 	add_color(t_color base, t_color overlay)
 {
-	light_ray = intersect_object(light_ray, concurrent);
-	if (&concurrent == closest_object && light_ray.intersect && light_ray.norm < norm)
-		return (TRUE);
-	else if (&concurrent != closest_object && light_ray.intersect && light_ray.norm < norm)
-		return (TRUE);
-	return (FALSE);
+	t_color 	final;
+
+	final.r = (int)fmin((double)(base.r + overlay.r), (double)255);
+	final.g = (int)fmin((double)(base.g + overlay.g), (double)255);
+	final.b = (int)fmin((double)(base.b + overlay.b), (double)255);
+	final.a = (int)fmin((double)(base.a + overlay.a), (double)255);
+	return (final);
 }
 
 /*
@@ -104,34 +105,30 @@ t_color			get_color_on_intersection(t_object ray, t_object *closest_object,
 	int			object_index;
 	float		norm;
 	t_color		coloration;
+	int 		is_direct_hit;
 
 	light_index = -1;
-	coloration = closest_object->color;
+	coloration = color(closest_object->color.r / 4, closest_object->color.g / 4, closest_object->color.b / 4, 0);
 	while (++light_index < env->scene.lights_count)
 	{
+		is_direct_hit = 1;
 		light_ray = init_light_ray(((t_light*)(env->scene.lights))[light_index], ray,
 				*closest_object);
 		norm = light_ray.norm;
-		coloration = light_for_intersection(light_ray, ray, *closest_object,
-				(((t_light*)(env->scene.lights))[light_index]));
 		object_index = -1;
 		while (++object_index < env->scene.objects_count)
-		{
-		/*	if (should_shadow(light_ray, norm - 0.0000001, closest_object, env->scene.objects[object_index]
-))
-				return (light_ray.color);
-			*/if (&(((t_object *)(env->scene.objects))[object_index]) != closest_object)
+		{if (&(((t_object *)(env->scene.objects))[object_index]) != closest_object)
 			{
 				light_ray = intersect_object(light_ray,
 						(((t_object *)(env->scene.objects))[object_index]));
-				// If the light ray interesct with an object before reaching
-				// the object we want to calculate the light for, it means that
-				// the initial object is shadowed.
 				if (light_ray.intersect && light_ray.norm < norm &&
 						light_ray.norm > 0)
-					return (light_ray.color);
+					is_direct_hit = 0;
 			}
 		}
+		if (is_direct_hit)
+			coloration = add_color(coloration, light_for_intersection(light_ray, ray, *closest_object,
+				(((t_light*)(env->scene.lights))[light_index])));
 	}
 	return (coloration);
 }

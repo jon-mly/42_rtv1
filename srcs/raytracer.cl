@@ -93,7 +93,7 @@ int				color_coord(float cosinus, float distance, int obj_color, int light_color
 t_color			light_for_intersection(t_object light_ray, t_object ray, t_object object, t_light light);
 t_object		init_light_ray(t_light light, t_object ray, t_object object);
 int				color_to_int(t_color color);
-t_color			get_color_on_intersection(t_object ray, __global t_object *closest_object, __global t_scene *scene, __global t_light *light, __global t_object *obj);
+t_color			get_color_on_intersection(t_object ray, global t_object *closest_object, global t_scene *scene, global t_light *light, global t_object *obj);
 t_object		intersect_object(t_object ray, t_object object);
 t_vector		normalize_vector(t_vector vec);
 t_vector		vector_points(t_point p1, t_point p2);
@@ -477,7 +477,7 @@ t_color			light_for_intersection(t_object light_ray, t_object ray, t_object
 	return (color);
 }
 
-t_color			get_color_on_intersection(t_object ray, __global t_object *closest_object, __global t_scene *scene, __global t_light *light, __global t_object *obj)
+t_color			get_color_on_intersection(t_object ray, global t_object *closest_object, global t_scene *scene, global t_light *light, global t_object *obj)
 {
 	t_object	light_ray;
 	int			light_index;
@@ -509,14 +509,36 @@ t_color			get_color_on_intersection(t_object ray, __global t_object *closest_obj
 	return (coloration);
 }
 
-__kernel void				pixel_raytracing_gpu(__global int *out, __global t_scene *scene, __global t_camera *camera, __global t_object *obj, __global t_light *light)
+// FIXME: debug to remove
+void debug_describe_object(t_object object)
+{
+	if (object.typpe == SPHERE) {
+		printf("Sphere\n");
+		printf("Center : adress: %p, %.2f, %.2f, %.2f\n", &object.center, object.center.x, object.center.y, object.center.z);
+		printf("Radius : adress: %p, %.2f\n", &object.radius, object.radius);
+	} else if (object.typpe == PLANE) {
+		printf("Plane\n");
+		printf("Position : adress: %p, %.2f, %.2f, %.2f\n", &object.point, object.point.x, object.point.y, object.point.z);
+		printf("Normal : adress: %p, %.2f, %.2f, %.2f\n", &object.normal, object.normal.x, object.normal.y, object.normal.z);
+	}
+	printf("Color : adress: %p, %.2f, %.2f, %.2f\n", &object.color, object.color.r, object.color.g, object.color.b);
+}
+
+// FIXME: debug to remove
+void debug_describe_ray(t_object object) {
+	printf("Ray\n");
+	printf("origin : %.2f, %.2f, %.2f\n", object.origin.x, object.origin.y, object.origin.z);
+	printf("Direction : %.2f, %.2f, %.2f\n", object.direction.x, object.direction.y, object.direction.z);
+}
+
+__kernel void				pixel_raytracing_gpu(global int *out, global t_scene *scene, global t_camera *camera, global t_object *obj, global t_light *light)
 {
 	int					x;
 	int					y;
 	int					idx;
 	t_object			ray;
 	int					object_index;
-	__global t_object	*closest_object;
+	global t_object	*closest_object;
 	int 				closest_object_index;
 	float				closest_distance;
 
@@ -524,32 +546,24 @@ __kernel void				pixel_raytracing_gpu(__global int *out, __global t_scene *scene
 	y = get_global_id(1);
 	idx = get_global_size(0) * get_global_id(1) + get_global_id(0);
 	ray = init_ray(x, y, *camera);
-	closest_object = NULL;
-	closest_object_index = -1;
 	if (x == 0 && y == 0)
 	{
-		// printf("%i\n", scene->objects_count);
-		// for (int i = 0; i < scene->objects_count; i++)
-		// {
-		// 	t_object object = obj[i];
-		// 	printf("type : %s, ", object.name);
-		// 	printf("color r:%d, g:%d, b:%d\n", object.color.r, object.color.g, object.color.b);
-		// }
 		printf("Camera : position %.2f, %.2f, %.2f\n", camera->spot.x, camera->spot.y, camera->spot.z);
 		t_light l = light[0];
 		printf("position %.2f, %.2f, %.2f\n", l.posiition.x, l.posiition.y, l.posiition.z);
-		printf("color : %.2f, %.2f, %.2f, %.2f\n", l.color.r, l.color.g, l.color.b, l.color.a);
+		printf("color : %u, %u, %u, %u\n", l.color.r, l.color.g, l.color.b, l.color.a);
 		printf("%d objects, %d lights\n", scene->objects_count, scene->lights_count);
-		// WARNING
-		// SPECIFIC CODE TO EXECUTE ONLY WITH scene.rt FOR DEBUGGING
-		t_object plane = (t_object)obj[0];
-		t_object sphere = (t_object)obj[1];
-		printf("PLANE:\nPoint: %.2f, %.2f, %.2f\nNormal: %.2f, %.2f, %.2f\ncolor : %.2f, %.2f, %.2f, %.2f\n", plane.point.x, plane.point.y, plane.point.z, plane.normal.x, plane.normal.y, plane.normal.z, plane.color.r, plane.color.g, plane.color.b);
-		printf("SPHERE:\nCenter: %.2f, %.2f, %.2f\nRadius: %.2f\ncolor : %.2f, %.2f, %.2f, %.2f\n", sphere.center.x, sphere.center.y, sphere.center.z, sphere.radius, sphere.color.r, sphere.color.g, sphere.color.b);
+		for (int i = 0; i < scene->objects_count; i++)
+			debug_describe_object(obj[i]);
+		debug_describe_ray(ray);
 	}
+	closest_object = NULL;
+	closest_object_index = -1;
 	object_index = -1;
 	while (++object_index < scene->objects_count)
 	{
+		if (x == 0 && y == 0)
+			debug_describe_object(obj[object_index]);
 		ray = intersect_object(ray, obj[object_index]);
 		// if (ray.intersect && ((closest_object != NULL && ray.norm < closest_distance) || closest_object == NULL) && ray.norm > 0)
 		// {
