@@ -1,23 +1,39 @@
-SCENE : SAMPLE SCENE
+SCENE TEST
+
+# CAMERA
 
 camera {
-position 0 10 -30
-angles 0 -95 20
+position 0 10 -40
+angles -10 0
+}
+
+# LIGHTS
+
+light {
+position -10 20 -30
+color 190 190 190
 }
 
 light {
-position -10 20 -16
-color 255 0 20
+position 10 5 -30
+color 190 190 190
 }
 
 light {
-position 10 5 -16
-color 20 0 255
+position -12 6 -22
+color 190 190 190
 }
+
+light {
+position 0 40 6
+color 190 190 190
+}
+
+# OBJECTS
 
 sphere {
-radius 7
-center 0 8 0
+radius 9
+center 10 13 -4
 color 80 80 80
 }
 
@@ -30,5 +46,12 @@ color 50 50 50
 plane {
 point 0 0 0
 normal 0 1 0
-color 180 180 30
+color 20 120 40
+}
+
+cylinder {
+position -15 3 -13
+radius 4
+angles 30 80
+color 20 10 120
 }

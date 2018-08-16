@@ -38,9 +38,6 @@ static t_object	init_light_ray(t_light light, t_object ray, t_object object)
 ** Supposing there is no object between the light and the intersection, the
 ** color on this point is calculated, based on the angle between the normal
 ** of the object on a particular point.
-** TODO: so far, the distance between the two points has no influence on
-** the enlightment of the intersection. Should be added by calculating the
-** distance and dividing by an arbitrary factor.
 */
 
 static int		color_coord(float cosinus, float distance, int obj_color,
@@ -50,9 +47,9 @@ static int		color_coord(float cosinus, float distance, int obj_color,
 	float	k;
 	float	color_value;
 
-	distance_factor = 0.01 * pow(distance / 1.4, 2) + 1;//sqrt(distance * 0.66 + 1);
+	distance_factor = 0.01 * pow(distance / 1.3, 2) + 1;
 	k = cosinus / distance_factor;
-	color_value = (float)obj_color / 3 - k * (float)light_color;
+	color_value = (float)obj_color / 4 - k * (float)light_color;
 	color_value = fmax(fmin(color_value, 255), 0);
 	return ((int)color_value);
 }
