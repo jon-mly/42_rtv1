@@ -417,7 +417,7 @@ int			color_to_int(t_color color)
 	g = (int)color.g;
 	b = (int)color.b;
 	a = (int)color.a;
-	// return ((int)((int)color.r << 16  | (int)color.g << 8 | (int)color.b));
+	//return ((int)((int)color.r << 16  | (int)color.g << 8 | (int)color.b));
 	return (a << 24 | r << 16 | g << 8 | b);
 }	
 
@@ -541,21 +541,27 @@ __kernel void				pixel_raytracing_gpu(global int *out, global t_scene *scene, gl
 	global t_object	*closest_object;
 	int 				closest_object_index;
 	float				closest_distance;
+	t_color				colorout;
 
+	colorout = (t_color){0, 0, 255, 0};
 	x = get_global_id(0);
 	y = get_global_id(1);
 	idx = get_global_size(0) * get_global_id(1) + get_global_id(0);
 	ray = init_ray(x, y, *camera);
 	if (x == 0 && y == 0)
 	{
-		printf("Camera : position %.2f, %.2f, %.2f\n", camera->spot.x, camera->spot.y, camera->spot.z);
+		//printf("Center : adress: %p, %.2f, %.2f, %.2f\n", &obj->center, obj->center.x, obj->center.y, obj->center.z);
+	//	printf("Size t_object gpu = %lu\n", sizeof(t_object));
+	//	printf("Size t_vector gpu = %lu\n", sizeof(t_vector));
+
+	//	printf("Camera : position %.2f, %.2f, %.2f\n", camera->spot.x, camera->spot.y, camera->spot.z);
 		t_light l = light[0];
-		printf("position %.2f, %.2f, %.2f\n", l.posiition.x, l.posiition.y, l.posiition.z);
-		printf("color : %u, %u, %u, %u\n", l.color.r, l.color.g, l.color.b, l.color.a);
-		printf("%d objects, %d lights\n", scene->objects_count, scene->lights_count);
-		for (int i = 0; i < scene->objects_count; i++)
-			debug_describe_object(obj[i]);
-		debug_describe_ray(ray);
+		//printf("position %.2f, %.2f, %.2f\n", l.posiition.x, l.posiition.y, l.posiition.z);
+	//	printf("color : %u, %u, %u, %u\n", l.color.r, l.color.g, l.color.b, l.color.a);
+	//	printf("%d objects, %d lights\n", scene->objects_count, scene->lights_count);
+	//	for (int i = 0; i < scene->objects_count; i++)
+	//		debug_describe_object(obj[i]);
+	//	debug_describe_ray(ray);
 	}
 	closest_object = NULL;
 	closest_object_index = -1;
@@ -563,7 +569,7 @@ __kernel void				pixel_raytracing_gpu(global int *out, global t_scene *scene, gl
 	while (++object_index < scene->objects_count)
 	{
 		if (x == 0 && y == 0)
-			debug_describe_object(obj[object_index]);
+	//		debug_describe_object(obj[object_index]);
 		ray = intersect_object(ray, obj[object_index]);
 		// if (ray.intersect && ((closest_object != NULL && ray.norm < closest_distance) || closest_object == NULL) && ray.norm > 0)
 		// {
@@ -579,16 +585,18 @@ __kernel void				pixel_raytracing_gpu(global int *out, global t_scene *scene, gl
 	// if (closest_object != NULL)
 	if (closest_object_index != -1)
 	{
-		// printf("closest object : %s\n", closest_object->name);
+		//printf("closest object : %s\n", closest_object->name);
 		ray.norm = closest_distance;
 		ray.intersectiion.x = ray.origin.x + ray.direction.x * closest_distance;
 		ray.intersectiion.y = ray.origin.y + ray.direction.y * closest_distance;
 		ray.intersectiion.z = ray.origin.z + ray.direction.z * closest_distance;
 		// out[idx] = color_to_int(get_color_on_intersection(ray, closest_object,
 			// scene, light, obj));
-		out[idx] = color_to_int(get_color_on_intersection(ray, &obj[closest_object_index],
-			scene, light, obj));
+		out[idx] = color_to_int(get_color_on_intersection(ray, &obj[closest_object_index], scene, light, obj));
+		//colorout = get_color_on_intersection(ray, &obj[closest_object_index], scene, light, obj);
 	}
+	//write_imageui(out, (int2)(x, y), (uint4)(colorout.r * 255, colorout.g * 255, colorout.b * 255, 255));
 	else
-		out[idx] = 0x00ff0000;
+		out[idx] = color_to_int(colorout);
+		//out[idx] = 0x00ff0000;
 }

@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/18 11:30:12 by aabelque          #+#    #+#             */
-/*   Updated: 2018/08/12 16:19:21 by aabelque         ###   ########.fr       */
+/*   Updated: 2018/08/17 16:32:17 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,7 @@ void				create_prog(t_opencl *opcl)
 				NULL, NULL, NULL);
 	error_gpu(opcl);
 	free((void *)opcl->kernel_src);
+	create_kernel(opcl->program, &opcl->kernel, "pixel_raytracing_gpu");
 }
 
 void				opencl_init(t_opencl *opcl, t_env *env)
@@ -107,6 +108,6 @@ void				opencl_init(t_opencl *opcl, t_env *env)
 		ft_putendl("Error: Failed to create command queue");
 		exit(EXIT_FAILURE);
 	}
-	env->scene.objects->test = 42.42;
+	create_prog(opcl);
 	opencl_init2(opcl, env);
 }
