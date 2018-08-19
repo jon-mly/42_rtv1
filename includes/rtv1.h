@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/07 11:34:03 by aabelque          #+#    #+#             */
-/*   Updated: 2018/08/12 16:57:19 by aabelque         ###   ########.fr       */
+/*   Updated: 2018/08/18 14:00:15 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,8 @@
 ** ======= macros
 */
 
-# define WIN_HEIGHT 600
-# define WIN_WIDTH 900
+# define WIN_HEIGHT 720
+# define WIN_WIDTH 1280
 # define FOV 0.40
 
 # define KEY_ESC 53
@@ -245,6 +245,8 @@ typedef	struct		s_opencl
 	cl_mem				structobj;
 	cl_mem				structlight;
 	cl_platform_id		platform_id;
+	cl_image_format		format;
+	cl_image_desc		desc;
 	cl_device_id		device_id;
 	cl_context			context;
 	cl_command_queue	commands;
