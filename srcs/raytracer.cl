@@ -116,9 +116,14 @@ t_vector		rotate_cylinder_angles(t_object cylinder, t_vector vect, int revers);
 t_object		sphere_intersection(t_object ray, t_object sphere);
 t_object		plane_intersection(t_object ray, t_object plane);
 t_object		cylinder_intersection(t_object ray, t_object cylinder);
+t_color 	add_color(t_color base, t_color overlay);
 // FIXME: to remove
-void debug_describe_ray(t_object object);
+// void debug_describe_ray(t_object object);
 
+
+/*
+** ========== NORMAL VECTOR CALCULATION
+*/
 
 t_vector		cone_normal(t_object ray, t_object cone)
 {
@@ -187,6 +192,11 @@ t_vector			shape_normal(t_object ray, t_object object)
 		return (cone_normal(ray, object));
 }
 
+
+/*
+** ========== MATHEMATIC HELPERS
+*/
+
 t_color		color(int r, int g, int b, int a)
 {
 	t_color		color;
@@ -217,21 +227,6 @@ t_vector	vector_points(t_point p1, t_point p2)
 	vec.y = p2.y - p1.y;
 	vec.z = p2.z - p1.z;
 	return (vec);
-}
-
-t_object		init_ray(int x, int y, t_camera camera)
-{
-	t_object	ray;
-	t_point		projector_point;
-
-	projector_point.x = camera.up_left_corner.x + (double)x * camera.horizontal_vect.x + (double)y * camera.vertical_vect.x;
-	projector_point.y = camera.up_left_corner.y + (double)x * camera.horizontal_vect.y + (double)y * camera.vertical_vect.y;
-	projector_point.z = camera.up_left_corner.z + (double)x * camera.horizontal_vect.z + (double)y * camera.vertical_vect.z;
-	ray.direction = vector_points(camera.spot, projector_point);
-	ray.direction = normalize_vector(ray.direction);
-	ray.origin = camera.spot;
-	ray.intersect = false;
-	return (ray);
 }
 
 t_vector	vect_rotate_x(t_vector vec, float angle)
@@ -319,6 +314,20 @@ t_vector	rotate_cylinder_angles(t_object cylinder, t_vector vect, int revers)
 	}
 	return (vect);
 }
+
+float		points_norm(t_point p1, t_point p2)
+{
+	float		distance;
+
+	distance = sqrt((float)(pow((float)(p2.x - p1.x), (float)2) + pow((float)(p2.y - p1.y), (float)2) + pow((float)(p2.z - p1.z), (float)2)));
+	return (distance);
+}
+
+
+
+/*
+** ========== INTERSECTION POINTS CALCULATION
+*/
 
 t_object		cone_intersection(t_object ray, t_object cone)
 {
@@ -408,6 +417,12 @@ t_object			intersect_object(t_object ray, t_object object)
 	return (ray);
 }
 
+
+
+/*
+** ========== NORMAL VECTOR CALCULATION
+*/
+
 int			color_to_int(t_color color)
 {
 	int 	r;
@@ -419,9 +434,22 @@ int			color_to_int(t_color color)
 	g = (int)color.g;
 	b = (int)color.b;
 	a = (int)color.a;
-	//return ((int)((int)color.r << 16  | (int)color.g << 8 | (int)color.b));
 	return (a << 24 | r << 16 | g << 8 | b);
-}	
+}
+
+
+
+/*
+** ========== LIGHTING
+*/
+
+/*
+** A light ray is ignited, beginning from the position of the light itself,
+** and directed to the intersection between the initial ray and the closest
+** object.
+** A base color (shadow color) is given so that, if an object stands
+** between the light spot and the intersection, the latter is shadowed.
+*/
 
 t_object	init_light_ray(t_light light, t_object ray, t_object object)
 {
@@ -437,6 +465,12 @@ t_object	init_light_ray(t_light light, t_object ray, t_object object)
 	return (light_ray);
 }
 
+/*
+** Supposing there is no object between the light and the intersection, the
+** color on this point is calculated, based on the angle between the normal
+** of the object on a particular point.
+*/
+
 int		color_coord(float cosinus, float distance, int obj_color,
 	int light_color)
 {
@@ -444,19 +478,22 @@ int		color_coord(float cosinus, float distance, int obj_color,
 	float	k;
 	float	color_value;
 
-	distance_factor = 0.01 * __cl_pow((float)(distance / 1.4), 2.f) + 1;
+	distance_factor = 0.01 * __cl_pow((float)(distance / 1.3), (float)2) + 1;
 	k = cosinus / distance_factor;
-	color_value = (float)obj_color / 3 - k * (float)light_color;
-	color_value = fmax(fmin(color_value, 255), 0);
+	color_value = (float)obj_color / 4 - k * (float)light_color;
+	color_value = fmax(__cl_fmin((float)color_value, (float)255), 0);
 	return ((int)color_value);
 }
 
-float		points_norm(t_point p1, t_point p2)
+t_color 	add_color(t_color base, t_color overlay)
 {
-	float		distance;
+	t_color 	final;
 
-	distance = sqrt((float)(pow((float)(p2.x - p1.x), (float)2) + pow((float)(p2.y - p1.y), (float)2) + pow((float)(p2.z - p1.z), (float)2)));
-	return (distance);
+	final.r = (int)__cl_fmin((float)(base.r + overlay.r), (float)255);
+	final.g = (int)__cl_fmin((float)(base.g + overlay.g), (float)255);
+	final.b = (int)__cl_fmin((float)(base.b + overlay.b), (float)255);
+	final.a = (int)__cl_fmin((float)(base.a + overlay.a), (float)255);
+	return (final);
 }
 
 t_color			light_for_intersection(t_object light_ray, t_object ray, t_object
@@ -479,6 +516,14 @@ t_color			light_for_intersection(t_object light_ray, t_object ray, t_object
 	return (color);
 }
 
+/*
+** For each light, light ray created.
+** For each object that is not the intersected one, check if the ray
+** intersects with the object. If so, the point on closest_object is shadowed.
+** Else, the coloration calculated in the case there is no object in between is
+** returned and applied.
+*/
+
 t_color			get_color_on_intersection(t_object ray, global t_object *closest_object, global t_scene *scene, global t_light *light, global t_object *obj)
 {
 	t_object	light_ray;
@@ -486,16 +531,16 @@ t_color			get_color_on_intersection(t_object ray, global t_object *closest_objec
 	int			object_index;
 	float		norm;
 	t_color		coloration;
+	int 		is_direct_hit;
 
 	light_index = -1;
-	coloration = closest_object->color;
+	coloration = color(closest_object->color.r / 4, closest_object->color.g / 4, closest_object->color.b / 4, 0);	
 	while (++light_index < scene->lights_count)
 	{
+		is_direct_hit = 1;
 		light_ray = init_light_ray(light[light_index], ray,
 				*closest_object);
 		norm = light_ray.norm;
-		coloration = light_for_intersection(light_ray, ray, *closest_object, light[light_index]);
-	//printf("Coloration : %u, %u, %u, %u\n", coloration.r, coloration.g, coloration.b, coloration.a);
 		object_index = -1;
 		while (++object_index < scene->objects_count)
 		{
@@ -505,33 +550,58 @@ t_color			get_color_on_intersection(t_object ray, global t_object *closest_objec
 						obj[object_index]);
 				if (light_ray.intersect && light_ray.norm < norm &&
 						light_ray.norm > 0)
-					return (light_ray.color);
+					is_direct_hit = 0;
 			}
 		}
+		if (is_direct_hit)
+			coloration = add_color(coloration, light_for_intersection(light_ray, ray, *closest_object, light[light_index]));
 	}
 	return (coloration);
 }
 
-// FIXME: debug to remove
-void debug_describe_object(t_object object)
-{
-	if (object.typpe == SPHERE) {
-		printf("Sphere\n");
-		printf("Center : adress: %p, %.2f, %.2f, %.2f\n", &object.center, object.center.x, object.center.y, object.center.z);
-		printf("Radius : adress: %p, %.2f\n", &object.radius, object.radius);
-	} else if (object.typpe == PLANE) {
-		printf("Plane\n");
-		printf("Position : adress: %p, %.2f, %.2f, %.2f\n", &object.point, object.point.x, object.point.y, object.point.z);
-		printf("Normal : adress: %p, %.2f, %.2f, %.2f\n", &object.normal, object.normal.x, object.normal.y, object.normal.z);
-	}
-	printf("Color : adress: %p, %u, %u, %u\n", &object.color, object.color.r, object.color.g, object.color.b);
-}
+
 
 // FIXME: debug to remove
-void debug_describe_ray(t_object object) {
-	printf("Ray\n");
-	printf("origin : %.2f, %.2f, %.2f\n", object.origin.x, object.origin.y, object.origin.z);
-	printf("Direction : %.2f, %.2f, %.2f\n", object.direction.x, object.direction.y, object.direction.z);
+// void debug_describe_object(t_object object)
+// {
+// 	if (object.typpe == SPHERE) {
+// 		printf("Sphere\n");
+// 		printf("Center : adress: %p, %.2f, %.2f, %.2f\n", &object.center, object.center.x, object.center.y, object.center.z);
+// 		printf("Radius : adress: %p, %.2f\n", &object.radius, object.radius);
+// 	} else if (object.typpe == PLANE) {
+// 		printf("Plane\n");
+// 		printf("Position : adress: %p, %.2f, %.2f, %.2f\n", &object.point, object.point.x, object.point.y, object.point.z);
+// 		printf("Normal : adress: %p, %.2f, %.2f, %.2f\n", &object.normal, object.normal.x, object.normal.y, object.normal.z);
+// 	}
+// 	printf("Color : adress: %p, %u, %u, %u\n", &object.color, object.color.r, object.color.g, object.color.b);
+// }
+
+// // FIXME: debug to remove
+// void debug_describe_ray(t_object object) {
+// 	printf("Ray\n");
+// 	printf("origin : %.2f, %.2f, %.2f\n", object.origin.x, object.origin.y, object.origin.z);
+// 	printf("Direction : %.2f, %.2f, %.2f\n", object.direction.x, object.direction.y, object.direction.z);
+// }
+
+
+
+/*
+** ========== MAIN FUNCTIONS
+*/
+
+t_object		init_ray(int x, int y, t_camera camera)
+{
+	t_object	ray;
+	t_point		projector_point;
+
+	projector_point.x = camera.up_left_corner.x + (double)x * camera.horizontal_vect.x + (double)y * camera.vertical_vect.x;
+	projector_point.y = camera.up_left_corner.y + (double)x * camera.horizontal_vect.y + (double)y * camera.vertical_vect.y;
+	projector_point.z = camera.up_left_corner.z + (double)x * camera.horizontal_vect.z + (double)y * camera.vertical_vect.z;
+	ray.direction = vector_points(camera.spot, projector_point);
+	ray.direction = normalize_vector(ray.direction);
+	ray.origin = camera.spot;
+	ray.intersect = false;
+	return (ray);
 }
 
 __kernel void				pixel_raytracing_gpu(global int *out, global t_scene *scene, global t_camera *camera, global t_object *obj, global t_light *light)
