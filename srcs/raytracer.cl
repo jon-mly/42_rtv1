@@ -116,6 +116,8 @@ t_vector		rotate_cylinder_angles(t_object cylinder, t_vector vect, int revers);
 t_object		sphere_intersection(t_object ray, t_object sphere);
 t_object		plane_intersection(t_object ray, t_object plane);
 t_object		cylinder_intersection(t_object ray, t_object cylinder);
+// FIXME: to remove
+void debug_describe_ray(t_object object);
 
 
 t_vector		cone_normal(t_object ray, t_object cone)
@@ -222,9 +224,9 @@ t_object		init_ray(int x, int y, t_camera camera)
 	t_object	ray;
 	t_point		projector_point;
 
-	projector_point.x = camera.up_left_corner.x + (float)x * camera.horizontal_step;
-	projector_point.y = camera.up_left_corner.y - (float)y * camera.vertical_step;
-	projector_point.z = camera.up_left_corner.z;
+	projector_point.x = camera.up_left_corner.x + (double)x * camera.horizontal_vect.x + (double)y * camera.vertical_vect.x;
+	projector_point.y = camera.up_left_corner.y + (double)x * camera.horizontal_vect.y + (double)y * camera.vertical_vect.y;
+	projector_point.z = camera.up_left_corner.z + (double)x * camera.horizontal_vect.z + (double)y * camera.vertical_vect.z;
 	ray.direction = vector_points(camera.spot, projector_point);
 	ray.direction = normalize_vector(ray.direction);
 	ray.origin = camera.spot;
@@ -493,6 +495,7 @@ t_color			get_color_on_intersection(t_object ray, global t_object *closest_objec
 				*closest_object);
 		norm = light_ray.norm;
 		coloration = light_for_intersection(light_ray, ray, *closest_object, light[light_index]);
+	//printf("Coloration : %u, %u, %u, %u\n", coloration.r, coloration.g, coloration.b, coloration.a);
 		object_index = -1;
 		while (++object_index < scene->objects_count)
 		{
@@ -521,7 +524,7 @@ void debug_describe_object(t_object object)
 		printf("Position : adress: %p, %.2f, %.2f, %.2f\n", &object.point, object.point.x, object.point.y, object.point.z);
 		printf("Normal : adress: %p, %.2f, %.2f, %.2f\n", &object.normal, object.normal.x, object.normal.y, object.normal.z);
 	}
-	printf("Color : adress: %p, %.2f, %.2f, %.2f\n", &object.color, object.color.r, object.color.g, object.color.b);
+	printf("Color : adress: %p, %u, %u, %u\n", &object.color, object.color.r, object.color.g, object.color.b);
 }
 
 // FIXME: debug to remove
@@ -548,34 +551,12 @@ __kernel void				pixel_raytracing_gpu(global int *out, global t_scene *scene, gl
 	y = get_global_id(1);
 	idx = get_global_size(0) * get_global_id(1) + get_global_id(0);
 	ray = init_ray(x, y, *camera);
-	if (x == 0 && y == 0)
-	{
-		//printf("Center : adress: %p, %.2f, %.2f, %.2f\n", &obj->center, obj->center.x, obj->center.y, obj->center.z);
-	//	printf("Size t_object gpu = %lu\n", sizeof(t_object));
-	//	printf("Size t_vector gpu = %lu\n", sizeof(t_vector));
-
-	//	printf("Camera : position %.2f, %.2f, %.2f\n", camera->spot.x, camera->spot.y, camera->spot.z);
-		t_light l = light[0];
-		//printf("position %.2f, %.2f, %.2f\n", l.posiition.x, l.posiition.y, l.posiition.z);
-	//	printf("color : %u, %u, %u, %u\n", l.color.r, l.color.g, l.color.b, l.color.a);
-	//	printf("%d objects, %d lights\n", scene->objects_count, scene->lights_count);
-	//	for (int i = 0; i < scene->objects_count; i++)
-	//		debug_describe_object(obj[i]);
-	//	debug_describe_ray(ray);
-	}
 	closest_object = NULL;
 	closest_object_index = -1;
 	object_index = -1;
 	while (++object_index < scene->objects_count)
 	{
-		if (x == 0 && y == 0)
-	//		debug_describe_object(obj[object_index]);
 		ray = intersect_object(ray, obj[object_index]);
-		// if (ray.intersect && ((closest_object != NULL && ray.norm < closest_distance) || closest_object == NULL) && ray.norm > 0)
-		// {
-		// 	closest_object = &obj[object_index];
-		// 	closest_distance = ray.norm;
-		// }
 		if (ray.intersect && ((closest_object_index != -1 && ray.norm < closest_distance) || closest_object_index == -1) && ray.norm > 0)
 		{
 			closest_object_index = object_index;
@@ -585,18 +566,15 @@ __kernel void				pixel_raytracing_gpu(global int *out, global t_scene *scene, gl
 	// if (closest_object != NULL)
 	if (closest_object_index != -1)
 	{
-		//printf("closest object : %s\n", closest_object->name);
+		//printf("closest object : %d\n", closest_object_index);
 		ray.norm = closest_distance;
 		ray.intersectiion.x = ray.origin.x + ray.direction.x * closest_distance;
 		ray.intersectiion.y = ray.origin.y + ray.direction.y * closest_distance;
 		ray.intersectiion.z = ray.origin.z + ray.direction.z * closest_distance;
-		// out[idx] = color_to_int(get_color_on_intersection(ray, closest_object,
-			// scene, light, obj));
 		out[idx] = color_to_int(get_color_on_intersection(ray, &obj[closest_object_index], scene, light, obj));
 		//colorout = get_color_on_intersection(ray, &obj[closest_object_index], scene, light, obj);
 	}
 	//write_imageui(out, (int2)(x, y), (uint4)(colorout.r * 255, colorout.g * 255, colorout.b * 255, 255));
 	else
-		out[idx] = color_to_int(colorout);
-		//out[idx] = 0x00ff0000;
+		out[idx] = color_to_int((t_color){0, 0, 0, 0});
 }
