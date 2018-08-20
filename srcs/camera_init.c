@@ -22,7 +22,7 @@ t_camera	init_camera(t_env *env)
 
 	camera.width = 1.5;
 	camera.height = 1;
-	camera.plane_dist = 0.2;
+	camera.plane_dist = 0.8;
 	camera.spot = point(0, 0, 0);
 	camera.direction = normalize_vector(vector(0, 0, 1));
 	camera.posiition = vector(camera.spot.x + camera.direction.x - camera.width / 2,

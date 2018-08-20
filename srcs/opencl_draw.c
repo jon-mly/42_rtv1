@@ -64,13 +64,21 @@ void			opencl_draw(t_opencl *opcl, t_env *e)
 	else
 		ft_putendl("XY enqueuing sucessful");
 		
-	opcl->err = clEnqueueReadBuffer(opcl->commands, opcl->output, CL_TRUE, 0,
-			sizeof(int) * opcl->img_s, e->img_str, 0, NULL, NULL);
+	// opcl->err = clEnqueueReadBuffer(opcl->commands, opcl->output, CL_TRUE, 0,
+	// 		ft_strlen((char *)e->img_str), e->img_str, 0, NULL, NULL);
+	// if (opcl->err != CL_SUCCESS)
+	// 	printf("Error enqueuing output %d\n", opcl->err);
+	// else
+	// 	ft_putendl("Output enqueuing sucessful");
+
+	size_t globdim[3] = {WIN_WIDTH, WIN_HEIGHT, 1};
+	size_t offset[3] = {0, 0, 0};
+	opcl->err = clEnqueueReadImage(opcl->commands, opcl->output, CL_TRUE, offset,
+			globdim, 0, 0, e->img_str, 0, NULL, NULL);
 	if (opcl->err != CL_SUCCESS)
 		printf("Error enqueuing output %d\n", opcl->err);
 	else
 		ft_putendl("Output enqueuing sucessful");
-
 	cl_ulong maxMemAlloc;
 	clGetDeviceInfo(opcl->device_id, CL_DEVICE_MAX_MEM_ALLOC_SIZE,
 			sizeof(cl_ulong), &maxMemAlloc, NULL);

@@ -29,9 +29,9 @@ void	opencl_init2(t_opencl *opcl, t_env *e)
 		.image_row_pitch = 0, .image_slice_pitch = 0,
 		.num_mip_levels = 0, .num_samples = 0, .buffer = NULL};
 
-//	opcl->output = clCreateImage(opcl->context,
-//			CL_MEM_WRITE_ONLY | CL_MEM_ALLOC_HOST_PTR, &opcl->format,
-//			&opcl->desc, NULL, &opcl->err);
+	opcl->output = clCreateImage(opcl->context,
+			CL_MEM_WRITE_ONLY | CL_MEM_ALLOC_HOST_PTR, &opcl->format,
+			&opcl->desc, NULL, &opcl->err);
 	opcl->structobj = clCreateBuffer(opcl->context,
 			CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
 			sizeof(t_object) * e->scene.objects_count, e->scene.objects, NULL);
@@ -85,6 +85,6 @@ void	opencl_init2(t_opencl *opcl, t_env *e)
 	printf("Camera buffer size: %zu\n", mainsizebuf);
 	printf("Camera buffer memory address: %p\n", mainmem);
 
-	opcl->output = clCreateBuffer(opcl->context, CL_MEM_WRITE_ONLY,
-			sizeof(int) * opcl->img_s, NULL, NULL);
+	//opcl->output = clCreateBuffer(opcl->context, CL_MEM_WRITE_ONLY,
+	//		sizeof(int) * opcl->img_s, NULL, NULL);
 }

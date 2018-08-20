@@ -3,8 +3,8 @@ SCENE TEST
 # CAMERA
 
 camera {
-position 0 10 -40
-angles -10 0
+position -2 20 -60
+angles 0 0
 }
 
 # LIGHTS
@@ -20,7 +20,7 @@ color 190 190 190
 }
 
 light {
-position -12 6 -22
+position -20 6 -22
 color 190 190 190
 }
 
@@ -52,6 +52,6 @@ color 20 120 40
 cylinder {
 position -15 3 -13
 radius 4
-angles 0 80
+angles 0 90
 color 20 10 120
 }
