@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/17 16:58:44 by aabelque          #+#    #+#             */
-/*   Updated: 2018/08/20 10:55:40 by aabelque         ###   ########.fr       */
+/*   Updated: 2018/08/20 13:15:32 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void			opencl_draw(t_opencl *opcl, t_env *e)
 	if (opcl->err != CL_SUCCESS)
 		printf("Error enqueuing objects %d\n", opcl->err);
 	else
-		ft_putendl("OBjects enqueuing sucessful");
+		ft_putendl("Objects enqueuing sucessful");
 
 	opcl->err = clEnqueueWriteBuffer(opcl->commands, opcl->structlight, CL_TRUE,
 			0, sizeof(t_light) * e->scene.lights_count, (void *)e->scene.lights, 0,
@@ -30,7 +30,7 @@ void			opencl_draw(t_opencl *opcl, t_env *e)
 	if (opcl->err != CL_SUCCESS)
 		printf("Error enqueuing lights %d\n", opcl->err);
 	else
-		ft_putendl("lights enqueuing sucessful");
+		ft_putendl("Lights enqueuing sucessful");
 
 	opcl->err = clEnqueueWriteBuffer(opcl->commands, opcl->input_cam, CL_TRUE, 0,
 			sizeof(t_camera), (void *)&e->camera, 0, NULL, NULL);
@@ -70,7 +70,16 @@ void			opencl_draw(t_opencl *opcl, t_env *e)
 		printf("Error enqueuing output %d\n", opcl->err);
 	else
 		ft_putendl("Output enqueuing sucessful");
-
+	/*	
+	size_t globdim[3] = {WIN_WIDTH, WIN_HEIGHT, 1};
+	size_t offset[3] = {0, 0, 0};
+	opcl->err = clEnqueueReadImage(opcl->commands, opcl->output, CL_TRUE, offset,
+			globdim, 0, 0, e->img_str, 0, NULL, NULL);
+	if (opcl->err != CL_SUCCESS)
+		printf("Error enqueuing output %d\n", opcl->err);
+	else
+		ft_putendl("Output enqueuing sucessful");
+*/
 	cl_ulong maxMemAlloc;
 	clGetDeviceInfo(opcl->device_id, CL_DEVICE_MAX_MEM_ALLOC_SIZE,
 			sizeof(cl_ulong), &maxMemAlloc, NULL);

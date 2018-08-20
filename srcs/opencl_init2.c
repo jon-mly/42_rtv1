@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/17 17:07:23 by aabelque          #+#    #+#             */
-/*   Updated: 2018/08/19 17:00:43 by aabelque         ###   ########.fr       */
+/*   Updated: 2018/08/20 13:15:34 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,15 +25,16 @@ void	opencl_init2(t_opencl *opcl, t_env *e)
 		.image_channel_data_type = CL_UNSIGNED_INT8};
 	opcl->desc = (cl_image_desc){.image_type = CL_MEM_OBJECT_IMAGE2D,
 		.image_width = WIN_WIDTH, .image_height = WIN_HEIGHT,
-		.image_depth = 1, .image_array_size = 1,
+		.image_depth = 0, .image_array_size = 0,
 		.image_row_pitch = 0, .image_slice_pitch = 0,
 		.num_mip_levels = 0, .num_samples = 0, .buffer = NULL};
 
-//	opcl->output = clCreateImage(opcl->context,
-//			CL_MEM_WRITE_ONLY | CL_MEM_ALLOC_HOST_PTR, &opcl->format,
-//			&opcl->desc, NULL, &opcl->err);
+	//opcl->output = clCreateImage(opcl->context,
+	//		CL_MEM_WRITE_ONLY | CL_MEM_ALLOC_HOST_PTR, &opcl->format,
+	//		&opcl->desc, NULL, &opcl->err);
+
 	opcl->structobj = clCreateBuffer(opcl->context,
-			CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
+			CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
 			sizeof(t_object) * e->scene.objects_count, e->scene.objects, NULL);
 
 	printf("Type : %u\n", object->typpe);
@@ -47,7 +48,7 @@ void	opencl_init2(t_opencl *opcl, t_env *e)
 	printf("Object buffer memory address: %p\n", mainmem);
 
 	opcl->structlight = clCreateBuffer(opcl->context,
-			CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
+			CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
 			sizeof(t_light) * e->scene.lights_count, e->scene.lights, NULL);
 
 	mainmem = NULL;
@@ -60,7 +61,7 @@ void	opencl_init2(t_opencl *opcl, t_env *e)
 	printf("Light buffer memory address: %p\n", mainmem);
 
 	opcl->input_scene = clCreateBuffer(opcl->context,
-			CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
+			CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
 			sizeof(t_scene), &e->scene, NULL);
 
 	mainmem = NULL;
@@ -73,7 +74,7 @@ void	opencl_init2(t_opencl *opcl, t_env *e)
 	printf("Scene buffer memory address: %p\n", mainmem);
 
 	opcl->input_cam = clCreateBuffer(opcl->context,
-			CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
+			CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
 			sizeof(t_camera), &e->camera, NULL);
 
 	mainmem = NULL;
