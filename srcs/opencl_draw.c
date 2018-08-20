@@ -79,6 +79,7 @@ void			opencl_draw(t_opencl *opcl, t_env *e)
 		printf("Error enqueuing output %d\n", opcl->err);
 	else
 		ft_putendl("Output enqueuing sucessful");
+		
 	cl_ulong maxMemAlloc;
 	clGetDeviceInfo(opcl->device_id, CL_DEVICE_MAX_MEM_ALLOC_SIZE,
 			sizeof(cl_ulong), &maxMemAlloc, NULL);
