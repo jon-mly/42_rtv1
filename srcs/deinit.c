@@ -6,7 +6,7 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/22 11:46:21 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/05/22 11:46:22 by jmlynarc         ###   ########.fr       */
+/*   Updated: 2018/08/08 13:47:08 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,11 @@
 
 static void		deinit_scene(t_scene scene)
 {
-	int			index;
+	/*int			index;
 
 	index = -1;
 	while (++index < scene.objects_count)
-		ft_memdel(&(scene.objects[index].object));
+		ft_memdel(&(((t_object*)(scene.objects))[index]));*/
 	ft_memdel((void**)(&(scene.objects)));
 	ft_memdel((void**)(&(scene.lights)));
 }

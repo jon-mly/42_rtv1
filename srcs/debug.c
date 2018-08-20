@@ -1,8 +1,8 @@
 #include "rtv1.h"
-
-static t_ray	debug_init_light_ray(t_light light, t_ray ray, t_object object)
+/*
+static t_object	debug_init_light_ray(t_light light, t_object ray, t_object object)
 {
-	t_ray		light_ray;
+	t_object		light_ray;
 	t_vector	direction;
 
 	light_ray.origin = light.position;
@@ -14,7 +14,7 @@ static t_ray	debug_init_light_ray(t_light light, t_ray ray, t_object object)
 	return (light_ray);
 }
 
-static t_color	debug_light_for_intersection(t_ray light_ray, t_ray ray, t_object
+static t_color	debug_light_for_intersection(t_object light_ray, t_object ray, t_object
 	object, t_light light)
 {
 	t_vector	normal;
@@ -37,10 +37,10 @@ static t_color	debug_light_for_intersection(t_ray light_ray, t_ray ray, t_object
 	return (color);
 }
 
-static t_color			debug_get_color_on_intersection(t_ray ray, t_object *closest_object,
+static t_color			debug_get_color_on_intersection(t_object ray, t_object *closest_object,
 	t_env *env)
 {
-	t_ray		light_ray;
+	t_object		light_ray;
 	int			light_index;
 	int			object_index;
 	float		norm;
@@ -50,18 +50,18 @@ static t_color			debug_get_color_on_intersection(t_ray ray, t_object *closest_ob
 	coloration = closest_object->color;
 	while (++light_index < env->scene.lights_count)
 	{
-		light_ray = debug_init_light_ray(env->scene.lights[light_index], ray,
+		light_ray = debug_init_light_ray(((t_light*)(env->scene.lights))[light_index], ray,
 				*closest_object);
 		norm = light_ray.norm;
 		coloration = debug_light_for_intersection(light_ray, ray, *closest_object,
-				env->scene.lights[light_index]);
+				(((t_light)(env->scene.lights))[light_index]));
 		object_index = -1;
 		while (++object_index < env->scene.objects_count)
 		{
 			if (&(env->scene.objects[object_index]) != closest_object)
 			{
 				light_ray = intersect_object(light_ray,
-						env->scene.objects[object_index]);
+						(((t_object)(env->scene.objects))[object_index]));
 				if (light_ray.intersect && light_ray.norm < norm &&
 						light_ray.norm > 0)
 				{
@@ -77,7 +77,7 @@ static t_color			debug_get_color_on_intersection(t_ray ray, t_object *closest_ob
 
 void	debug_raytracing(int x, int y, t_env *env)
 {
-	t_ray		ray;
+	t_object		ray;
 	int			object_index;
 	t_object	*closest_object;
 	float		closest_distance;
@@ -118,6 +118,7 @@ void	test_rotations(void)
 	vector = vect_rotate_x(vector, M_PI/3, 1);
 	printf("%.2f %.2f %.2f \n", vector.x, vector.y, vector.z);
 }
+*/
 
 int		debug_mouse_event(int event, int x, int y, void *param)
 {
@@ -127,6 +128,7 @@ int		debug_mouse_event(int event, int x, int y, void *param)
 	if (event != 1)
 		return 0;
 //	debug_raytracing(x, y, env);
-	test_rotations();
+	ft_putendl("Window is active");
+//	test_rotations();
 	return 0;
 }

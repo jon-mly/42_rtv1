@@ -49,8 +49,6 @@ t_env			*init_env(char *file_name)
 	env->win_ptr = NULL;
 	setup_window(env);
 	env->camera = init_camera(env);
-	ft_putendl("Camera successfully set up");
 	env->scene = create_scene(env, file_name);
-	ft_putendl("Scene successfully set up");
 	return (env);
 }

@@ -6,7 +6,7 @@
 ** Returns the ray with "intersect" and "norm" values set up
 */
 
-t_ray	sphere_intersection(t_ray ray, t_sphere sphere)
+t_object	sphere_intersection(t_object ray, t_object sphere)
 {
 	float		a;
 	float		b;
@@ -22,10 +22,10 @@ t_ray	sphere_intersection(t_ray ray, t_sphere sphere)
 	return (ray);
 }
 
-t_vector		sphere_normal(t_ray ray, t_sphere sphere)
+t_vector		sphere_normal(t_object ray, t_object sphere)
 {
 	t_vector	normal;
 
-	normal = vector_points(sphere.center, ray.intersection);
+	normal = vector_points(sphere.center, ray.intersectiion);
 	return (normalize_vector(normal));
 }
