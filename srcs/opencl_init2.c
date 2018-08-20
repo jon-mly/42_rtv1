@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/17 17:07:23 by aabelque          #+#    #+#             */
-/*   Updated: 2018/08/18 17:34:46 by aabelque         ###   ########.fr       */
+/*   Updated: 2018/08/19 17:00:43 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ void	opencl_init2(t_opencl *opcl, t_env *e)
 			&mainsizebuf, NULL);
 	clGetMemObjectInfo(opcl->input_cam, CL_MEM_HOST_PTR, sizeof(mainmem),
 			&mainmem, NULL);
-	printf("Camera buffer size: %lu\n", mainsizebuf);
+	printf("Camera buffer size: %zu\n", mainsizebuf);
 	printf("Camera buffer memory address: %p\n", mainmem);
 
 	opcl->output = clCreateBuffer(opcl->context, CL_MEM_WRITE_ONLY,

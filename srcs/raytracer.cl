@@ -419,8 +419,8 @@ int			color_to_int(t_color color)
 	g = (int)color.g;
 	b = (int)color.b;
 	a = (int)color.a;
-	//return ((int)((int)color.r << 16  | (int)color.g << 8 | (int)color.b));
-	return (a << 24 | r << 16 | g << 8 | b);
+	return ((int)((int)color.r << 16  | (int)color.g << 8 | (int)color.b));
+	//return (a << 24 | r << 16 | g << 8 | b);
 }	
 
 t_object	init_light_ray(t_light light, t_object ray, t_object object)

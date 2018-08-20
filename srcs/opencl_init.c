@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/18 11:30:12 by aabelque          #+#    #+#             */
-/*   Updated: 2018/08/17 16:32:17 by aabelque         ###   ########.fr       */
+/*   Updated: 2018/08/20 11:12:23 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void				set_opencl_env(t_opencl *opcl)
 {
-	opcl->dev_type = CL_DEVICE_TYPE_GPU;
+	opcl->dev_type = CL_DEVICE_TYPE_CPU;
 	opcl->err = 0;
 	opcl->platform_id = NULL;
 	opcl->device_id = 0;
@@ -28,7 +28,7 @@ void				set_opencl_env(t_opencl *opcl)
 	opcl->output = NULL;
 	opcl->imgxy[0] = WIN_WIDTH;
 	opcl->imgxy[1] = WIN_HEIGHT;
-	opcl->kernel = NULL;
+	//opcl->kernel = NULL;
 }
 
 void				create_kernel(cl_program program, cl_kernel *kernel,
@@ -91,12 +91,12 @@ void				opencl_init(t_opencl *opcl, t_env *env)
 		exit(EXIT_FAILURE);
 	}
 	if (clGetDeviceIDs(opcl->platform_id, opcl->dev_type, 1,
-			&opcl->device_id, &opcl->num_dev) != CL_SUCCESS)
+			&opcl->device_id, NULL) != CL_SUCCESS)
 	{
 		ft_putendl("Error: Failed to create deviceID group");
 		exit(EXIT_FAILURE);
 	}
-	if (!(opcl->context = clCreateContext(0, 1, &opcl->device_id, NULL, NULL,
+	if (!(opcl->context = clCreateContext(NULL, 1, &opcl->device_id, NULL, NULL,
 			&opcl->err)))
 	{
 		ft_putendl("Error: Failed to create a context");
