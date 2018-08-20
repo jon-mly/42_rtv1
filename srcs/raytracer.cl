@@ -675,7 +675,6 @@ __kernel void				pixel_raytracing_gpu(__write_only image2d_t out, global t_scene
 	// if (closest_object != NULL)
 	if (closest_object_index != -1)
 	{
-		//printf("closest object : %d\n", closest_object_index);
 		ray.norm = closest_distance;
 		ray.intersectiion.x = ray.origin.x + ray.direction.x * closest_distance;
 		ray.intersectiion.y = ray.origin.y + ray.direction.y * closest_distance;

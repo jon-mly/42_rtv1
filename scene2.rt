@@ -3,7 +3,7 @@ SCENE TEST
 # CAMERA
 
 camera {
-position -2 20 -60
+position -2 -20 -70
 angles 0 0
 }
 
@@ -31,13 +31,7 @@ color 190 190 190
 
 # OBJECTS
 
-sphere {
-radius 9
-center 10 13 -4
-color 80 80 80
-}
-
-plane {
+#plane {
 point 0 0 10
 normal 0 0 -1
 color 50 50 50
@@ -49,9 +43,21 @@ normal 0 1 0
 color 20 120 40
 }
 
-cylinder {
-position -15 3 -13
+#cone {
+center 20 20 2
+angles 0 -0 
+pi_divider 12
+color 10 50 150
+}
+
+#cylinder {
+position -2 20 -70
+angles 0 0
 radius 4
-angles 0 90
-color 20 10 120
+color 200 90 10
+}
+
+sphere {
+center -2 20 -70
+radius 10
 }

@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/17 16:58:44 by aabelque          #+#    #+#             */
-/*   Updated: 2018/08/20 10:55:40 by aabelque         ###   ########.fr       */
+/*   Updated: 2018/08/20 14:10:55 by jmlynarc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,11 @@ void			opencl_draw(t_opencl *opcl, t_env *e)
 			&opcl->structobj);
 	opcl->err |= clSetKernelArg(opcl->kernel, 4, sizeof(cl_mem),
 			&opcl->structlight);
+	if (opcl->err != CL_SUCCESS)
+		printf("Error enqueuing args array %d\n", opcl->err);
+	else
+		ft_putendl("Args enqueuing sucessful");
+		
 
 	opcl->err = clEnqueueNDRangeKernel(opcl->commands, opcl->kernel,
 			2, NULL, opcl->imgxy, NULL, 0, NULL, NULL);
