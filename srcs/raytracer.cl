@@ -336,23 +336,49 @@ float		dot_product(t_vector vect_1, t_vector vect_2)
 	return (product);
 }
 
+/*
+** Solves a quadratic equation but with the aim of returning a distance, which
+** has to be a positive value.
+** If the value is negative, the equation has no solution.
+** Several cases are to be distinguished, in order in the function's body :
+** - discriminant < 0 : the ray does not intersect the object
+** From this point and for simplication, both x1 and x2 are replaced
+** if needed so that x1 <= x2.
+** - x1 <= 0 and x2 <= 0 : both intersections are behind the camera,
+** so there is no intersection to be represented on screen.
+** - x2 > 0 and x1 <= 0 : the camera is inside the object, with one
+** point behind the camera, and one in front of it. The one to be
+** represented is the one in front of it, so the highest norm
+** value.
+** - x1 > 0 and x2 > 0 : both intersections are beyond the camera,
+** the closest one is to be retained.
+*/
+
 float		closest_distance_quadratic(float a, float b, float c)
 {
 	float		discriminant;
 	float		x1;
 	float		x2;
+	float 		buffer;
 
 	discriminant = b * b - 4 * a * c;
 	if (discriminant < 0)
 		return (-1);
-	x1 = (-b - sqrt((float)(discriminant))) / (2 * a);
-	x2 = (-b + sqrt((float)(discriminant))) / (2 * a);
-	if (x1 < 0 && x2 < 0)
+	x1 = (-b - sqrt(discriminant)) / (2 * a);
+	x2 = (-b + sqrt(discriminant)) / (2 * a);
+	if (x2 < x1)
+	{
+		buffer = x2;
+		x2 = x1;
+		x1 = buffer;
+	}
+	if (x1 <= 0 && x2 <= 0)
 		return (-1);
-	x1 = fmax((float)x1, (float)0.);
-	x2 = fmax((float)x2, (float)0.);
-	return (fmin((float)x1, (float)x2));
+	else if (x2 > 0 && x1 <= 0)
+		return (x2);
+	return (x1);
 }
+
 
 float		points_norm(t_point p1, t_point p2)
 {
