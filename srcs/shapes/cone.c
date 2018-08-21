@@ -28,6 +28,23 @@ t_vector	rotate_cone_angles(t_object cone, t_vector vect,
 	return (vect);
 }
 
+/*
+** Returns true if the origin of the light ray is inside the cone,
+** meaning that only the inner surface is to be enlighted.
+*/
+
+static int 	revert_cone_normal(t_object ray, t_object cone)
+{
+	t_vector 	light_to_center;
+	float 		border;
+	float		light_distance;
+
+	light_to_center = vector_points(cone.center, ray.origin);
+	rotate_cone_angles(cone, light_to_center, 0);
+	border = pow(light_to_center.z, 2) * pow(tan(cone.angle), 2);
+	light_distance = pow(light_to_center.x, 2) + pow(light_to_center.y, 2);
+	return (light_distance < border);
+}
 
 /*
 ** Calculate the norm of the ray from the origin of it to the intersection
@@ -65,7 +82,6 @@ t_vector		cone_normal(t_object ray, t_object cone)
 	t_vector	normal;
 
 	distance = vector_points(cone.center, ray.intersectiion);
-//	printf("before : %.2f, %.2f, %.2f (intersection %.2f %.2f, %.2f)\n", distance.x, distance.y, distance.z, ray.intersection.x, ray.intersection.y, ray.intersection.z);
 	distance = rotate_cone_angles(cone, distance, 0);
 	normal_dist = (cos(cone.angle) + tan(cone.angle) * sin(cone.angle)) *
 		vector_norm(distance);
@@ -73,9 +89,10 @@ t_vector		cone_normal(t_object ray, t_object cone)
 	normal_point_2 = (t_point){0, 0, -normal_dist};
 	if (points_norm(normal_point, distance) > points_norm(normal_point_2, distance))
 		normal_point = normal_point_2;
-	normal = vector_points(normal_point, distance);
+	if (revert_cone_normal(ray, cone))
+		normal = vector_points(normal_point, distance);
+	else
+		normal = vector_points(distance, normal_point);
 	normal = rotate_cone_angles(cone, normal, 1);
-//	distance = rotate_cone_angles(cone, distance, 1);
-//	printf("after  : %.2f, %.2f, %.2f (intersection %.2f %.2f, %.2f)\n", distance.x, distance.y, distance.z, ray.intersection.x, ray.intersection.y, ray.intersection.z);
 	return (normalize_vector(normal));
 }
