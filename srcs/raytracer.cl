@@ -478,10 +478,10 @@ int		color_coord(float cosinus, float distance, int obj_color,
 	float	k;
 	float	color_value;
 
-	distance_factor = 0.01 * __cl_pow((float)(distance / 1.3), (float)2) + 1;
+	distance_factor = 0.01 * pow((float)(distance / 1.3), (float)2) + 1;
 	k = cosinus / distance_factor;
 	color_value = (float)obj_color / 4 - k * (float)light_color;
-	color_value = fmax(__cl_fmin((float)color_value, (float)255), 0);
+	color_value = fmax(fmin((float)color_value, (float)255), 0);
 	return ((int)color_value);
 }
 
@@ -489,10 +489,10 @@ t_color 	add_color(t_color base, t_color overlay)
 {
 	t_color 	final;
 
-	final.r = (int)__cl_fmin((float)(base.r + overlay.r), (float)255);
-	final.g = (int)__cl_fmin((float)(base.g + overlay.g), (float)255);
-	final.b = (int)__cl_fmin((float)(base.b + overlay.b), (float)255);
-	final.a = (int)__cl_fmin((float)(base.a + overlay.a), (float)255);
+	final.r = (int)fmin((double)(base.r + overlay.r), (double)255);
+	final.g = (int)fmin((double)(base.g + overlay.g), (double)255);
+	final.b = (int)fmin((double)(base.b + overlay.b), (double)255);
+	final.a = (int)fmin((double)(base.a + overlay.a), (double)255);
 	return (final);
 }
 
@@ -616,7 +616,7 @@ __kernel void				pixel_raytracing_gpu(global int *out, global t_scene *scene, gl
 	float				closest_distance;
 	t_color				colorout;
 
-	//colorout = (t_color){0, 0, 0, 0};
+	colorout = (t_color){255, 255, 255, 0};
 	x = get_global_id(0);
 	y = get_global_id(1);
 	idx = get_global_size(0) * get_global_id(1) + get_global_id(0);
@@ -646,5 +646,5 @@ __kernel void				pixel_raytracing_gpu(global int *out, global t_scene *scene, gl
 	}
 	//write_imagei(out, (int2)(x, y), (int4)(colorout.b, colorout.g, colorout.r, 0));
 	else
-		out[idx] = color_to_int((t_color){0, 0, 0, 0});
+		out[idx] = color_to_int(colorout);
 }

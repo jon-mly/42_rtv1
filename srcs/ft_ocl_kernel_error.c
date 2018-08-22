@@ -6,11 +6,11 @@
 /*   By: ppeigne <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/23 16:20:33 by ppeigne           #+#    #+#             */
-/*   Updated: 2018/08/16 13:48:08 by ppeigne          ###   ########.fr       */
+/*   Updated: 2018/08/20 17:31:53 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ocl_framework.h"
+#include "rtv1.h"
 
 static void		invalid_object_sampler(const int ret)
 {

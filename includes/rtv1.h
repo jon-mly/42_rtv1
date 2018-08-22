@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/07 11:34:03 by aabelque          #+#    #+#             */
-/*   Updated: 2018/08/18 14:00:15 by aabelque         ###   ########.fr       */
+/*   Updated: 2018/08/20 17:44:36 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -267,7 +267,7 @@ typedef struct	s_env
 	void			*mlx_ptr;
 	void			*win_ptr;
 	void			*img_ptr;
-	unsigned char	*img_str;
+	char			*img_str;
 	int				win_height;
 	int				win_width;
 	int				img_height;
@@ -344,5 +344,7 @@ t_vector		vect_rotate_y(t_vector vector, float angle, int inverse);
 t_object			init_ray(int x, int y, t_camera camera);
 int		debug_mouse_event(int event, int x, int y, void *param);
 float			closest_distance_quadratic(float a, float b, float c);
+void			ft_ocl_init_error(const int ret);
+void			ft_ocl_kernel_error(const int ret, const size_t index);
 
 #endif

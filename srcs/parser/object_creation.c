@@ -6,7 +6,7 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/02 16:09:07 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/08/11 11:26:27 by aabelque         ###   ########.fr       */
+/*   Updated: 2018/08/21 15:05:33 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,8 +124,6 @@ static t_object		add_new_cone(int fd)
 		{
 			cone.y_angle = degrees_to_radian(ft_atoi(line[1]));
 			cone.x_angle = degrees_to_radian(ft_atoi(line[2]));
-			cone.y_angle = cone.y_angle;
-			cone.x_angle = cone.x_angle;
 		}
 		clear_line(line);
 	}
@@ -174,8 +172,6 @@ static t_object		add_new_cylinder(int fd)
 		{
 			cylinder.y_angle = degrees_to_radian(ft_atoi(line[1]));
 			cylinder.x_angle = degrees_to_radian(ft_atoi(line[2]));
-			cylinder.y_angle = cylinder.y_angle;
-			cylinder.x_angle = cylinder.x_angle;
 		}
 		clear_line(line);
 	}

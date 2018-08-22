@@ -6,7 +6,7 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/22 11:46:40 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/08/11 11:07:26 by aabelque         ###   ########.fr       */
+/*   Updated: 2018/08/21 15:20:57 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,8 @@ t_color			get_color_on_intersection(t_object ray, t_object *closest_object,
 		norm = light_ray.norm;
 		object_index = -1;
 		while (++object_index < env->scene.objects_count)
-		{if (&(((t_object *)(env->scene.objects))[object_index]) != closest_object)
+		{
+			if (&(((t_object *)(env->scene.objects))[object_index]) != closest_object)
 			{
 				light_ray = intersect_object(light_ray,
 						(((t_object *)(env->scene.objects))[object_index]));

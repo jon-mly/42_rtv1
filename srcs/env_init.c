@@ -6,7 +6,7 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/22 11:46:27 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/07/18 15:17:58 by jmlynarc         ###   ########.fr       */
+/*   Updated: 2018/08/20 16:55:41 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@ static void		setup_window(t_env *env)
 	env->img_ptr = mlx_new_image(env->mlx_ptr, env->win_width, env->win_height);
 	env->img_width = WIN_WIDTH;
 	env->img_height = WIN_HEIGHT;
-	env->img_str = (unsigned char*)(mlx_get_data_addr(env->img_ptr, &bpp, &s_l,
-		&endian));
+	env->img_str = mlx_get_data_addr(env->img_ptr, &bpp, &s_l,
+		&endian);
 	if (env->img_ptr == NULL || env->img_str == NULL)
 		exit_error(env);
 	env->line_size = s_l / 4;

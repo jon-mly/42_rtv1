@@ -29,6 +29,8 @@ SRCS = main.c \
 		opencl_init2.c \
 		opencl_draw.c \
 		opencl_free.c \
+		ft_ocl_init_error.c \
+		ft_ocl_kernel_error.c \
 		error_gpu.c \
 		$(HELPER_REP)constructors.c \
 		$(HELPER_REP)math_tools.c \

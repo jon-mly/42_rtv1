@@ -6,11 +6,11 @@
 /*   By: ppeigne <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/21 17:21:55 by ppeigne           #+#    #+#             */
-/*   Updated: 2018/06/25 17:52:23 by ppeigne          ###   ########.fr       */
+/*   Updated: 2018/08/20 17:44:36 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ocl_framework.h"
+#include "rtv1.h"
 
 static void		device_error(const int ret)
 {

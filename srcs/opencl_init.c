@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/18 11:30:12 by aabelque          #+#    #+#             */
-/*   Updated: 2018/08/20 13:15:33 by aabelque         ###   ########.fr       */
+/*   Updated: 2018/08/21 15:06:15 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void				set_opencl_env(t_opencl *opcl)
 	opcl->output = NULL;
 	opcl->imgxy[0] = WIN_WIDTH;
 	opcl->imgxy[1] = WIN_HEIGHT;
-	//opcl->kernel = NULL;
+	opcl->kernel = NULL;
 }
 
 void				create_kernel(cl_program program, cl_kernel *kernel,
@@ -36,7 +36,7 @@ void				create_kernel(cl_program program, cl_kernel *kernel,
 {
 	cl_int			err;
 
-	if (!(*kernel = clCreateKernel(program, func, &err)))
+	if (!(*kernel = clCreateKernel(program, func, &err)) || err != CL_SUCCESS)
 	{
 		ft_putendl("Error: Failed to create kernel");
 		exit(EXIT_FAILURE);
@@ -71,7 +71,7 @@ void				create_prog(t_opencl *opcl)
 
 	opcl->kernel_src = get_kernel_source("./srcs/raytracer.cl");
 	if (!(opcl->program = clCreateProgramWithSource(opcl->context, 1,
-					(const char **)&opcl->kernel_src, NULL, &opcl->err)))
+					(const char **)&opcl->kernel_src, NULL, &opcl->err)) || opcl->err != CL_SUCCESS)
 	{
 		ft_putendl("Error: Failed to create program with source");
 		exit(EXIT_FAILURE);
@@ -80,7 +80,6 @@ void				create_prog(t_opencl *opcl)
 				NULL, NULL, NULL);
 	error_gpu(opcl);
 	free((void *)opcl->kernel_src);
-	create_kernel(opcl->program, &opcl->kernel, "pixel_raytracing_gpu");
 }
 
 void				opencl_init(t_opencl *opcl, t_env *env)
@@ -108,6 +107,5 @@ void				opencl_init(t_opencl *opcl, t_env *env)
 		ft_putendl("Error: Failed to create command queue");
 		exit(EXIT_FAILURE);
 	}
-	create_prog(opcl);
 	opencl_init2(opcl, env);
 }
