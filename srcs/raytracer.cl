@@ -681,7 +681,7 @@ __kernel void				pixel_raytracing_gpu(__write_only image2d_t out, global t_scene
 	float				closest_distance;
 	t_color				colorout;
 
-	colorout = (t_color){255, 255, 255, 0};
+	colorout = (t_color){0, 0, 0, 0};
 	x = get_global_id(0);
 	y = get_global_id(1);
 	idx = get_global_size(0) * get_global_id(1) + get_global_id(0);

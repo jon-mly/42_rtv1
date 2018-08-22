@@ -12,14 +12,14 @@ have an effect on the others objects
 CAMERA :
 
 camera {
-position 0 0 0
+position 5 10 0
 angles 0 0
 }
 
 LIGHTS :
 
 light {
-position 5 10 50
+position 5 10 30
 color 255 255 255
 }
 
@@ -37,14 +37,14 @@ color 20 50 150
 radius 5
 }
 
-cylinder {
+#cylinder {
 position 5 10 50
 color 20 50 150
 radius 5
 angles 0 0
 }
 
-#cone {
+cone {
 center 5 10 60
 color 20 50 150
 pi_divider 30
