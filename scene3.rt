@@ -37,14 +37,14 @@ color 20 50 150
 radius 5
 }
 
-#cylinder {
+cylinder {
 position 5 10 50
 color 20 50 150
 radius 5
 angles 0 0
 }
 
-cone {
+#cone {
 center 5 10 60
 color 20 50 150
 pi_divider 30

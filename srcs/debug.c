@@ -37,6 +37,10 @@ static t_color	debug_light_for_intersection(t_object light_ray, t_object ray, t_
 	t_color		color;
 
 	normal = shape_normal(ray, object);
+	printf("Normal ray   = %.2f, %.2f, %.2f\n", normal.x, normal.y, normal.z);
+	light_ray.intersectiion = ray.intersectiion;
+	normal = shape_normal(light_ray, object);
+	printf("Normal light = %.2f, %.2f, %.2f\n", normal.x, normal.y, normal.z);
 	cosinus = dot_product(ray.direction, normal);
 	if (cosinus >= 0)
 		return (light_ray.color);

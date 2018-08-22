@@ -90,9 +90,9 @@ t_vector		cone_normal(t_object ray, t_object cone)
 	if (points_norm(normal_point, distance) > points_norm(normal_point_2, distance))
 		normal_point = normal_point_2;
 	if (revert_cone_normal(ray, cone))
-		normal = vector_points(normal_point, distance);
-	else
 		normal = vector_points(distance, normal_point);
+	else
+		normal = vector_points(normal_point, distance);
 	normal = rotate_cone_angles(cone, normal, 1);
 	return (normalize_vector(normal));
 }

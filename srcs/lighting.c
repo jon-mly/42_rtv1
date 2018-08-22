@@ -71,11 +71,14 @@ static t_color	light_for_intersection(t_object light_ray, t_object ray, t_object
 	object, t_light light)
 {
 	t_vector	normal;
+	t_vector 	normal_to_ray;
 	float		cosinus;
 	float		distance;
 	t_color		color;
 
 	normal = shape_normal(ray, object);
+	if ((object.typpe == CONE || object.typpe == CYLINDER) && dot_product(shape_normal(ray, object), shape_normal(light_ray, object)) < 1 - 0.0001)
+		return ((t_color){0, 0, 0, 0});
 	// cosinus = dot_product(ray.direction, normal);
 	// if (cosinus >= 0)
 	// 	return (light_ray.color);
@@ -103,7 +106,7 @@ static t_color 	add_color(t_color base, t_color overlay)
 }
 
 /*
-** For each light (FIXME: multi-spots not supported so far), light ray created.
+** For each light, ray created.
 ** For each object that is not the intersected one, check if the ray
 ** intersects with the object. If so, the point on closest_object is shadowed.
 ** Else, the coloration calculated in the case there is no object in between is
@@ -135,7 +138,7 @@ t_color			get_color_on_intersection(t_object ray, t_object *closest_object,
 			// {
 				light_ray = intersect_object(light_ray,
 						(((t_object *)(env->scene.objects))[object_index]));
-				if (light_ray.intersect && light_ray.norm < norm - 0.001 &&
+				if (light_ray.intersect && light_ray.norm - norm < - 0.02 &&
 						light_ray.norm > 0)
 					is_direct_hit = 0;
 			// }
