@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/17 16:58:44 by aabelque          #+#    #+#             */
-/*   Updated: 2018/08/22 11:21:43 by aabelque         ###   ########.fr       */
+/*   Updated: 2018/08/22 12:04:02 by jmlynarc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,17 +83,17 @@ void			opencl_draw(t_opencl *opcl, t_env *e)
 	// else
 	// 	ft_putendl("Output enqueuing sucessful");
 
-	size_t globdim[3] = {WIN_WIDTH, WIN_HEIGHT, 1};
-	size_t offset[3] = {0, 0, 0};
-	opcl->err = clEnqueueReadImage(opcl->commands, opcl->output, CL_TRUE, offset,
-			globdim, 0, 0, e->img_str, 0, NULL, NULL);
+	size_t region[3] = {WIN_WIDTH, WIN_HEIGHT, 0};
+	size_t origin[3] = {0, 0, 0};
+	size_t row_pitch= WIN_WIDTH * sizeof(int);
+	size_t slice_pitch = 0;
+	opcl->err = clEnqueueReadImage(opcl->commands, opcl->output, CL_TRUE, origin,
+			region, row_pitch, slice_pitch, (void *)e->img_str, 0, NULL, NULL);
 	if (opcl->err != CL_SUCCESS)
 		printf("Error enqueuing output %d\n", opcl->err);
 	else
 		ft_putendl("Output enqueuing sucessful");
-		
-	size_t origin[3] = {WIN_WIDTH, WIN_HEIGHT, 1};
-	size_t region[3] = {0, 0, 0};
+
 
 	/*opcl->err = clEnqueueReadImage(opcl->commands, opcl->output, CL_TRUE, region,
 			origin, 0, 0, e->img_str, 0, NULL, NULL);
