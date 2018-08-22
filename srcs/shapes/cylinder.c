@@ -84,9 +84,9 @@ t_vector		cylinder_normal(t_object ray, t_object cylinder)
 	distance = rotate_cylinder_angles(cylinder, distance, 0);
 	normal_point = (t_point){0, 0, distance.z};
 	if (revert_cylinder_normal(ray, cylinder))
-		normal = vector_points(normal_point, distance);
-	else
 		normal = vector_points(distance, normal_point);
+	else
+		normal = vector_points(normal_point, distance);
 	normal = rotate_cylinder_angles(cylinder, normal, 1);
 	return (normalize_vector(normal));
 }

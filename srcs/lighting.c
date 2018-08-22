@@ -47,9 +47,9 @@ static int		color_coord(float cosinus, float distance, int obj_color,
 	float	k;
 	float	color_value;
 
-	distance_factor = 0.01 * pow(distance / 1.3, 2) + 1;
+	distance_factor = 0.02 * pow(distance / 1.3, 2) + 1;
 	k = cosinus / distance_factor;
-	color_value = (float)obj_color / 4 - k * (float)light_color;
+	color_value = ((float)obj_color / (4 * distance_factor)) - k * (float)light_color;
 	color_value = fmax(fmin(color_value, 255), 0);
 	return ((int)color_value);
 }
@@ -76,9 +76,9 @@ static t_color	light_for_intersection(t_object light_ray, t_object ray, t_object
 	t_color		color;
 
 	normal = shape_normal(ray, object);
-	cosinus = dot_product(ray.direction, normal);
-	if (cosinus >= 0)
-		return (light_ray.color);
+	// cosinus = dot_product(ray.direction, normal);
+	// if (cosinus >= 0)
+	// 	return (light_ray.color);
 	cosinus = dot_product(light_ray.direction, normal);
 	// if angle is higher than +/-PI/2, the point is shadowed whatsoever.
 	if (cosinus >= 0)
@@ -129,16 +129,16 @@ t_color			get_color_on_intersection(t_object ray, t_object *closest_object,
 				*closest_object);
 		norm = light_ray.norm;
 		object_index = -1;
-		while (++object_index < env->scene.objects_count)
+		while (++object_index < env->scene.objects_count && is_direct_hit)
 		{
-			if (&(((t_object *)(env->scene.objects))[object_index]) != closest_object)
-			{
+			// if (&(((t_object *)(env->scene.objects))[object_index]) != closest_object)
+			// {
 				light_ray = intersect_object(light_ray,
 						(((t_object *)(env->scene.objects))[object_index]));
-				if (light_ray.intersect && light_ray.norm < norm &&
+				if (light_ray.intersect && light_ray.norm < norm - 0.001 &&
 						light_ray.norm > 0)
 					is_direct_hit = 0;
-			}
+			// }
 		}
 		if (is_direct_hit)
 			coloration = add_color(coloration, light_for_intersection(light_ray, ray, *closest_object,

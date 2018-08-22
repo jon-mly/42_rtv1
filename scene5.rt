@@ -11,7 +11,7 @@ the object
 CAMERA :
 
 camera {
-position 0 6 0
+position 0 0 0
 angles 0 0
 }
 

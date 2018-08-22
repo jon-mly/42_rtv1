@@ -1,12 +1,12 @@
 #include "rtv1.h"
-/*
+
 static t_object	debug_init_light_ray(t_light light, t_object ray, t_object object)
 {
 	t_object		light_ray;
 	t_vector	direction;
 
-	light_ray.origin = light.position;
-	direction = vector_points(light_ray.origin, ray.intersection);
+	light_ray.origin = light.posiition;
+	direction = vector_points(light_ray.origin, ray.intersectiion);
 	light_ray.norm = vector_norm(direction);
 	light_ray.direction = normalize_vector(direction);
 	light_ray.intersect = FALSE;
@@ -14,28 +14,62 @@ static t_object	debug_init_light_ray(t_light light, t_object ray, t_object objec
 	return (light_ray);
 }
 
+static int		debug_color_coord(float cosinus, float distance, int obj_color,
+	int light_color)
+{
+	float	distance_factor;
+	float	k;
+	float	color_value;
+
+	distance_factor = 0.01 * pow(distance / 1.3, 2) + 1;
+	k = cosinus / distance_factor;
+	color_value = (float)obj_color / 4 - k * (float)light_color;
+	color_value = fmax(fmin(color_value, 255), 0);
+	return ((int)color_value);
+}
+
 static t_color	debug_light_for_intersection(t_object light_ray, t_object ray, t_object
 	object, t_light light)
 {
 	t_vector	normal;
 	float		cosinus;
+	float		distance;
 	t_color		color;
 
 	normal = shape_normal(ray, object);
+	cosinus = dot_product(ray.direction, normal);
+	if (cosinus >= 0)
+		return (light_ray.color);
 	cosinus = dot_product(light_ray.direction, normal);
 	// if angle is higher than +/-PI/2, the point is shadowed whatsoever.
-	printf("cosinus = %.2f\n", cosinus);
 	if (cosinus >= 0)
-	{
-		printf("Returned for cosinus higher than 0.\n");
 		return (light_ray.color);
-	}
-	color.r = (int)(fmax(fmin((double)object.color.r / (3) - cosinus * (double)light.color.r / 2, 255), 0));
-	color.g = (int)(fmax(fmin((double)object.color.g / (3) - cosinus * (double)light.color.g / 2, 255), 0));
-	color.b = (int)(fmax(fmin((double)object.color.b / (3) - cosinus * (double)light.color.b / 2, 255), 0));
+	distance = points_norm(ray.intersectiion, light_ray.origin);
+	color.r = debug_color_coord(cosinus, distance, object.color.r, light.color.r);
+	color.g = debug_color_coord(cosinus, distance, object.color.g, light.color.g);
+	color.b = debug_color_coord(cosinus, distance, object.color.b, light.color.b);
 	color.a = 0;
 	return (color);
 }
+
+static t_color 	debug_add_color(t_color base, t_color overlay)
+{
+	t_color 	final;
+
+	final.r = (int)fmin((double)(base.r + overlay.r), (double)255);
+	final.g = (int)fmin((double)(base.g + overlay.g), (double)255);
+	final.b = (int)fmin((double)(base.b + overlay.b), (double)255);
+	final.a = (int)fmin((double)(base.a + overlay.a), (double)255);
+	return (final);
+}
+
+/*
+** For each light (FIXME: multi-spots not supported so far), light ray created.
+** For each object that is not the intersected one, check if the ray
+** intersects with the object. If so, the point on closest_object is shadowed.
+** Else, the coloration calculated in the case there is no object in between is
+** returned and applied.
+*/
 
 static t_color			debug_get_color_on_intersection(t_object ray, t_object *closest_object,
 	t_env *env)
@@ -45,35 +79,39 @@ static t_color			debug_get_color_on_intersection(t_object ray, t_object *closest
 	int			object_index;
 	float		norm;
 	t_color		coloration;
+	int 		is_direct_hit;
 
 	light_index = -1;
-	coloration = closest_object->color;
+	coloration = color(closest_object->color.r / 4, closest_object->color.g / 4, closest_object->color.b / 4, 0);
 	while (++light_index < env->scene.lights_count)
 	{
+		is_direct_hit = 1;
 		light_ray = debug_init_light_ray(((t_light*)(env->scene.lights))[light_index], ray,
 				*closest_object);
 		norm = light_ray.norm;
-		coloration = debug_light_for_intersection(light_ray, ray, *closest_object,
-				(((t_light)(env->scene.lights))[light_index]));
 		object_index = -1;
 		while (++object_index < env->scene.objects_count)
 		{
-			if (&(env->scene.objects[object_index]) != closest_object)
-			{
+//			if (&(((t_object *)(env->scene.objects))[object_index]) != closest_object)
+//			{
 				light_ray = intersect_object(light_ray,
-						(((t_object)(env->scene.objects))[object_index]));
-				if (light_ray.intersect && light_ray.norm < norm &&
+						(((t_object *)(env->scene.objects))[object_index]));
+				if (light_ray.intersect && light_ray.norm <= norm &&
 						light_ray.norm > 0)
 				{
-					printf("Shadowed because of closer object : %s\n", env->scene.objects[object_index].name);
-					return (light_ray.color);
+					is_direct_hit = 0;
+					printf("Has hit %s\n", (((t_object *)(env->scene.objects))[object_index]).name);
 				}
-			}
+//			}
 		}
+		printf("Is direct hit ? %d\n", is_direct_hit);
+		if (is_direct_hit)
+			coloration = debug_add_color(coloration, debug_light_for_intersection(light_ray, ray, *closest_object,
+				(((t_light*)(env->scene.lights))[light_index])));
 	}
-	printf("Point of object is directly exposed to light source\n");
 	return (coloration);
 }
+
 
 void	debug_raytracing(int x, int y, t_env *env)
 {
@@ -97,28 +135,13 @@ void	debug_raytracing(int x, int y, t_env *env)
 	if (closest_object != NULL)
 	{
 		ray.norm = closest_distance;
-		ray.intersection.x = ray.origin.x + ray.direction.x * closest_distance;
-		ray.intersection.y = ray.origin.y + ray.direction.y * closest_distance;
-		ray.intersection.z = ray.origin.z + ray.direction.z * closest_distance;
+		ray.intersectiion.x = ray.origin.x + ray.direction.x * closest_distance;
+		ray.intersectiion.y = ray.origin.y + ray.direction.y * closest_distance;
+		ray.intersectiion.z = ray.origin.z + ray.direction.z * closest_distance;
 		printf("Closest object at %.2f, named %s\n", ray.norm, closest_object->name);
 		debug_get_color_on_intersection(ray, closest_object, env);
 	}
 }
-
-void	test_rotations(void)
-{
-	t_vector vector = (t_vector){1, 1, 1};
-	printf("Vector %.2f %.2f %.2f -> ", vector.x, vector.y, vector.z);
-	vector = vect_rotate_x(vector, M_PI/3, 0);
-	vector = vect_rotate_y(vector, M_PI/3, 0);
-	vector = vect_rotate_z(vector, M_PI/3, 0);
-	printf("%.2f %.2f %.2f -> ", vector.x, vector.y, vector.z);
-	vector = vect_rotate_z(vector, M_PI/3, 1);
-	vector = vect_rotate_y(vector, M_PI/3, 1);
-	vector = vect_rotate_x(vector, M_PI/3, 1);
-	printf("%.2f %.2f %.2f \n", vector.x, vector.y, vector.z);
-}
-*/
 
 int		debug_mouse_event(int event, int x, int y, void *param)
 {
@@ -127,8 +150,6 @@ int		debug_mouse_event(int event, int x, int y, void *param)
 	env = (t_env*)param;
 	if (event != 1)
 		return 0;
-//	debug_raytracing(x, y, env);
-	ft_putendl("Window is active");
-//	test_rotations();
+	debug_raytracing(x, y, env);
 	return 0;
 }
