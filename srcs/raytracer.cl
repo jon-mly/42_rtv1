@@ -708,7 +708,7 @@ __kernel void				pixel_raytracing_gpu(__write_only image2d_t out, global t_scene
 		//out[idx] = color_to_int(get_color_on_intersection(ray, &obj[closest_object_index], scene, light, obj));
 		colorout = get_color_on_intersection(ray, &obj[closest_object_index], scene, light, obj);
 	}
-	//write_imagei(out, (int2)(x, y), (int4)(colorout.b, colorout.g, colorout.r, 0));
-	else
-		out[idx] = color_to_int(colorout);
+	write_imagei(out, (int2)(x, y), (int4)(colorout.b, colorout.g, colorout.r, 0));
+	//else
+	//	out[idx] = color_to_int(colorout);
 }

@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/17 17:07:23 by aabelque          #+#    #+#             */
-/*   Updated: 2018/08/22 11:23:22 by aabelque         ###   ########.fr       */
+/*   Updated: 2018/08/22 12:17:43 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,15 +29,12 @@ void	opencl_init2(t_opencl *opcl, t_env *e)
 		.image_row_pitch = 0, .image_slice_pitch = 0,
 		.num_mip_levels = 0, .num_samples = 0, .buffer = NULL};
 
-	/*opcl->output = clCreateImage(opcl->context,
+	opcl->output = clCreateImage(opcl->context,
 			CL_MEM_WRITE_ONLY | CL_MEM_ALLOC_HOST_PTR, &opcl->format,
 			&opcl->desc, NULL, &opcl->err);
 	if (opcl->err != CL_SUCCESS)
 		printf("Error create buffer image %d\n", opcl->err);
-*/
-	opcl->output = clCreateImage(opcl->context,
-			CL_MEM_WRITE_ONLY | CL_MEM_ALLOC_HOST_PTR, &opcl->format,
-			&opcl->desc, NULL, &opcl->err);
+
 	opcl->structobj = clCreateBuffer(opcl->context,
 			CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
 			sizeof(t_object) * e->scene.objects_count, e->scene.objects, NULL);
@@ -99,10 +96,10 @@ void	opencl_init2(t_opencl *opcl, t_env *e)
 	//printf("Camera buffer size: %zu\n", mainsizebuf);
 	//printf("Camera buffer memory address: %p\n", mainmem);
 
-	opcl->output = clCreateBuffer(opcl->context, CL_MEM_WRITE_ONLY,
-			sizeof(int) * opcl->img_s, NULL, &opcl->err);
-	if (opcl->err != CL_SUCCESS)
-		printf("Error create buffer output %d\n", opcl->err);
+//	opcl->output = clCreateBuffer(opcl->context, CL_MEM_WRITE_ONLY,
+//			sizeof(int) * opcl->img_s, NULL, &opcl->err);
+//	if (opcl->err != CL_SUCCESS)
+//		printf("Error create buffer output %d\n", opcl->err);
 	create_prog(opcl);
 	create_kernel(opcl->program, &opcl->kernel, "pixel_raytracing_gpu");
 	//opcl->output = clCreateBuffer(opcl->context, CL_MEM_WRITE_ONLY,

@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/17 16:58:44 by aabelque          #+#    #+#             */
-/*   Updated: 2018/08/22 11:21:43 by aabelque         ###   ########.fr       */
+/*   Updated: 2018/08/22 12:17:00 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,20 +83,11 @@ void			opencl_draw(t_opencl *opcl, t_env *e)
 	// else
 	// 	ft_putendl("Output enqueuing sucessful");
 
-	size_t globdim[3] = {WIN_WIDTH, WIN_HEIGHT, 1};
-	size_t offset[3] = {0, 0, 0};
-	opcl->err = clEnqueueReadImage(opcl->commands, opcl->output, CL_TRUE, offset,
-			globdim, 0, 0, e->img_str, 0, NULL, NULL);
-	if (opcl->err != CL_SUCCESS)
-		printf("Error enqueuing output %d\n", opcl->err);
-	else
-		ft_putendl("Output enqueuing sucessful");
-		
 	size_t origin[3] = {WIN_WIDTH, WIN_HEIGHT, 1};
 	size_t region[3] = {0, 0, 0};
 
-	/*opcl->err = clEnqueueReadImage(opcl->commands, opcl->output, CL_TRUE, region,
-			origin, 0, 0, e->img_str, 0, NULL, NULL);
+	opcl->err = clEnqueueReadImage(opcl->commands, opcl->output, CL_TRUE, origin,
+			region, 0, 0, e->img_str, 0, NULL, NULL);
 	if (opcl->err != CL_SUCCESS)
 		printf("Error enqueuing output %d\n", opcl->err);
 	else
@@ -107,5 +98,5 @@ void			opencl_draw(t_opencl *opcl, t_env *e)
 	cl_ulong maxMemAlloc;
 	clGetDeviceInfo(opcl->device_id, CL_DEVICE_MAX_MEM_ALLOC_SIZE,
 			sizeof(cl_ulong), &maxMemAlloc, NULL);
-	//printf("Max mem size is: %llu\n", maxMemAlloc);*/
+	//printf("Max mem size is: %llu\n", maxMemAlloc);
 }
