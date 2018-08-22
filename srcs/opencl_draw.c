@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/17 16:58:44 by aabelque          #+#    #+#             */
-/*   Updated: 2018/08/21 14:02:34 by aabelque         ###   ########.fr       */
+/*   Updated: 2018/08/22 11:21:43 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,10 @@ void			opencl_draw(t_opencl *opcl, t_env *e)
 	opcl->err |= clSetKernelArg(opcl->kernel, 4, sizeof(cl_mem),
 			&opcl->structlight);
 	if (opcl->err != CL_SUCCESS)
-		printf("Error kernel Arg light %d\n", opcl->err);
-
+		printf("Error enqueuing args array %d\n", opcl->err);
+	else
+		ft_putendl("Args enqueuing sucessful");
+		
 	opcl->err = clEnqueueNDRangeKernel(opcl->commands, opcl->kernel,
 			2, NULL, opcl->imgxy, NULL, 0, NULL, NULL);
 	if (opcl->err != CL_SUCCESS)
@@ -74,8 +76,17 @@ void			opencl_draw(t_opencl *opcl, t_env *e)
 	else
 		ft_putendl("XY enqueuing sucessful");
 		
-	opcl->err = clEnqueueReadBuffer(opcl->commands, opcl->output, CL_TRUE, 0,
-			sizeof(int) * opcl->img_s, e->img_str, 0, NULL, NULL);
+	// opcl->err = clEnqueueReadBuffer(opcl->commands, opcl->output, CL_TRUE, 0,
+	// 		ft_strlen((char *)e->img_str), e->img_str, 0, NULL, NULL);
+	// if (opcl->err != CL_SUCCESS)
+	// 	printf("Error enqueuing output %d\n", opcl->err);
+	// else
+	// 	ft_putendl("Output enqueuing sucessful");
+
+	size_t globdim[3] = {WIN_WIDTH, WIN_HEIGHT, 1};
+	size_t offset[3] = {0, 0, 0};
+	opcl->err = clEnqueueReadImage(opcl->commands, opcl->output, CL_TRUE, offset,
+			globdim, 0, 0, e->img_str, 0, NULL, NULL);
 	if (opcl->err != CL_SUCCESS)
 		printf("Error enqueuing output %d\n", opcl->err);
 	else

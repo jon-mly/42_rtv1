@@ -13,7 +13,7 @@ static t_camera			get_default_camera_parameters(t_env *env)
 
 	camera.width = 3;
 	camera.height = 2;
-	camera.plane_dist = 0.8;
+	camera.plane_dist = 1.7;
 	camera.spot = point(0, 0, 0);
 	camera.direction = normalize_vector(vector(0, 0, 1));
 	camera.posiition = vector(-camera.width / 2, camera.height / 2, camera.plane_dist);

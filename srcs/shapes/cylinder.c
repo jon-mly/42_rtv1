@@ -36,6 +36,19 @@ t_vector	rotate_cylinder_angles(t_object cylinder, t_vector vect,
 	return (vect);
 }
 
+static int	revert_cylinder_normal(t_object ray, t_object cylinder)
+{
+	t_vector 	light_to_center;
+	float 		border;
+	float		light_distance;
+
+	light_to_center = vector_points(cylinder.point, ray.origin);
+	rotate_cylinder_angles(cylinder, light_to_center, 0);
+	border = pow(cylinder.radius, 2);
+	light_distance = pow(light_to_center.x, 2) + pow(light_to_center.y, 2);
+	return (light_distance < border);
+}
+
 /*
 ** Calculate the norm of the ray from the origin of it to the intersection
 ** with the cylinder given in parameter.
@@ -61,30 +74,6 @@ t_object		cylinder_intersection(t_object ray, t_object cylinder)
 	return (ray);
 }
 
-/*
-t_vector		cylinder_normal(t_ray ray, t_cylinder cylinder)
-{
-	t_vector	normal;
-	t_point		pt_normal;
-	t_point		pt_normal_bis;
-	double		dist_normal;
-
-	dist_normal = sqrt(pow(points_norm(ray.intersection, cylinder.point), 2) -
-			pow(cylinder.radius, 2));
-	pt_normal.x = cylinder.point.x + dist_normal * cylinder.direction.x;
-	pt_normal.y = cylinder.point.y + dist_normal * cylinder.direction.y;
-	pt_normal.z = cylinder.point.z + dist_normal * cylinder.direction.z;
-	pt_normal_bis.x = cylinder.point.x - dist_normal * cylinder.direction.x;
-	pt_normal_bis.y = cylinder.point.y - dist_normal * cylinder.direction.y;
-	pt_normal_bis.z = cylinder.point.z - dist_normal * cylinder.direction.z;
-	if (points_norm(ray.intersection, pt_normal) > points_norm(ray.intersection,
-				pt_normal_bis))
-		pt_normal = pt_normal_bis;
-	normal = vector_points(pt_normal, ray.intersection);
-	return (normalize_vector(normal));
-}
-*/
-
 t_vector		cylinder_normal(t_object ray, t_object cylinder)
 {
 	t_vector	distance;
@@ -94,7 +83,10 @@ t_vector		cylinder_normal(t_object ray, t_object cylinder)
 	distance = vector_points(cylinder.point, ray.intersectiion);
 	distance = rotate_cylinder_angles(cylinder, distance, 0);
 	normal_point = (t_point){0, 0, distance.z};
-	normal = vector_points(normal_point, distance);
+	if (revert_cylinder_normal(ray, cylinder))
+		normal = vector_points(normal_point, distance);
+	else
+		normal = vector_points(distance, normal_point);
 	normal = rotate_cylinder_angles(cylinder, normal, 1);
 	return (normalize_vector(normal));
 }

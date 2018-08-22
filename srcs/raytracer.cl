@@ -98,8 +98,9 @@ t_object		intersect_object(t_object ray, t_object object);
 t_vector		normalize_vector(t_vector vec);
 t_vector		vector_points(t_point p1, t_point p2);
 t_object		init_ray(int x, int y, t_camera camera);
-t_vector		vect_rotate_x(t_vector vec, float angle);
-t_vector		vect_rotate_y(t_vector vec, float angle);
+t_vector	vect_rotate_x(t_vector vector, float angle, int inverse);
+t_vector	vect_rotate_y(t_vector vector, float angle, int inverse);
+t_vector	vect_rotate_z(t_vector vector, float angle, int inverse);
 float			vector_norm(t_vector vec);
 t_vector		rotate_cone_angles(t_object cone, t_vector vect, int revers);
 float			dot_product(t_vector vect_1, t_vector vect_2);
@@ -229,23 +230,60 @@ t_vector	vector_points(t_point p1, t_point p2)
 	return (vec);
 }
 
-t_vector	vect_rotate_x(t_vector vec, float angle)
+t_vector	vect_rotate_x(t_vector vector, float angle, int inverse)
 {
 	t_vector	rotated;
 
-	rotated.x = vec.x;
-	rotated.y = vec.y * cos((float)(angle)) + vec.z * sin((float)(angle));
-	rotated.z = -vec.y * sin((float)(angle)) + vec.z * cos((float)(angle));
+	if (!inverse)
+	{
+		rotated.x = vector.x;
+		rotated.y = vector.y * cos(angle) + vector.z * sin(angle);
+		rotated.z = -vector.y * sin(angle) + vector.z * cos(angle);
+	}
+	else
+	{
+		rotated.x = vector.x;
+		rotated.y = cos(angle) * vector.y - sin(angle) * vector.z;
+		rotated.z = sin(angle) * vector.y + cos(angle) * vector.z;
+	}
 	return (rotated);
 }
 
-t_vector	vect_rotate_y(t_vector vec, float angle)
+t_vector	vect_rotate_z(t_vector vector, float angle, int inverse)
 {
 	t_vector	rotated;
 
-	rotated.x = vec.x * cos((float)(angle)) - vec.z * sin((float)(angle));
-	rotated.y = vec.y;
-	rotated.z = vec.x * sin((float)(angle)) + vec.z * cos((float)(angle));
+	if (!inverse)
+	{
+		rotated.x = vector.x * cos(angle) + vector.y * sin(angle);
+		rotated.y = -vector.x * sin(angle) + vector.y * cos(angle);
+		rotated.z = vector.z;
+	}
+	else
+	{
+		rotated.x = cos(angle) * vector.x - sin(angle) * vector.y;
+		rotated.y = sin(angle) * vector.x + cos(angle) * vector.y;
+		rotated.z = vector.z;
+	}
+	return (rotated);
+}
+
+t_vector	vect_rotate_y(t_vector vector, float angle, int inverse)
+{
+	t_vector	rotated;
+
+	if (!inverse)
+	{
+		rotated.x = vector.x * cos(angle) - vector.z * sin(angle);
+		rotated.y = vector.y;
+		rotated.z = vector.x * sin(angle) + vector.z * cos(angle);
+	}
+	else
+	{
+		rotated.x = cos(angle) * vector.x + sin(angle) * vector.z;
+		rotated.y = vector.y;
+		rotated.z = -sin(angle) * vector.x + cos(angle) * vector.z;
+	}
 	return (rotated);
 }
 
@@ -257,17 +295,33 @@ float		vector_norm(t_vector vec)
 	return (norm);
 }
 
-t_vector	rotate_cone_angles(t_object cone, t_vector vect, int revers)
+t_vector	rotate_cone_angles(t_object cone, t_vector vect,
+			int reverse)
 {
-	if (!revers)
+	if (!reverse)
 	{
-		vect = vect_rotate_y(vect, -cone.y_angle);
-		vect = vect_rotate_x(vect, -cone.x_angle);
+		vect = vect_rotate_y(vect, cone.y_angle, reverse);
+		vect = vect_rotate_x(vect, cone.x_angle, reverse);
 	}
 	else
 	{
-		vect = vect_rotate_y(vect, cone.y_angle);
-		vect = vect_rotate_x(vect, cone.x_angle);
+		vect = vect_rotate_x(vect, cone.x_angle, reverse);
+		vect = vect_rotate_y(vect, cone.y_angle, reverse);
+	}
+	return (vect);
+}
+
+t_vector	rotate_cylinder_angles(t_object cylinder, t_vector vect,
+			int reverse)
+{	if (!reverse)
+	{
+		vect = vect_rotate_y(vect, cylinder.y_angle, reverse);
+		vect = vect_rotate_x(vect, cylinder.x_angle, reverse);
+	}
+	else
+	{
+		vect = vect_rotate_x(vect, cylinder.x_angle, reverse);
+		vect = vect_rotate_y(vect, cylinder.y_angle, reverse);
 	}
 	return (vect);
 }
@@ -282,38 +336,49 @@ float		dot_product(t_vector vect_1, t_vector vect_2)
 	return (product);
 }
 
+/*
+** Solves a quadratic equation but with the aim of returning a distance, which
+** has to be a positive value.
+** If the value is negative, the equation has no solution.
+** Several cases are to be distinguished, in order in the function's body :
+** - discriminant < 0 : the ray does not intersect the object
+** From this point and for simplication, both x1 and x2 are replaced
+** if needed so that x1 <= x2.
+** - x1 <= 0 and x2 <= 0 : both intersections are behind the camera,
+** so there is no intersection to be represented on screen.
+** - x2 > 0 and x1 <= 0 : the camera is inside the object, with one
+** point behind the camera, and one in front of it. The one to be
+** represented is the one in front of it, so the highest norm
+** value.
+** - x1 > 0 and x2 > 0 : both intersections are beyond the camera,
+** the closest one is to be retained.
+*/
+
 float		closest_distance_quadratic(float a, float b, float c)
 {
 	float		discriminant;
 	float		x1;
 	float		x2;
+	float 		buffer;
 
 	discriminant = b * b - 4 * a * c;
 	if (discriminant < 0)
 		return (-1);
-	x1 = (-b - sqrt((float)(discriminant))) / (2 * a);
-	x2 = (-b + sqrt((float)(discriminant))) / (2 * a);
-	if (x1 < 0 && x2 < 0)
+	x1 = (-b - sqrt(discriminant)) / (2 * a);
+	x2 = (-b + sqrt(discriminant)) / (2 * a);
+	if (x2 < x1)
+	{
+		buffer = x2;
+		x2 = x1;
+		x1 = buffer;
+	}
+	if (x1 <= 0 && x2 <= 0)
 		return (-1);
-	x1 = fmax((float)x1, (float)0.);
-	x2 = fmax((float)x2, (float)0.);
-	return (fmin((float)x1, (float)x2));
+	else if (x2 > 0 && x1 <= 0)
+		return (x2);
+	return (x1);
 }
 
-t_vector	rotate_cylinder_angles(t_object cylinder, t_vector vect, int revers)
-{
-	if (!revers)
-	{
-		vect = vect_rotate_y(vect, -cylinder.y_angle);
-		vect = vect_rotate_x(vect, -cylinder.x_angle);
-	}
-	else
-	{
-		vect = vect_rotate_y(vect, cylinder.y_angle);
-		vect = vect_rotate_x(vect, cylinder.x_angle);
-	}
-	return (vect);
-}
 
 float		points_norm(t_point p1, t_point p2)
 {
@@ -604,7 +669,7 @@ t_object		init_ray(int x, int y, t_camera camera)
 	return (ray);
 }
 
-__kernel void				pixel_raytracing_gpu(global int *out, global t_scene *scene, global t_camera *camera, global t_object *obj, global t_light *light)
+__kernel void				pixel_raytracing_gpu(__write_only image2d_t out, global t_scene *scene, global t_camera *camera, global t_object *obj, global t_light *light)
 {
 	int					x;
 	int					y;
@@ -636,13 +701,12 @@ __kernel void				pixel_raytracing_gpu(global int *out, global t_scene *scene, gl
 	// if (closest_object != NULL)
 	if (closest_object_index != -1)
 	{
-		//printf("closest object : %d\n", closest_object_index);
 		ray.norm = closest_distance;
 		ray.intersectiion.x = ray.origin.x + ray.direction.x * closest_distance;
 		ray.intersectiion.y = ray.origin.y + ray.direction.y * closest_distance;
 		ray.intersectiion.z = ray.origin.z + ray.direction.z * closest_distance;
-		out[idx] = color_to_int(get_color_on_intersection(ray, &obj[closest_object_index], scene, light, obj));
-		//colorout = get_color_on_intersection(ray, &obj[closest_object_index], scene, light, obj);
+		//out[idx] = color_to_int(get_color_on_intersection(ray, &obj[closest_object_index], scene, light, obj));
+		colorout = get_color_on_intersection(ray, &obj[closest_object_index], scene, light, obj);
 	}
 	//write_imagei(out, (int2)(x, y), (int4)(colorout.b, colorout.g, colorout.r, 0));
 	else

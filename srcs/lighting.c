@@ -54,6 +54,19 @@ static int		color_coord(float cosinus, float distance, int obj_color,
 	return ((int)color_value);
 }
 
+/*
+** Returns the color that has to be applied if the object is enlighted, or its
+** shadowed color otherwise.
+** - normal: normal vector on the surface. Is oriented outside if the light's
+** origin is out of the object, else, the normal will be oriented to the
+** inside of the object (for sphere, cones and cylinders).
+** - for some angles, the point will be naturally shadowed :
+** 	1) 	if the ngle between the light ray and the normal is inferior or equal
+** 		to +/-90 degrees.
+** 	2)	if the angle between the normal (=> the side that should be enlightened)
+** 		and the camera's vector is inferior or equal to +/- 90 degrees.
+*/
+
 static t_color	light_for_intersection(t_object light_ray, t_object ray, t_object
 	object, t_light light)
 {
@@ -63,6 +76,9 @@ static t_color	light_for_intersection(t_object light_ray, t_object ray, t_object
 	t_color		color;
 
 	normal = shape_normal(ray, object);
+	cosinus = dot_product(ray.direction, normal);
+	if (cosinus >= 0)
+		return (light_ray.color);
 	cosinus = dot_product(light_ray.direction, normal);
 	// if angle is higher than +/-PI/2, the point is shadowed whatsoever.
 	if (cosinus >= 0)
