@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/18 11:30:12 by aabelque          #+#    #+#             */
-/*   Updated: 2018/08/22 12:23:36 by aabelque         ###   ########.fr       */
+/*   Updated: 2018/08/23 15:18:39 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,10 @@ void				set_opencl_env(t_opencl *opcl)
 	opcl->imgxy[0] = WIN_WIDTH;
 	opcl->imgxy[1] = WIN_HEIGHT;
 	opcl->kernel = NULL;
+	opcl->origin[0] = WIN_WIDTH;
+	opcl->origin[1] = WIN_HEIGHT;
+	opcl->origin[2] = 1;
+	ft_bzero(opcl->region, sizeof(size_t) * 3);
 }
 
 void				create_kernel(cl_program program, cl_kernel *kernel,
@@ -71,7 +75,8 @@ void				create_prog(t_opencl *opcl)
 
 	opcl->kernel_src = get_kernel_source("./srcs/raytracer.cl");
 	if (!(opcl->program = clCreateProgramWithSource(opcl->context, 1,
-					(const char **)&opcl->kernel_src, NULL, &opcl->err)) || opcl->err != CL_SUCCESS)
+					(const char **)&opcl->kernel_src, NULL, &opcl->err))
+			|| opcl->err != CL_SUCCESS)
 	{
 		ft_putendl("Error: Failed to create program with source");
 		exit(EXIT_FAILURE);

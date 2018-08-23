@@ -32,8 +32,10 @@ SRCS = main.c \
 		ft_ocl_init_error.c \
 		ft_ocl_kernel_error.c \
 		error_gpu.c \
+		init_obj.c \
 		$(HELPER_REP)constructors.c \
 		$(HELPER_REP)math_tools.c \
+		$(HELPER_REP)math_tools2.c \
 		$(HELPER_REP)parser_helper.c \
 		$(PARSER_REP)light_creation.c \
 		$(PARSER_REP)object_creation.c \

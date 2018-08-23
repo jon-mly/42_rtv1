@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   sphere.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/08/23 15:29:44 by aabelque          #+#    #+#             */
+/*   Updated: 2018/08/23 15:30:59 by aabelque         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "rtv1.h"
 
 /*
@@ -5,9 +17,9 @@
 ** meaning that only the inner surface is to be enlighted.
 */
 
-static int 		revert_sphere_normal(t_object ray, t_object sphere)
+static int		revert_sphere_normal(t_object ray, t_object sphere)
 {
-	t_vector 	distance_vector;
+	t_vector	distance_vector;
 
 	distance_vector = vector_points(ray.origin, sphere.center);
 	return (vector_norm(distance_vector) < sphere.radius);

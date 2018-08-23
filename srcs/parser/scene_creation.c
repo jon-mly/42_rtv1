@@ -6,7 +6,7 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/02 16:48:17 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/08/07 17:00:31 by aabelque         ###   ########.fr       */
+/*   Updated: 2018/08/23 14:56:09 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 ** By default, the scene is empty.
 */
 
-static t_object *expand_objects(t_object *objects, int previous_count)
+static t_object		*expand_objects(t_object *objects, int previous_count)
 {
 	t_object		*new_list;
 	int				i;
@@ -37,7 +37,7 @@ static t_object *expand_objects(t_object *objects, int previous_count)
 	return (new_list);
 }
 
-static t_scene	extend_scene(int fd, t_scene scene, char **line, t_env *env)
+static t_scene		extend_scene(int fd, t_scene scene, char **line, t_env *env)
 {
 	if (line_len(line) != 2 || !(ft_strequ(line[1], "{")))
 		return (scene);
@@ -51,14 +51,14 @@ static t_scene	extend_scene(int fd, t_scene scene, char **line, t_env *env)
 	{
 		scene.objects_count++;
 		scene.objects = expand_objects(scene.objects, scene.objects_count);
-		((t_object *)(scene.objects))[scene.objects_count - 1] = add_new_object(fd, line[0]);
+		scene.objects[scene.objects_count - 1] = add_new_object(fd, line[0]);
 	}
 	else if (ft_strequ(line[0], "camera"))
 		env->camera = set_camera(fd, env);
 	return (scene);
 }
 
-t_scene			create_scene(t_env *env, char *file_name)
+t_scene				create_scene(t_env *env, char *file_name)
 {
 	int			fd;
 	char		**line;

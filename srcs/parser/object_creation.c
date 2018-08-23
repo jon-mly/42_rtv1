@@ -6,7 +6,7 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/02 16:09:07 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/08/21 15:05:33 by aabelque         ###   ########.fr       */
+/*   Updated: 2018/08/23 15:18:43 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,11 +102,7 @@ static t_object		add_new_cone(int fd)
 	char		**line;
 	t_object	cone;
 
-	cone.typpe = CONE;
-	cone.angle = M_PI / 6;
-	cone.direction = normalize_vector(vector(0, 1, 0));
-	cone.center = point(0, 0, 0);
-	cone.color = color(255, 255, 255, 0);
+	init_cone(&cone);
 	while ((line = split_new_line(fd)) && ft_strequ(line[0], "}") == FALSE)
 	{
 		if (line_len(line) == 2 && ft_strequ(line[0], "pi_divider"))
@@ -127,7 +123,6 @@ static t_object		add_new_cone(int fd)
 		}
 		clear_line(line);
 	}
-	cone.name = "Cone";
 	return (cone);
 }
 
@@ -149,12 +144,7 @@ static t_object		add_new_cylinder(int fd)
 	char		**line;
 	t_object	cylinder;
 
-	cylinder.typpe = CYLINDER;
-	cylinder.radius = 1;
-	cylinder.direction = normalize_vector(vector(0, 1, 0));
-	cylinder.point = point(0, 0, 0);
-	cylinder.color = color(255, 255, 255, 0);
-	// TODO: add default values for angles
+	init_cylinder(&cylinder);
 	while ((line = split_new_line(fd)) && ft_strequ(line[0], "}") == FALSE)
 	{
 		if (line_len(line) == 2 && ft_strequ(line[0], "radius"))
@@ -175,7 +165,6 @@ static t_object		add_new_cylinder(int fd)
 		}
 		clear_line(line);
 	}
-	cylinder.name = "Cylinder";
 	return (cylinder);
 }
 

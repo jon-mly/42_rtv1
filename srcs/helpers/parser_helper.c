@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_helper.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/08/23 14:20:22 by aabelque          #+#    #+#             */
+/*   Updated: 2018/08/23 17:36:25 by aabelque         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "rtv1.h"
 
 int			line_len(char **line)
@@ -18,7 +30,7 @@ void		clear_line(char **line)
 
 	i = -1;
 	while (line[++i])
-		ft_memdel((void**)(&line[i]));
+		ft_memdel((void**)&(line[i]));
 	ft_memdel((void**)&line);
 }
 

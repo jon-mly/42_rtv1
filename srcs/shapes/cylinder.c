@@ -6,7 +6,7 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/22 11:46:18 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/08/09 15:16:26 by aabelque         ###   ########.fr       */
+/*   Updated: 2018/08/23 15:42:16 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,10 @@
 ** - unit : unit vector, either (1,0,0)
 */
 
-t_vector	rotate_cylinder_angles(t_object cylinder, t_vector vect,
+t_vector		rotate_cylinder_angles(t_object cylinder, t_vector vect,
 			int reverse)
-{	if (!reverse)
+{
+	if (!reverse)
 	{
 		vect = vect_rotate_y(vect, cylinder.y_angle, reverse);
 		vect = vect_rotate_x(vect, cylinder.x_angle, reverse);
@@ -36,10 +37,10 @@ t_vector	rotate_cylinder_angles(t_object cylinder, t_vector vect,
 	return (vect);
 }
 
-static int	revert_cylinder_normal(t_object ray, t_object cylinder)
+static int		revert_cylinder_normal(t_object ray, t_object cylinder)
 {
-	t_vector 	light_to_center;
-	float 		border;
+	t_vector	light_to_center;
+	float		border;
 	float		light_distance;
 
 	light_to_center = vector_points(cylinder.point, ray.origin);

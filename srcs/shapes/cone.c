@@ -6,13 +6,13 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/22 11:46:14 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/08/09 15:16:47 by aabelque         ###   ########.fr       */
+/*   Updated: 2018/08/23 15:36:14 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rtv1.h"
 
-t_vector	rotate_cone_angles(t_object cone, t_vector vect,
+t_vector		rotate_cone_angles(t_object cone, t_vector vect,
 			int reverse)
 {
 	if (!reverse)
@@ -33,10 +33,10 @@ t_vector	rotate_cone_angles(t_object cone, t_vector vect,
 ** meaning that only the inner surface is to be enlighted.
 */
 
-static int 	revert_cone_normal(t_object ray, t_object cone)
+static int		revert_cone_normal(t_object ray, t_object cone)
 {
-	t_vector 	light_to_center;
-	float 		border;
+	t_vector	light_to_center;
+	float		border;
 	float		light_distance;
 
 	light_to_center = vector_points(cone.center, ray.origin);
@@ -52,9 +52,9 @@ static int 	revert_cone_normal(t_object ray, t_object cone)
 ** Returns the ray with "intersect" and "norm" values set up
 */
 
-t_object		cone_intersection(t_object ray, t_object cone)
+t_object		cone_intersection(t_object ray, t_object cone,
+		t_vector distance)
 {
-	t_vector	distance;
 	t_vector	ray_dir;
 	float		a;
 	float		b;
@@ -87,7 +87,8 @@ t_vector		cone_normal(t_object ray, t_object cone)
 		vector_norm(distance);
 	normal_point = (t_point){0, 0, normal_dist};
 	normal_point_2 = (t_point){0, 0, -normal_dist};
-	if (points_norm(normal_point, distance) > points_norm(normal_point_2, distance))
+	if (points_norm(normal_point, distance) > points_norm(normal_point_2,
+				distance))
 		normal_point = normal_point_2;
 	if (revert_cone_normal(ray, cone))
 		normal = vector_points(distance, normal_point);

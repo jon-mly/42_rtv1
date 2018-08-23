@@ -6,59 +6,11 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/22 11:46:07 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/08/09 18:02:02 by aabelque         ###   ########.fr       */
+/*   Updated: 2018/08/23 14:19:30 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rtv1.h"
-
-float		vector_norm(t_vector vector)
-{
-	double		norm;
-
-	norm = sqrt(pow(vector.x, 2) + pow(vector.y, 2) + pow(vector.z, 2));
-	return (norm);
-}
-
-float		dot_product(t_vector vect_1, t_vector vect_2)
-{
-	double		product;
-
-	product = (vect_1.x * vect_2.x) +
-				(vect_1.y * vect_2.y) +
-				(vect_1.z * vect_2.z);
-	return (product);
-}
-
-t_vector	cross_product(t_vector vect_1, t_vector vect_2)
-{
-	t_vector	product;
-
-	product.x = vect_1.y * vect_2.z - vect_2.y * vect_1.z;
-	product.y = vect_1.z * vect_2.x - vect_2.z * vect_1.x;
-	product.z = vect_1.x * vect_2.y - vect_2.x * vect_1.y;
-	return (product);
-}
-
-t_vector	normalize_vector(t_vector vector)
-{
-	float		norm;
-
-	norm = vector_norm(vector);
-	vector.x /= norm;
-	vector.y /= norm;
-	vector.z /= norm;
-	return (vector);
-}
-
-float		points_norm(t_point p1, t_point p2)
-{
-	float		distance;
-
-	distance = sqrt(pow(p2.x - p1.x, 2) + pow(p2.y - p1.y, 2) +
-			pow(p2.z - p1.z, 2));
-	return (distance);
-}
 
 float		degrees_to_radian(int degrees)
 {
@@ -148,7 +100,7 @@ float		closest_distance_quadratic(float a, float b, float c)
 	float		discriminant;
 	float		x1;
 	float		x2;
-	float 		buffer;
+	float		buffer;
 
 	discriminant = b * b - 4 * a * c;
 	if (discriminant < 0)
