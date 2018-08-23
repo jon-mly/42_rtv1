@@ -100,7 +100,7 @@ light_index = -1;
 			// {
 				light_ray = intersect_object(light_ray,
 						(((t_object *)(env->scene.objects))[object_index]));
-				if (light_ray.intersect && light_ray.norm - norm < - 0.05 &&
+				if (light_ray.intersect && light_ray.norm - norm < -0.001 &&
 						light_ray.norm > 0)
 				{
 					is_direct_hit = 0;
