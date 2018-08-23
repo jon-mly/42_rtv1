@@ -73,6 +73,7 @@ t_light				*add_light(int fd, t_light *existing_lights, int count)
 						ft_atoi(line[3]), 0);
 		clear_line(line);
 	}
+	clear_line(line);
 	existing_lights[count - 1] = new_light;
 	return (existing_lights);
 }

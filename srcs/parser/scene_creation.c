@@ -75,5 +75,6 @@ t_scene				create_scene(t_env *env, char *file_name)
 		scene = extend_scene(fd, scene, line, env);
 		clear_line(line);
 	}
+	clear_line(line);
 	return (scene);
 }

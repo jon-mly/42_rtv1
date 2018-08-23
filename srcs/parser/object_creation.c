@@ -44,6 +44,7 @@ static t_object		add_new_sphere(int fd)
 					ft_atoi(line[3]), 0);
 		clear_line(line);
 	}
+	clear_line(line);
 	sphere.name = "Sphere";
 	return (sphere);
 }
@@ -81,6 +82,7 @@ static t_object		add_new_plane(int fd)
 					ft_atoi(line[3]), 0);
 		clear_line(line);
 	}
+	clear_line(line);
 	plane.name = "Plane";
 	return (plane);
 }
@@ -123,6 +125,7 @@ static t_object		add_new_cone(int fd)
 		}
 		clear_line(line);
 	}
+	clear_line(line);
 	return (cone);
 }
 
@@ -165,6 +168,7 @@ static t_object		add_new_cylinder(int fd)
 		}
 		clear_line(line);
 	}
+	clear_line(line);
 	return (cylinder);
 }
 

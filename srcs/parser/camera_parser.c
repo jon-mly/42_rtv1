@@ -68,6 +68,7 @@ t_camera					set_camera(int fd, t_env *env)
 		}
 		clear_line(line);
 	}
+	clear_line(line);
 	camera = convert_camera_vector(camera);
 	return (camera);
 }
