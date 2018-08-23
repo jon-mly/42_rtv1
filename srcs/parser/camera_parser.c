@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/22 14:31:37 by aabelque          #+#    #+#             */
-/*   Updated: 2018/08/23 14:51:02 by aabelque         ###   ########.fr       */
+/*   Updated: 2018/08/23 17:52:39 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ t_camera					set_camera(int fd, t_env *env)
 			camera.x_angle = degrees_to_radian(ft_atoi(line[1]));
 			camera.y_angle = degrees_to_radian(ft_atoi(line[2]));
 		}
+		clear_line(line);
 	}
 	camera = convert_camera_vector(camera);
 	return (camera);

@@ -118,13 +118,24 @@ t_object		sphere_intersection(t_object ray, t_object sphere);
 t_object		plane_intersection(t_object ray, t_object plane);
 t_object		cylinder_intersection(t_object ray, t_object cylinder);
 t_color 	add_color(t_color base, t_color overlay);
-// FIXME: to remove
-// void debug_describe_ray(t_object object);
-
+int		revert_cone_normal(t_object ray, t_object cone);
 
 /*
 ** ========== NORMAL VECTOR CALCULATION
 */
+
+int		revert_cone_normal(t_object ray, t_object cone)
+{
+	t_vector	light_to_center;
+	float		border;
+	float		light_distance;
+
+	light_to_center = vector_points(cone.center, ray.origin);
+	rotate_cone_angles(cone, light_to_center, 0);
+	border = pow((float)light_to_center.z, (float)2) * pow((float)tan(cone.angle), (float)2);
+	light_distance = pow((float)light_to_center.x, (float)2) + pow((float)light_to_center.y, (float)2);
+	return (light_distance < border);
+}
 
 t_vector		cone_normal(t_object ray, t_object cone)
 {
@@ -140,9 +151,13 @@ t_vector		cone_normal(t_object ray, t_object cone)
 		vector_norm(distance);
 	normal_point = (t_point){0, 0, normal_dist};
 	normal_point_2 = (t_point){0, 0, -normal_dist};
-	if (points_norm(normal_point, distance) > points_norm(normal_point_2, distance))
+	if (points_norm(normal_point, distance) > points_norm(normal_point_2,
+				distance))
 		normal_point = normal_point_2;
-	normal = vector_points(normal_point, distance);
+	if (revert_cone_normal(ray, cone))
+		normal = vector_points(distance, normal_point);
+	else
+		normal = vector_points(normal_point, distance);
 	normal = rotate_cone_angles(cone, normal, 1);
 	return (normalize_vector(normal));
 }
@@ -609,46 +624,17 @@ t_color			get_color_on_intersection(t_object ray, global t_object *closest_objec
 		object_index = -1;
 		while (++object_index < scene->objects_count)
 		{
-			if (&obj[object_index] != closest_object)
-			{
-				light_ray = intersect_object(light_ray,
-						obj[object_index]);
-				if (light_ray.intersect && light_ray.norm < norm &&
-						light_ray.norm > 0)
-					is_direct_hit = 0;
-			}
+			light_ray = intersect_object(light_ray,
+					obj[object_index]);
+			if (light_r.intersect && light_r.norm - norm < (float)(-0.1) &&
+					light_r.norm > 0)
+				is_direct_hit = 0;
 		}
 		if (is_direct_hit)
 			coloration = add_color(coloration, light_for_intersection(light_ray, ray, *closest_object, light[light_index]));
 	}
 	return (coloration);
 }
-
-
-
-// FIXME: debug to remove
-// void debug_describe_object(t_object object)
-// {
-// 	if (object.typpe == SPHERE) {
-// 		printf("Sphere\n");
-// 		printf("Center : adress: %p, %.2f, %.2f, %.2f\n", &object.center, object.center.x, object.center.y, object.center.z);
-// 		printf("Radius : adress: %p, %.2f\n", &object.radius, object.radius);
-// 	} else if (object.typpe == PLANE) {
-// 		printf("Plane\n");
-// 		printf("Position : adress: %p, %.2f, %.2f, %.2f\n", &object.point, object.point.x, object.point.y, object.point.z);
-// 		printf("Normal : adress: %p, %.2f, %.2f, %.2f\n", &object.normal, object.normal.x, object.normal.y, object.normal.z);
-// 	}
-// 	printf("Color : adress: %p, %u, %u, %u\n", &object.color, object.color.r, object.color.g, object.color.b);
-// }
-
-// // FIXME: debug to remove
-// void debug_describe_ray(t_object object) {
-// 	printf("Ray\n");
-// 	printf("origin : %.2f, %.2f, %.2f\n", object.origin.x, object.origin.y, object.origin.z);
-// 	printf("Direction : %.2f, %.2f, %.2f\n", object.direction.x, object.direction.y, object.direction.z);
-// }
-
-
 
 /*
 ** ========== MAIN FUNCTIONS
@@ -698,17 +684,13 @@ __kernel void				pixel_raytracing_gpu(__write_only image2d_t out, global t_scene
 			closest_distance = ray.norm;
 		}
 	}
-	// if (closest_object != NULL)
 	if (closest_object_index != -1)
 	{
 		ray.norm = closest_distance;
 		ray.intersectiion.x = ray.origin.x + ray.direction.x * closest_distance;
 		ray.intersectiion.y = ray.origin.y + ray.direction.y * closest_distance;
 		ray.intersectiion.z = ray.origin.z + ray.direction.z * closest_distance;
-		//out[idx] = color_to_int(get_color_on_intersection(ray, &obj[closest_object_index], scene, light, obj));
 		colorout = get_color_on_intersection(ray, &obj[closest_object_index], scene, light, obj);
 	}
 	write_imagei(out, (int2)(x, y), (int4)(colorout.b, colorout.g, colorout.r, 0));
-	//else
-	//	out[idx] = color_to_int(colorout);
 }
