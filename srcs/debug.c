@@ -85,7 +85,7 @@ static t_color			debug_get_color_on_intersection(t_object ray, t_object *closest
 	t_color		coloration;
 	int 		is_direct_hit;
 
-	light_index = -1;
+light_index = -1;
 	coloration = color(closest_object->color.r / 4, closest_object->color.g / 4, closest_object->color.b / 4, 0);
 	while (++light_index < env->scene.lights_count)
 	{
@@ -94,19 +94,19 @@ static t_color			debug_get_color_on_intersection(t_object ray, t_object *closest
 				*closest_object);
 		norm = light_ray.norm;
 		object_index = -1;
-		while (++object_index < env->scene.objects_count)
+		while (++object_index < env->scene.objects_count && is_direct_hit)
 		{
-//			if (&(((t_object *)(env->scene.objects))[object_index]) != closest_object)
-//			{
+			// if (&(((t_object *)(env->scene.objects))[object_index]) != closest_object)
+			// {
 				light_ray = intersect_object(light_ray,
 						(((t_object *)(env->scene.objects))[object_index]));
-				if (light_ray.intersect && light_ray.norm <= norm &&
+				if (light_ray.intersect && light_ray.norm - norm < - 0.05 &&
 						light_ray.norm > 0)
 				{
 					is_direct_hit = 0;
 					printf("Has hit %s\n", (((t_object *)(env->scene.objects))[object_index]).name);
 				}
-//			}
+			// }
 		}
 		printf("Is direct hit ? %d\n", is_direct_hit);
 		if (is_direct_hit)

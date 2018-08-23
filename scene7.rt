@@ -1,8 +1,8 @@
 camera {
-#position 40 15 -80
-position 0 -15 -20
-#angles -10 40
-angles 0 0
+position 40 15 -80
+#position 0 -15 -20
+angles -10 40
+#angles 0 0
 }
 
 light {

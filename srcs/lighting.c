@@ -77,11 +77,11 @@ static t_color	light_for_intersection(t_object light_ray, t_object ray, t_object
 	t_color		color;
 
 	normal = shape_normal(ray, object);
-	if ((object.typpe == CONE || object.typpe == CYLINDER) && dot_product(shape_normal(ray, object), shape_normal(light_ray, object)) < 1 - 0.0001)
+	// the following dot_product (= cosinus between the two vectors)
+	// can be compared to 0, since both vector are either equal,
+	// either opposed (cos = 1 or -1 only).
+	if ((object.typpe == CONE || object.typpe == CYLINDER) && dot_product(shape_normal(ray, object), shape_normal(light_ray, object)) < 0)
 		return ((t_color){0, 0, 0, 0});
-	// cosinus = dot_product(ray.direction, normal);
-	// if (cosinus >= 0)
-	// 	return (light_ray.color);
 	cosinus = dot_product(light_ray.direction, normal);
 	// if angle is higher than +/-PI/2, the point is shadowed whatsoever.
 	if (cosinus >= 0)
