@@ -66,6 +66,7 @@ t_camera					set_camera(int fd, t_env *env)
 			camera.x_angle = degrees_to_radian(ft_atoi(line[1]));
 			camera.y_angle = degrees_to_radian(ft_atoi(line[2]));
 		}
+		clear_line(line);
 	}
 	camera = convert_camera_vector(camera);
 	return (camera);
