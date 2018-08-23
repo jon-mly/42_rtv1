@@ -6,7 +6,7 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/22 11:46:40 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/08/23 12:03:02 by aabelque         ###   ########.fr       */
+/*   Updated: 2018/08/23 13:35:50 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ static t_object	init_light_ray(t_light light, t_object ray, t_object object)
 	light_ray.norm = vector_norm(direction);
 	light_ray.direction = normalize_vector(direction);
 	light_ray.intersect = FALSE;
-	light_ray.color = color(object.color.r / 4, object.color.g / 4, object.color.b / 4, 0);
+	light_ray.color = color(0, 0, 0, 0);//color(object.color.r / 4, object.color.g / 4, object.color.b / 4, 0);
 	return (light_ray);
 }
 
@@ -48,8 +48,8 @@ static int		color_coord(float cosinus, float distance, int obj_color,
 	float	color_value;
 
 	distance_factor = 0.02 * pow(distance / 1.3, 2) + 1;
-	k = cosinus / distance_factor;
-	color_value = ((float)obj_color / (4 * distance_factor)) - k * (float)light_color;
+	k = sqrt(-cosinus) / distance_factor;
+	color_value = ((float)obj_color / (4 * distance_factor)) + k * (float)light_color;
 	color_value = fmax(fmin(color_value, 255), 0);
 	return ((int)color_value);
 }
@@ -138,7 +138,7 @@ t_color			get_color_on_intersection(t_object ray, t_object *closest_object,
 			// {
 				light_ray = intersect_object(light_ray,
 						(((t_object *)(env->scene.objects))[object_index]));
-				if (light_ray.intersect && light_ray.norm - norm <  0.02 &&
+				if (light_ray.intersect && light_ray.norm - norm < (float)(-0.1) &&
 						light_ray.norm > 0)
 					is_direct_hit = 0;
 			// }
