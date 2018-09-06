@@ -9,7 +9,7 @@ angles 0 0
 
 # LIGHTS
 
-light {
+#light {
 position -10 20 -30
 color 255 255 255
 }

@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/17 16:58:44 by aabelque          #+#    #+#             */
-/*   Updated: 2018/08/23 14:45:25 by aabelque         ###   ########.fr       */
+/*   Updated: 2018/09/06 11:16:47 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,4 +39,6 @@ void			opencl_draw(t_opencl *opcl, t_env *e)
 	opcl->err = clEnqueueReadImage(opcl->commands, opcl->output,
 			CL_TRUE, opcl->region, opcl->origin, 0, 0, e->img_str,
 			0, NULL, NULL);
+	if (opcl->err != CL_SUCCESS)
+		printf("error %d\n", opcl->err);
 }
