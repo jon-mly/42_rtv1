@@ -620,7 +620,7 @@ t_color			light_for_intersection(t_object light_ray, t_object ray, t_object
 	float		distance;
 	t_color		color;
 
-	// light_ray.intersectiion = ray.intersectiion;
+	light_ray.intersectiion = ray.intersectiion;
 	normal = shape_normal(ray, object);
 	if ((object.typpe == CONE || object.typpe == CYLINDER) &&
 			dot_product(shape_normal(ray, object),

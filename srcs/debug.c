@@ -116,7 +116,7 @@ static t_color			debug_get_color_on_intersection(t_object ray, t_object *closest
 				}
 		}
 		printf("Is direct hit ? %d\n", is_direct_hit);
-		light_ray.norm = norm;
+		// light_ray.norm = norm;
 		if (is_direct_hit)
 			coloration = debug_add_color(coloration, debug_light_for_intersection(light_ray, ray, *closest_object,
 				(((t_light*)(env->scene.lights))[light_index])));
