@@ -119,94 +119,9 @@ t_object		plane_intersection(t_object ray, t_object plane);
 t_object		cylinder_intersection(t_object ray, t_object cylinder);
 t_color 	add_color(t_color base, t_color overlay);
 int		revert_cone_normal(t_object ray, t_object cone);
+int		revert_cylinder_normal(t_object ray, t_object cylinder);
+int		revert_sphere_normal(t_object ray, t_object sphere);
 
-/*
-** ========== NORMAL VECTOR CALCULATION
-*/
-
-int		revert_cone_normal(t_object ray, t_object cone)
-{
-	t_vector	light_to_center;
-	float		border;
-	float		light_distance;
-
-	light_to_center = vector_points(cone.center, ray.origin);
-	rotate_cone_angles(cone, light_to_center, 0);
-	border = pow((float)light_to_center.z, (float)2) * pow((float)tan(cone.angle), (float)2);
-	light_distance = pow((float)light_to_center.x, (float)2) + pow((float)light_to_center.y, (float)2);
-	return (light_distance < border);
-}
-
-t_vector		cone_normal(t_object ray, t_object cone)
-{
-	t_vector	distance;
-	float		normal_dist;
-	t_point		normal_point;
-	t_point		normal_point_2;
-	t_vector	normal;
-
-	distance = vector_points(cone.center, ray.intersectiion);
-	distance = rotate_cone_angles(cone, distance, 0);
-	normal_dist = (cos(cone.angle) + tan(cone.angle) * sin(cone.angle)) *
-		vector_norm(distance);
-	normal_point = (t_point){0, 0, normal_dist};
-	normal_point_2 = (t_point){0, 0, -normal_dist};
-	if (points_norm(normal_point, distance) > points_norm(normal_point_2,
-				distance))
-		normal_point = normal_point_2;
-	if (revert_cone_normal(ray, cone))
-		normal = vector_points(distance, normal_point);
-	else
-		normal = vector_points(normal_point, distance);
-	normal = rotate_cone_angles(cone, normal, 1);
-	return (normalize_vector(normal));
-}
-
-t_vector		cylinder_normal(t_object ray, t_object cylinder)
-{
-	t_vector	distance;
-	t_point		normal_point;
-	t_vector	normal;
-
-	distance = vector_points(cylinder.point, ray.intersectiion);
-	distance = rotate_cylinder_angles(cylinder, distance, 0);
-	normal_point = (t_point){0, 0, distance.z};
-	normal = vector_points(normal_point, distance);
-	normal = rotate_cylinder_angles(cylinder, normal, 1);
-	return (normalize_vector(normal));
-}
-
-t_vector		plane_normal(t_object ray, t_object plane)
-{
-	t_vector	normal;
-
-	if (dot_product(ray.direction, plane.normal) <= 0)
-		return (normalize_vector(plane.normal));
-	normal.x = -(plane.normal.x);
-	normal.y = -(plane.normal.y);
-	normal.z = -(plane.normal.z);
-	return (normalize_vector(normal));
-}
-
-t_vector		sphere_normal(t_object ray, t_object sphere)
-{
-	t_vector	normal;
-
-	normal = vector_points(sphere.center, ray.intersectiion);
-	return (normalize_vector(normal));
-}
-
-t_vector			shape_normal(t_object ray, t_object object)
-{
-	if (object.typpe == SPHERE)
-		return (sphere_normal(ray, object));
-	else if (object.typpe == PLANE)
-		return (plane_normal(ray, object));
-	else if (object.typpe == CYLINDER)
-		return (cylinder_normal(ray, object));
-	else
-		return (cone_normal(ray, object));
-}
 
 
 /*
@@ -404,6 +319,127 @@ float		points_norm(t_point p1, t_point p2)
 }
 
 
+/*
+** ========== NORMAL VECTOR CALCULATION
+*/
+
+int		revert_cone_normal(t_object ray, t_object cone)
+{
+	t_vector	light_to_center;
+	float		border;
+	float		light_distance;
+
+	light_to_center = vector_points(cone.center, ray.origin);
+	rotate_cone_angles(cone, light_to_center, 0);
+	border = pow((float)light_to_center.z, (float)2) * pow((float)tan(cone.angle), (float)2);
+	light_distance = pow((float)light_to_center.x, (float)2) + pow((float)light_to_center.y, (float)2);
+	return (light_distance < border);
+}
+
+t_vector		cone_normal(t_object ray, t_object cone)
+{
+	t_vector	distance;
+	float		normal_dist;
+	t_point		normal_point;
+	t_point		normal_point_2;
+	t_vector	normal;
+
+	distance = vector_points(cone.center, ray.intersectiion);
+	distance = rotate_cone_angles(cone, distance, 0);
+	normal_dist = (cos(cone.angle) + tan(cone.angle) * sin(cone.angle)) *
+		vector_norm(distance);
+	normal_point = (t_point){0, 0, normal_dist};
+	normal_point_2 = (t_point){0, 0, -normal_dist};
+	if (points_norm(normal_point, distance) > points_norm(normal_point_2,
+				distance))
+		normal_point = normal_point_2;
+	if (revert_cone_normal(ray, cone))
+		normal = vector_points(distance, normal_point);
+	else
+		normal = vector_points(normal_point, distance);
+	normal = rotate_cone_angles(cone, normal, 1);
+	return (normalize_vector(normal));
+}
+
+int		revert_cylinder_normal(t_object ray, t_object cylinder)
+{
+	t_vector	light_to_center;
+	float		border;
+	float		light_distance;
+
+	light_to_center = vector_points(cylinder.point, ray.origin);
+	rotate_cylinder_angles(cylinder, light_to_center, 0);
+	border = pow(cylinder.radius, 2);
+	light_distance = pow(light_to_center.x, 2) + pow(light_to_center.y, 2);
+	return (light_distance < border);
+}
+
+t_vector		cylinder_normal(t_object ray, t_object cylinder)
+{
+	t_vector	distance;
+	t_point		normal_point;
+	t_vector	normal;
+
+	distance = vector_points(cylinder.point, ray.intersectiion);
+	distance = rotate_cylinder_angles(cylinder, distance, 0);
+	normal_point = (t_point){0, 0, distance.z};
+	if (revert_cylinder_normal(ray, cylinder))
+		normal = vector_points(distance, normal_point);
+	else
+		normal = vector_points(normal_point, distance);
+	normal = rotate_cylinder_angles(cylinder, normal, 1);
+	return (normalize_vector(normal));
+}
+
+t_vector		plane_normal(t_object ray, t_object plane)
+{
+	t_vector	normal;
+
+	if (dot_product(ray.direction, plane.normal) <= 0)
+		return (normalize_vector(plane.normal));
+	normal.x = -(plane.normal.x);
+	normal.y = -(plane.normal.y);
+	normal.z = -(plane.normal.z);
+	return (normalize_vector(normal));
+}
+
+/*
+** Returns true if the origin of the light ray is inside the sphere,
+** meaning that only the inner surface is to be enlighted.
+*/
+
+int		revert_sphere_normal(t_object ray, t_object sphere)
+{
+	t_vector	distance_vector;
+
+	distance_vector = vector_points(ray.origin, sphere.center);
+	return (vector_norm(distance_vector) < sphere.radius);
+}
+
+t_vector		sphere_normal(t_object ray, t_object sphere)
+{
+	t_vector	normal;
+
+	if (revert_sphere_normal(ray, sphere))
+		normal = vector_points(ray.intersectiion, sphere.center);
+	else
+		normal = vector_points(sphere.center, ray.intersectiion);
+	return (normalize_vector(normal));
+}
+
+t_vector			shape_normal(t_object ray, t_object object)
+{
+	if (object.typpe == SPHERE)
+		return (sphere_normal(ray, object));
+	else if (object.typpe == PLANE)
+		return (plane_normal(ray, object));
+	else if (object.typpe == CYLINDER)
+		return (cylinder_normal(ray, object));
+	else
+		return (cone_normal(ray, object));
+}
+
+
 
 /*
 ** ========== INTERSECTION POINTS CALCULATION
@@ -541,7 +577,7 @@ t_object	init_light_ray(t_light light, t_object ray, t_object object)
 	light_ray.norm = vector_norm(direction);
 	light_ray.direction = normalize_vector(direction);
 	light_ray.intersect = FALSE;
-	light_ray.color = color(object.color.r / 4, object.color.g / 4, object.color.b / 4, 0);
+	light_ray.color = color(0, 0, 0, 0);
 	return (light_ray);
 }
 
@@ -558,9 +594,9 @@ int		color_coord(float cosinus, float distance, int obj_color,
 	float	k;
 	float	color_value;
 
-	distance_factor = 0.01 * pow((float)(distance / 1.3), (float)2) + 1;
-	k = cosinus / distance_factor;
-	color_value = (float)obj_color / 4 - k * (float)light_color;
+	distance_factor = 0.02 * pow((float)(distance / 1.3), (float)2) + 1;
+	k = sqrt(-cosinus) / distance_factor;
+	color_value = ((float)obj_color / (4 * distance_factor)) + k * (float)light_color;
 	color_value = fmax(fmin((float)color_value, (float)255), 0);
 	return ((int)color_value);
 }
@@ -585,6 +621,10 @@ t_color			light_for_intersection(t_object light_ray, t_object ray, t_object
 	t_color		color;
 
 	normal = shape_normal(ray, object);
+	if ((object.typpe == CONE || object.typpe == CYLINDER) &&
+			dot_product(shape_normal(ray, object),
+				shape_normal(light_ray, object)) < 0)
+		return ((t_color){0, 0, 0, 0});
 	cosinus = dot_product(light_ray.direction, normal);
 	if (cosinus >= 0)
 		return (light_ray.color);
@@ -622,12 +662,12 @@ t_color			get_color_on_intersection(t_object ray, global t_object *closest_objec
 				*closest_object);
 		norm = light_ray.norm;
 		object_index = -1;
-		while (++object_index < scene->objects_count)
+		while (++object_index < scene->objects_count && is_direct_hit)
 		{
 			light_ray = intersect_object(light_ray,
 					obj[object_index]);
-			if (light_r.intersect && light_r.norm - norm < (float)(-0.1) &&
-					light_r.norm > 0)
+			if (light_ray.intersect && light_ray.norm - norm < (float)(-0.05) &&
+					light_ray.norm > 0)
 				is_direct_hit = 0;
 		}
 		if (is_direct_hit)
