@@ -263,4 +263,5 @@ void					ft_ocl_init_error(const int ret);
 void					ft_ocl_kernel_error(const int ret, const size_t index);
 void					init_cone(t_object *cone);
 void					init_cylinder(t_object *cylinder);
+size_t 					file_len(int fd);
 #endif

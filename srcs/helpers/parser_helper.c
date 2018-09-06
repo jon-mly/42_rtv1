@@ -54,3 +54,24 @@ char		**split_new_line(int fd)
 	ft_memdel((void**)(&line));
 	return (splited_content);
 }
+
+/*
+** Is used in opencl_init.c to specify the number of chars to read, thus
+** avoiding an overflow.
+*/
+
+size_t 		file_len(int fd)
+{
+	char 		*buffer;
+	size_t		total_length;
+	size_t		res;
+
+	total_length = 0;
+	if (!(buffer = (char *)malloc(sizeof(char))))
+		return (0);
+	while ((res = read(fd, buffer, 1)) > 0)
+		total_length += res;
+	close(fd);
+	ft_memdel((void **)&buffer);
+	return (total_length);
+}
