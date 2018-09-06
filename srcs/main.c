@@ -47,7 +47,7 @@ int				main(int ac, char **av)
 		ft_putendl("Failed to put image to window");
 	mlx_hook(env->win_ptr, 2, 0, handle_key_event, (void*)env);
 	mlx_hook(env->win_ptr, 17, 0, exit_properly, (void*)env);
-	mlx_hook(env->win_ptr, 4, (1L << 2), debug_mouse_event, (void*)env);
+//	mlx_hook(env->win_ptr, 4, (1L << 2), debug_mouse_event, (void*)env);
 	mlx_loop_hook(env->mlx_ptr, expose_event, (void*)env);
 	mlx_loop(env->mlx_ptr);
 	return (0);

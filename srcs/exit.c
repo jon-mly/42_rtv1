@@ -30,3 +30,9 @@ void		exit_usage(void)
 	ft_putendl("Usage : rtv1 [-cpu || -gpu] [scene descriptor file]");
 	exit(0);
 }
+
+void		exit_invalid_file(void)
+{
+	ft_putendl("The file contains invalid characters.");
+	exit(0);
+}

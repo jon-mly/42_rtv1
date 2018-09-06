@@ -208,6 +208,7 @@ void					create_prog(t_opencl *opcl);
 void					exit_error(t_env *env);
 void					exit_normally(t_env *env);
 void					exit_usage(void);
+void					exit_invalid_file(void);
 t_env					*init_env(char *file_name);
 void					calculate_scene(t_env *env);
 t_camera				init_camera(t_env *env);
@@ -239,7 +240,7 @@ void					clear_line(char **line);
 char					**split_new_line(int fd);
 t_light					*add_light(int fd, t_light *existing_lights, int count);
 t_object				add_new_object(int fd, char *type);
-t_scene					create_scene(t_env *env, char *file_name);
+t_scene					create_scene(t_env *env, char *file_name, int fd);
 t_object				cylinder_intersection(t_object ray, t_object cylinder);
 t_object				cone_intersection(t_object ray, t_object cone,
 		t_vector distance);
@@ -257,7 +258,7 @@ t_vector				vect_rotate_z(t_vector vector, float angle,
 t_vector				vect_rotate_y(t_vector vector, float angle,
 		int inverse);
 t_object				init_ray(int x, int y, t_camera camera);
-int						debug_mouse_event(int event, int x, int y, void *param);
+// int						debug_mouse_event(int event, int x, int y, void *param);
 float					closest_distance_quadratic(float a, float b, float c);
 void					ft_ocl_init_error(const int ret);
 void					ft_ocl_kernel_error(const int ret, const size_t index);

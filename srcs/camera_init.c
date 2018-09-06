@@ -13,7 +13,7 @@
 #include "rtv1.h"
 
 /*
-** TODO: read camera position from a file
+** Initialize a default camera before parsing the file describing the scene.
 */
 
 t_camera	init_camera(t_env *env)

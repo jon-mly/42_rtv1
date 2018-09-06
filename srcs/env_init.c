@@ -40,7 +40,10 @@ static void		setup_window(t_env *env)
 t_env			*init_env(char *file_name)
 {
 	t_env	*env;
+	int 	fd;
 
+	if ((fd = open(file_name, O_RDONLY)) <= 2)
+		exit_usage();
 	if (!(env = (t_env*)malloc(sizeof(t_env))))
 		return (NULL);
 	env->mlx_ptr = NULL;
@@ -49,6 +52,6 @@ t_env			*init_env(char *file_name)
 	env->win_ptr = NULL;
 	setup_window(env);
 	env->camera = init_camera(env);
-	env->scene = create_scene(env, file_name);
+	env->scene = create_scene(env, file_name, fd);
 	return (env);
 }

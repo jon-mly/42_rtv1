@@ -38,6 +38,12 @@ void		clear_line(char **line)
 	}
 }
 
+void		exit_if_non_ascii(char *c)
+{
+	if (c && !(ft_isascii(*c)))
+		exit_invalid_file();
+}
+
 char		**split_new_line(int fd)
 {
 	char		**line;
@@ -49,7 +55,10 @@ char		**split_new_line(int fd)
 		return (NULL);
 	res = get_next_line(fd, line);
 	if (res == 1)
+	{
+		ft_striter(*line, &(exit_if_non_ascii));
 		splited_content = ft_strsplit(*line, ' ');
+	}
 	ft_memdel((void**)line);
 	ft_memdel((void**)(&line));
 	return (splited_content);

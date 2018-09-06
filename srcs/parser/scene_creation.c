@@ -58,14 +58,11 @@ static t_scene		extend_scene(int fd, t_scene scene, char **line, t_env *env)
 	return (scene);
 }
 
-t_scene				create_scene(t_env *env, char *file_name)
+t_scene				create_scene(t_env *env, char *file_name, int fd)
 {
-	int			fd;
 	char		**line;
 	t_scene		scene;
 
-	if ((fd = open(file_name, O_RDONLY)) <= 2)
-		exit_error(env);
 	scene.objects_count = 0;
 	scene.objects = NULL;
 	scene.lights_count = 0;
