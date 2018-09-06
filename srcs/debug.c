@@ -3,27 +3,27 @@
 static t_object	debug_init_light_ray(t_light light, t_object ray, t_object object)
 {
 	t_object		light_ray;
-	t_vector	direction;
+	t_vector		direction;
 
 	light_ray.origin = light.posiition;
 	direction = vector_points(light_ray.origin, ray.intersectiion);
 	light_ray.norm = vector_norm(direction);
 	light_ray.direction = normalize_vector(direction);
 	light_ray.intersect = FALSE;
-	light_ray.color = color(object.color.r / 4, object.color.g / 4, object.color.b / 4, 0);
+	light_ray.color = color(0, 0, 0, 0);
 	return (light_ray);
 }
 
 static int		debug_color_coord(float cosinus, float distance, int obj_color,
 	int light_color)
 {
-	float	distance_factor;
+	float	dist_fact;
 	float	k;
 	float	color_value;
 
-	distance_factor = 0.01 * pow(distance / 1.3, 2) + 1;
-	k = cosinus / distance_factor;
-	color_value = (float)obj_color / 4 - k * (float)light_color;
+	dist_fact = 0.02 * pow(distance / 1.3, 2) + 1;
+	k = sqrt(-cosinus) / dist_fact;
+	color_value = ((float)obj_color / (4 * dist_fact)) + k * (float)light_color;
 	color_value = fmax(fmin(color_value, 255), 0);
 	return ((int)color_value);
 }
@@ -37,6 +37,13 @@ static t_color	debug_light_for_intersection(t_object light_ray, t_object ray, t_
 	t_color		color;
 
 	normal = shape_normal(ray, object);
+	printf("tested object name : %s\n", object.name);
+	if (object.typpe == CONE)
+		printf("Is a cone\n");
+	if ((object.typpe == CONE || object.typpe == CYLINDER) &&
+			dot_product(shape_normal(ray, object),
+				shape_normal(light_ray, object)) < 0)
+		return ((t_color){0, 0, 0, 0});
 	printf("Normal ray   = %.2f, %.2f, %.2f\n", normal.x, normal.y, normal.z);
 	light_ray.intersectiion = ray.intersectiion;
 	normal = shape_normal(light_ray, object);
@@ -45,7 +52,6 @@ static t_color	debug_light_for_intersection(t_object light_ray, t_object ray, t_
 	if (cosinus >= 0)
 		return (light_ray.color);
 	cosinus = dot_product(light_ray.direction, normal);
-	// if angle is higher than +/-PI/2, the point is shadowed whatsoever.
 	if (cosinus >= 0)
 		return (light_ray.color);
 	distance = points_norm(ray.intersectiion, light_ray.origin);
@@ -85,8 +91,9 @@ static t_color			debug_get_color_on_intersection(t_object ray, t_object *closest
 	t_color		coloration;
 	int 		is_direct_hit;
 
-light_index = -1;
+	light_index = -1;
 	coloration = color(closest_object->color.r / 4, closest_object->color.g / 4, closest_object->color.b / 4, 0);
+	printf("TEST FOR %s\n", closest_object->name);
 	while (++light_index < env->scene.lights_count)
 	{
 		is_direct_hit = 1;
@@ -96,19 +103,20 @@ light_index = -1;
 		object_index = -1;
 		while (++object_index < env->scene.objects_count && is_direct_hit)
 		{
-			// if (&(((t_object *)(env->scene.objects))[object_index]) != closest_object)
-			// {
+				printf("Try to insersect with : %s\n", (((t_object *)(env->scene.objects))[object_index]).name);
 				light_ray = intersect_object(light_ray,
 						(((t_object *)(env->scene.objects))[object_index]));
+				if (light_ray.intersect)
+					printf("Intesect at %.2f while %s is at %.2f\n", light_ray.norm, closest_object->name, norm);
 				if (light_ray.intersect && light_ray.norm - norm < -0.001 &&
 						light_ray.norm > 0)
 				{
 					is_direct_hit = 0;
 					printf("Has hit %s\n", (((t_object *)(env->scene.objects))[object_index]).name);
 				}
-			// }
 		}
 		printf("Is direct hit ? %d\n", is_direct_hit);
+		// light_ray.norm = norm;
 		if (is_direct_hit)
 			coloration = debug_add_color(coloration, debug_light_for_intersection(light_ray, ray, *closest_object,
 				(((t_light*)(env->scene.lights))[light_index])));
