@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/23 15:37:32 by aabelque          #+#    #+#             */
-/*   Updated: 2018/08/23 16:04:46 by aabelque         ###   ########.fr       */
+/*   Updated: 2018/09/07 12:02:42 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -258,11 +258,10 @@ t_vector				vect_rotate_z(t_vector vector, float angle,
 t_vector				vect_rotate_y(t_vector vector, float angle,
 		int inverse);
 t_object				init_ray(int x, int y, t_camera camera);
-int						debug_mouse_event(int event, int x, int y, void *param);
 float					closest_distance_quadratic(float a, float b, float c);
 void					ft_ocl_init_error(const int ret);
 void					ft_ocl_kernel_error(const int ret, const size_t index);
 void					init_cone(t_object *cone);
 void					init_cylinder(t_object *cylinder);
-size_t 					file_len(int fd);
+size_t					file_len(int fd);
 #endif

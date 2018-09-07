@@ -45,7 +45,6 @@ SRCS = main.c \
 		$(SHAPES_REP)cone.c \
 		$(SHAPES_REP)plane.c \
 		$(SHAPES_REP)sphere.c \
-		debug.c
 
 
 SRC = $(addprefix $(SRCS_REP), $(SRCS))

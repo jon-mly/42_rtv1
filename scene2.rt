@@ -3,26 +3,22 @@ SCENE TEST
 # CAMERA
 
 camera {
-position 0 20 -12
+position -90 30 -200
 angles -15 -20
 }
 
 # LIGHTS
 
 light {
-position 4 30 2
+position 0 30 20
 color 255 255 255
 }
 
-light {
-position 0 0 100
+#light {
+position 0 30 -20
 color 255 255 255
 }
 
-light {
-position 0 0 100
-color 255 255 255
-}
 # OBJECTS
 
 plane {
@@ -31,22 +27,22 @@ normal 0 0 0
 color 0 255 0
 }
 
-cone {
-center 10 20 0
-angles 0 0 
-pi_divider 12
+#cone {
+center 0 0 0
+angles -10 0 
+pi_divider 22
 color 10 50 150
 }
 
-cylinder {
-position 20 0 2
+#cylinder {
+position 0 0 0
 angles 0 0
-radius 18
+radius 35
 color 200 90 10
 }
 
-#sphere {
+sphere {
 center 0 0 0
-radius 10
-color 200 90 10
+radius 20
+color 255 90 250
 }

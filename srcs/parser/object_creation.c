@@ -6,7 +6,7 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/02 16:09:07 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/08/23 15:18:43 by aabelque         ###   ########.fr       */
+/*   Updated: 2018/09/07 11:50:40 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,9 +99,8 @@ static t_object		add_new_plane(int fd)
 ** }
 */
 
-static t_object		add_new_cone(int fd)
+static t_object		add_new_cone(int fd, char **line)
 {
-	char		**line;
 	t_object	cone;
 
 	init_cone(&cone);
@@ -142,9 +141,8 @@ static t_object		add_new_cone(int fd)
 ** }
 */
 
-static t_object		add_new_cylinder(int fd)
+static t_object		add_new_cylinder(int fd, char **line)
 {
-	char		**line;
 	t_object	cylinder;
 
 	init_cylinder(&cylinder);
@@ -174,12 +172,14 @@ static t_object		add_new_cylinder(int fd)
 
 t_object			add_new_object(int fd, char *type)
 {
+	char		**line;
+
 	if (ft_strequ(type, "cylinder"))
-		return (add_new_cylinder(fd));
+		return (add_new_cylinder(fd, line));
 	else if (ft_strequ(type, "sphere"))
 		return (add_new_sphere(fd));
 	else if (ft_strequ(type, "plane"))
 		return (add_new_plane(fd));
 	else
-		return (add_new_cone(fd));
+		return (add_new_cone(fd, line));
 }

@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/23 14:20:22 by aabelque          #+#    #+#             */
-/*   Updated: 2018/08/23 17:36:25 by aabelque         ###   ########.fr       */
+/*   Updated: 2018/09/07 11:34:56 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,9 +69,9 @@ char		**split_new_line(int fd)
 ** avoiding an overflow.
 */
 
-size_t 		file_len(int fd)
+size_t		file_len(int fd)
 {
-	char 		*buffer;
+	char		*buffer;
 	size_t		total_length;
 	size_t		res;
 
