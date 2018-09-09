@@ -369,7 +369,6 @@ int		revert_cylinder_normal(t_object ray, t_object cylinder)
 
 	light_to_center = vector_points(cylinder.point, ray.origin);
 	rotate_cylinder_angles(cylinder, light_to_center, 0);
-	printf("light_to_center GPU: %f\n", light_to_center.z);
 	border = pow(cylinder.radius, 2);
 	light_distance = pow(light_to_center.x, 2) + pow(light_to_center.y, 2);
 	return (light_distance < border);
@@ -381,14 +380,9 @@ t_vector		cylinder_normal(t_object ray, t_object cylinder)
 	t_point		normal_point;
 	t_vector	normal;
 
-	//printf("cylinder gpu: %f\n", cylinder.point.z);
-	//printf("ray gpu: %f\n", ray.intersectiion.z);
-	//printf("distance GPU: %f\n", distance.z);
 	distance = vector_points(cylinder.point, ray.intersectiion);
-	//printf("distance GPU: %f\n", distance.z);
 	distance = rotate_cylinder_angles(cylinder, distance, 0);
 	normal_point = (t_point){0, 0, distance.z};
-	//printf("distance GPU: %f\n", distance.z);
 	if (revert_cylinder_normal(ray, cylinder))
 		normal = vector_points(distance, normal_point);
 	else
@@ -627,9 +621,7 @@ t_color			light_for_intersection(t_object light_ray, t_object ray, t_object
 	t_color		color;
 
 	light_ray.intersectiion = ray.intersectiion;
-	//printf("ray gpu: %f\n", ray.intersectiion.z);
 	normal = shape_normal(ray, object);
-	//printf("ray gpu: %f\n", ray.intersectiion.z);
 	if ((object.typpe == CONE || object.typpe == CYLINDER) &&
 			dot_product(shape_normal(ray, object),
 				shape_normal(light_ray, object)) < 0)
@@ -720,9 +712,7 @@ __kernel void				pixel_raytracing_gpu(__write_only image2d_t out, global t_scene
 	x = get_global_id(0);
 	y = get_global_id(1);
 	idx = get_global_size(0) * get_global_id(1) + get_global_id(0);
-	//printf("ray gpu: %f\n", ray.intersectiion.z);
 	ray = init_ray(x, y, *camera);
-	//printf("ray gpu: %f\n", ray.intersectiion.z);
 	closest_object = NULL;
 	closest_object_index = -1;
 	object_index = -1;
@@ -735,10 +725,8 @@ __kernel void				pixel_raytracing_gpu(__write_only image2d_t out, global t_scene
 			closest_distance = ray.norm;
 		}
 	}
-	printf("ray gpu: %f\n", ray.intersectiion.z);
 	if (closest_object_index != -1)
 	{
-		//printf("ray gpu: %f\n", ray.intersectiion.z);
 		ray.norm = closest_distance;
 		ray.intersectiion.x = ray.origin.x + ray.direction.x * closest_distance;
 		ray.intersectiion.y = ray.origin.y + ray.direction.y * closest_distance;

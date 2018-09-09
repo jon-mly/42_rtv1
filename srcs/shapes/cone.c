@@ -6,7 +6,7 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/22 11:46:14 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/09/07 16:00:45 by aabelque         ###   ########.fr       */
+/*   Updated: 2018/09/09 15:35:17 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,8 @@ static int		revert_cone_normal(t_object ray, t_object cone)
 	float		light_distance;
 
 	light_to_center = vector_points(cone.center, ray.origin);
-	rotate_cone_angles(cone, light_to_center, 0);
-	border = pow(light_to_center.z, 2) * pow((cone.angle), 2);
+	light_to_center = rotate_cone_angles(cone, light_to_center, 0);
+	border = pow(light_to_center.z, 2) * pow(tan(cone.angle), 2);
 	light_distance = pow(light_to_center.x, 2) + pow(light_to_center.y, 2);
 	return (light_distance < border);
 }

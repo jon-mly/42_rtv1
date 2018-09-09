@@ -6,7 +6,7 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/22 11:46:18 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/09/09 14:11:26 by aabelque         ###   ########.fr       */
+/*   Updated: 2018/09/09 15:34:42 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,12 +43,8 @@ static int		revert_cylinder_normal(t_object ray, t_object cylinder)
 	float		border;
 	float		light_distance;
 
-	//printf("%f\n", cylinder.point.z);
-//	printf("%f\n", ray.intersectiion.z);
-
 	light_to_center = vector_points(cylinder.point, ray.origin);
-	rotate_cylinder_angles(cylinder, light_to_center, 0);
-	printf("light_to_center: %f\n", light_to_center.z);
+	light_to_center = rotate_cylinder_angles(cylinder, light_to_center, 0);
 	border = pow(cylinder.radius, 2);
 	light_distance = pow(light_to_center.x, 2) + pow(light_to_center.y, 2);
 	return (light_distance < border);
@@ -85,14 +81,9 @@ t_vector		cylinder_normal(t_object ray, t_object cylinder)
 	t_point		normal_point;
 	t_vector	normal;
 
-	//printf("cylinder: %f\n", cylinder.point.z);
-	//printf("ray: %f\n", ray.intersectiion.z);
-//	printf(" distance: %f\n", distance.z);
 	distance = vector_points(cylinder.point, ray.intersectiion);
-	//printf(" distance: %f\n", distance.z);
 	distance = rotate_cylinder_angles(cylinder, distance, 0);
 	normal_point = (t_point){0, 0, distance.z};
-	//printf(" distance: %f\n", distance.z);
 	if (revert_cylinder_normal(ray, cylinder))
 		normal = vector_points(distance, normal_point);
 	else
