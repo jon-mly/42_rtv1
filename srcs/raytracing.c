@@ -6,7 +6,7 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/22 11:46:54 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/08/23 15:23:36 by aabelque         ###   ########.fr       */
+/*   Updated: 2018/09/09 14:06:31 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,9 @@ void				pixel_raytracing(int x, int y, t_env *env)
 	t_object		*clt_obj;
 	float			clt_dist;
 
+	//printf("ray: %f\n", ray.intersectiion.z);
 	ray = init_ray(x, y, env->camera);
+	//printf("ray: %f\n", ray.intersectiion.z);
 	clt_obj = NULL;
 	object_index = -1;
 	while (++object_index < env->scene.objects_count)
@@ -58,8 +60,10 @@ void				pixel_raytracing(int x, int y, t_env *env)
 			clt_dist = ray.norm;
 		}
 	}
+	printf("ray: %f\n", ray.intersectiion.z);
 	if (clt_obj != NULL)
 	{
+		//printf("ray: %f\n", ray.intersectiion.z);
 		pixel_raytracing2(&ray, &clt_dist);
 		fill_pixel(env, x, y, get_color_on_intersection(ray, clt_obj, env));
 	}
