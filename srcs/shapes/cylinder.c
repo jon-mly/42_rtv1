@@ -44,7 +44,7 @@ static int		revert_cylinder_normal(t_object ray, t_object cylinder)
 	float		light_distance;
 
 	light_to_center = vector_points(cylinder.point, ray.origin);
-	rotate_cylinder_angles(cylinder, light_to_center, 0);
+	light_to_center = rotate_cylinder_angles(cylinder, light_to_center, 0);
 	border = pow(cylinder.radius, 2);
 	light_distance = pow(light_to_center.x, 2) + pow(light_to_center.y, 2);
 	return (light_distance < border);
