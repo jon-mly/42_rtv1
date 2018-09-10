@@ -637,6 +637,15 @@ t_color			light_for_intersection(t_object light_ray, t_object ray, t_object
 	return (color);
 }
 
+int				hit_test(global t_object *clt_obj, global t_object *obj, t_object l_ray, float norm)
+{
+	if (!(l_ray.intersect && l_ray.norm > 0))
+		return (0);
+	if (clt_obj == obj)
+		return (l_ray.norm < norm - 0.1);
+	return (l_ray.norm < norm);
+}
+
 /*
 ** For each light, light ray created.
 ** For each object that is not the intersected one, check if the ray
@@ -667,8 +676,9 @@ t_color			get_color_on_intersection(t_object ray, global t_object *closest_objec
 		{
 			light_ray = intersect_object(light_ray,
 					obj[object_index]);
-			if (light_ray.intersect && light_ray.norm - norm < (float)(-0.05) &&
-					light_ray.norm > 0)
+//			if (light_ray.intersect && light_ray.norm - norm < (float)(-0.05) &&
+//					light_ray.norm > 0)
+			if (hit_test(closest_object, &obj[object_index], light_ray, norm))
 				is_direct_hit = 0;
 		}
 		if (is_direct_hit)
