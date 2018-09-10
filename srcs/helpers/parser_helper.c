@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/23 14:20:22 by aabelque          #+#    #+#             */
-/*   Updated: 2018/09/07 11:34:56 by aabelque         ###   ########.fr       */
+/*   Updated: 2018/09/10 18:16:00 by jmlynarc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,8 @@ char		**split_new_line(int fd)
 	splited_content = NULL;
 	if (!(line = (char**)malloc(sizeof(char*))))
 		return (NULL);
-	res = get_next_line(fd, line);
+	if ((res = get_next_line(fd, line)) < 0)
+		exit_usage();
 	if (res == 1)
 	{
 		ft_striter(*line, &(exit_if_non_ascii));
