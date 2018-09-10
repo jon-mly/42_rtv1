@@ -6,7 +6,7 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/22 11:46:40 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/09/10 15:09:06 by jmlynarc         ###   ########.fr       */
+/*   Updated: 2018/09/10 16:04:48 by jmlynarc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,8 +103,8 @@ static t_color		add_color(t_color base, t_color overlay)
 	return (final);
 }
 
-static int			hit_test(t_object *clt_obj, t_object *obj, t_object l_ray
-		float)
+static int			hit_test(t_object *clt_obj, t_object *obj, t_object l_ray,
+		float norm)
 {
 	if (!(l_ray.intersect && l_ray.norm > 0))
 		return (0);
