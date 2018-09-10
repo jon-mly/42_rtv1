@@ -64,25 +64,33 @@ FLAGS = -Wall -Werror -Wextra
 
 NAME = libft.a
 
-%.o: %.c
-	@gcc -c $< -o $@
+all: print $(NAME)
 
-$(NAME):
+print:
+	@echo "\033[32m[\c"
+
+$(NAME): $(O_FILES)
 	@gcc $(FLAGS) -c $(SRCS)
 	@ar rc $(NAME) $(O_FILES)
 	@ranlib $(NAME)
-	@echo "COMPILATION COMPLETED"
+	@echo "\033[32m[ ✔ ] Built library]\033[0m"
 
-all: $(NAME)
+%.o: %.c
+	@gcc -c $< -o $@
+	@echo "\033[33m✔ \c"
 
 make: all
 
+norme:
+	@norminette $(SRCS)
+	@echo "\033[3;32m[ ✔ ] Norme is done.\033[0m"
+
 clean:
 	@rm -f $(O_FILES)
-	@echo ".O FILES REMOVED SUCCESSFULLY"
+	@echo "\033[32m[ ✔ ] Cleaned up object files.\033[0m"
 
 fclean: clean
 	@rm -f $(NAME)
-	@ECHO "libft.a REMOVED SUCCESSFULLY"
+	@echo "\033[32m[ ✔ ] Cleaned up compiled files.\033[0m"
 
 re: fclean make

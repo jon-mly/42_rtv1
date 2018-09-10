@@ -6,7 +6,7 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/22 11:46:40 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/09/10 17:49:10 by aabelque         ###   ########.fr       */
+/*   Updated: 2018/09/10 17:52:07 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,9 +76,7 @@ static t_color		light_for_intersection(t_object light_ray, t_object ray,
 	t_color		color;
 
 	light_ray.intersectiion = ray.intersectiion;
-	//printf("ray: %f\n", ray.intersectiion.z);
 	normal = shape_normal(ray, object);
-	//printf("ray: %f\n", ray.intersectiion.z);
 	if ((object.typpe == CONE || object.typpe == CYLINDER) &&
 			dot_product(shape_normal(ray, object),
 				shape_normal(light_ray, object)) < 0)

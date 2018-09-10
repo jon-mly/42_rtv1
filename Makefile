@@ -66,11 +66,20 @@ $(NAME): $(O_SRCS)
 	make -C $(LIBFT_REP)
 	make -C $(MLX)
 	gcc -g $(INCLUDE_FLAG) $(MLX_FLAGS_LOCAL) $(MATH_FLAG) $(SRC) $(LIBFT) -o $(NAME)
+	@echo "\033[3;32m[ ✔ ] Rtv1 ready.\033[0m"
 
 %.o: %.c includes/rtv1.h Makefile
 	@gcc  $(INCLUDE_FLAG) -c $< -o $@
 
 all: $(NAME)
+
+normelibft:
+	$(MAKE) -C $(LIBFT_REP) norme
+
+norme:
+	@norminette $(SRC)
+	@norminette includes/
+	@echo "\033[3;32m[ ✔ ] Norme is done.\033[0m"
 
 clean:
 	make clean -C $(LIBFT_REP)
