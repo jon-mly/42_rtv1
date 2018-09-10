@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/23 15:37:32 by aabelque          #+#    #+#             */
-/*   Updated: 2018/09/07 12:02:42 by aabelque         ###   ########.fr       */
+/*   Updated: 2018/09/10 17:43:32 by jmlynarc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -264,4 +264,6 @@ void					ft_ocl_kernel_error(const int ret, const size_t index);
 void					init_cone(t_object *cone);
 void					init_cylinder(t_object *cylinder);
 size_t					file_len(int fd);
+int						hit_test(t_object *clt_obj, t_object *obj,
+		t_object l_ray, float norm);
 #endif

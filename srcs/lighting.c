@@ -103,16 +103,6 @@ static t_color		add_color(t_color base, t_color overlay)
 	return (final);
 }
 
-static int			hit_test(t_object *clt_obj, t_object *obj, t_object l_ray,
-		float norm)
-{
-	if (!(l_ray.intersect && l_ray.norm > 0))
-		return (0);
-	if (clt_obj == obj)
-		return (l_ray.norm < norm - 0.1);
-	return (l_ray.norm < norm);
-}
-
 /*
 ** For each light  light ray created.
 ** For each object that is not the intersected one, check if the ray
@@ -140,8 +130,6 @@ t_color				get_color_on_intersection(t_object ray,
 		while (++e->obj_i < e->scene.objects_count && e->is_direct_hit)
 		{
 			light_r = intersect_object(light_r, e->scene.objects[e->obj_i]);
-//			if (light_r.intersect && light_r.norm - norm < (float)(-0.1) &&
-//					light_r.norm > 0)
 			if (hit_test(clt_obj, &e->scene.objects[e->obj_i], light_r, norm))
 				e->is_direct_hit = 0;
 		}
