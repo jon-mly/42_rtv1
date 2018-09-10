@@ -6,7 +6,7 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/22 11:46:40 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/09/09 13:55:58 by aabelque         ###   ########.fr       */
+/*   Updated: 2018/09/10 17:49:10 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@ static t_color		add_color(t_color base, t_color overlay)
 }
 
 /*
-** For each light (FIXME: multi-spots not supported so far), light ray created.
+** For each light  light ray created.
 ** For each object that is not the intersected one, check if the ray
 ** intersects with the object. If so, the point on closest_object is shadowed.
 ** Else, the coloration calculated in the case there is no object in between is
@@ -132,8 +132,7 @@ t_color				get_color_on_intersection(t_object ray,
 		while (++e->obj_i < e->scene.objects_count && e->is_direct_hit)
 		{
 			light_r = intersect_object(light_r, e->scene.objects[e->obj_i]);
-			if (light_r.intersect && light_r.norm - norm < (float)(-0.1) &&
-					light_r.norm > 0)
+			if (hit_test(clt_obj, &e->scene.objects[e->obj_i], light_r, norm))
 				e->is_direct_hit = 0;
 		}
 		if (e->is_direct_hit)
