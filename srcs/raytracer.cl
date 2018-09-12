@@ -117,10 +117,11 @@ t_vector		rotate_cylinder_angles(t_object cylinder, t_vector vect, int revers);
 t_object		sphere_intersection(t_object ray, t_object sphere);
 t_object		plane_intersection(t_object ray, t_object plane);
 t_object		cylinder_intersection(t_object ray, t_object cylinder);
-t_color 	add_color(t_color base, t_color overlay);
-int		revert_cone_normal(t_object ray, t_object cone);
-int		revert_cylinder_normal(t_object ray, t_object cylinder);
-int		revert_sphere_normal(t_object ray, t_object sphere);
+t_color 		add_color(t_color base, t_color overlay);
+int				revert_cone_normal(t_object ray, t_object cone);
+int				revert_cylinder_normal(t_object ray, t_object cylinder);
+int				revert_sphere_normal(t_object ray, t_object sphere);
+int				hit_test(global t_object *clt_obj, global t_object *obj, t_object l_ray, float norm);
 
 
 
