@@ -71,6 +71,16 @@ t_light				*add_light(int fd, t_light *existing_lights, int count)
 		else if (line_len(line) == 4 && ft_strequ(line[0], "color"))
 			new_light.color = color(ft_atoi(line[1]), ft_atoi(line[2]),
 						ft_atoi(line[3]), 0);
+		else if (line_len(line) == 4 && ft_strequ(line[0], "direction"))
+			new_light.direction = vector(ft_atoi(line[1]), ft_atoi(line[2]),
+							ft_atoi(line[3]));
+		else if (line_len(line) == 2 && ft_strequ(line[0], "type"))
+		{
+			if (ft_strequ(line[1], "OMNI"))
+				new_light.typpe = OMNI;
+			else if (ft_strequ(line[1], "AMBIANT"))
+				new_light.typpe = AMBIANT;
+		}
 		clear_line(line);
 	}
 	clear_line(line);

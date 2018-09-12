@@ -57,7 +57,8 @@ typedef enum			e_object_type
 
 typedef enum			e_light_type
 {
-	OMNI
+	OMNI,
+	AMBIANT
 }						t_light_type;
 
 /*
@@ -261,9 +262,9 @@ t_object				init_ray(int x, int y, t_camera camera);
 float					closest_distance_quadratic(float a, float b, float c);
 void					ft_ocl_init_error(const int ret);
 void					ft_ocl_kernel_error(const int ret, const size_t index);
-void					init_cone(t_object *cone);
-void					init_cylinder(t_object *cylinder);
 size_t					file_len(int fd);
 int						hit_test(t_object *clt_obj, t_object *obj,
 		t_object l_ray, float norm);
+t_object        parse_object(int fd, t_object *object);
+
 #endif
