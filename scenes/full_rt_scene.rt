@@ -1,0 +1,28 @@
+camera {
+position 0 0 -30
+angles -10 0
+}
+
+light {
+type AMBIANT
+color 255 255 255
+direction -1 -1 0
+}
+
+light {
+type OMNI
+color 200 200 200
+position -15 0 -3
+}
+
+sphere {
+center 0 -5 0
+radius 5
+color 255 0 0
+}
+
+plane {
+point 0 -10 0
+normal 0 1 0
+color 0 0 255
+}

@@ -12,7 +12,8 @@ typedef enum	e_object_type
 
 typedef enum	e_light_type
 {
-	OMNI
+	OMNI,
+	AMBIANT
 }				t_light_type;
 
 typedef struct	s_vector
@@ -91,7 +92,8 @@ typedef struct	s_scene
 
 int				color_coord(float cosinus, float distance, int obj_color, int light_color);
 t_color			light_for_intersection(t_object light_ray, t_object ray, t_object object, t_light light);
-t_object		init_light_ray(t_light light, t_object ray, t_object object);
+t_object		init_omni_light_ray(t_light light, t_object ray, t_object object);
+t_object	init_ambiant_light_ray(t_light light, t_object ray, t_object object);
 int				color_to_int(t_color color);
 t_color			get_color_on_intersection(t_object ray, global t_object *closest_object, global t_scene *scene, global t_light *light, global t_object *obj);
 t_object		intersect_object(t_object ray, t_object object);
@@ -121,6 +123,11 @@ t_color 	add_color(t_color base, t_color overlay);
 int		revert_cone_normal(t_object ray, t_object cone);
 int		revert_cylinder_normal(t_object ray, t_object cylinder);
 int		revert_sphere_normal(t_object ray, t_object sphere);
+int				hit_test(global t_object *clt_obj, global t_object *obj, t_object l_ray, float norm);
+t_color			omni_light_for_intersection(t_object light_ray, t_object ray, t_object
+	object, t_light light);
+t_color			ambiant_light_for_intersection(t_object light_ray, t_object ray, t_object
+	object, t_light light);
 
 
 
@@ -567,7 +574,7 @@ int			color_to_int(t_color color)
 ** between the light spot and the intersection, the latter is shadowed.
 */
 
-t_object	init_light_ray(t_light light, t_object ray, t_object object)
+t_object	init_omni_light_ray(t_light light, t_object ray, t_object object)
 {
 	t_object		light_ray;
 	t_vector	direction;
@@ -580,6 +587,24 @@ t_object	init_light_ray(t_light light, t_object ray, t_object object)
 	light_ray.color = color(0, 0, 0, 0);
 	return (light_ray);
 }
+
+t_object	init_ambiant_light_ray(t_light light, t_object ray, t_object object)
+{
+	t_object		light_ray;
+	t_vector		ray_direction;
+
+	ray_direction = (t_vector){
+		.x = -light.direction.x,
+		.y = -light.direction.y,
+		.z = -light.direction.z,
+	};
+	light_ray.origin = ray.intersectiion;
+	light_ray.direction = ray_direction;
+	light_ray.intersect = FALSE;
+	light_ray.color = color(0, 0, 0, 0);
+	return (light_ray);
+}
+
 
 /*
 ** Supposing there is no object between the light and the intersection, the
@@ -612,7 +637,27 @@ t_color 	add_color(t_color base, t_color overlay)
 	return (final);
 }
 
-t_color			light_for_intersection(t_object light_ray, t_object ray, t_object
+t_color			ambiant_light_for_intersection(t_object light_ray, t_object ray, t_object
+	object, t_light light)
+{
+	t_color		color;
+	float		distance;
+	float		cosinus;
+
+	cosinus = dot_product(light_ray.direction, shape_normal(ray, object));
+	if (cosinus >= 0)
+		return (light_ray.color);
+	printf("reached\n");
+	distance = 2.0;
+	color.r = color_coord(cosinus, distance, object.color.r, light.color.r);
+	color.g = color_coord(cosinus, distance, object.color.g, light.color.g);
+	color.b = color_coord(cosinus, distance, object.color.b, light.color.b);
+	color.a = 0;
+	// printf("%.2f %.2f %.2f\n", color.r, color.g, color.b);
+	return (color);
+}
+
+t_color			omni_light_for_intersection(t_object light_ray, t_object ray, t_object
 	object, t_light light)
 {
 	t_vector	normal;
@@ -629,12 +674,21 @@ t_color			light_for_intersection(t_object light_ray, t_object ray, t_object
 	cosinus = dot_product(light_ray.direction, normal);
 	if (cosinus >= 0)
 		return (light_ray.color);
-	distance = points_norm(ray.intersectiion, light_ray.origin);
+	else
+		distance = points_norm(ray.intersectiion, light_ray.origin);
 	color.r = color_coord(cosinus, distance, object.color.r, light.color.r);
 	color.g = color_coord(cosinus, distance, object.color.g, light.color.g);
 	color.b = color_coord(cosinus, distance, object.color.b, light.color.b);
 	color.a = 0;
 	return (color);
+}
+
+t_color			light_for_intersection(t_object light_ray, t_object ray, t_object
+	object, t_light light)
+{
+	if (light.typpe = AMBIANT)
+		return ambiant_light_for_intersection(light_ray, ray, object, light);
+	return omni_light_for_intersection(light_ray, ray, object, light);
 }
 
 int				hit_test(global t_object *clt_obj, global t_object *obj, t_object l_ray, float norm)
@@ -645,6 +699,8 @@ int				hit_test(global t_object *clt_obj, global t_object *obj, t_object l_ray, 
 		return (l_ray.norm < norm - 0.1);
 	return (l_ray.norm < norm);
 }
+
+
 
 /*
 ** For each light, light ray created.
@@ -668,17 +724,19 @@ t_color			get_color_on_intersection(t_object ray, global t_object *closest_objec
 	while (++light_index < scene->lights_count)
 	{
 		is_direct_hit = 1;
-		light_ray = init_light_ray(light[light_index], ray,
-				*closest_object);
+		if (light[light_index].typpe == OMNI)
+			light_ray = init_omni_light_ray(light[light_index], ray, *closest_object);
+		else
+			light_ray = init_ambiant_light_ray(light[light_index], ray, *closest_object);
 		norm = light_ray.norm;
 		object_index = -1;
 		while (++object_index < scene->objects_count && is_direct_hit)
 		{
 			light_ray = intersect_object(light_ray,
 					obj[object_index]);
-//			if (light_ray.intersect && light_ray.norm - norm < (float)(-0.05) &&
-//					light_ray.norm > 0)
-			if (hit_test(closest_object, &obj[object_index], light_ray, norm))
+			if (light[light_index].typpe == OMNI && hit_test(closest_object, &obj[object_index], light_ray, norm))
+				is_direct_hit = 0;
+			else if (light[light_index].typpe == AMBIANT && light_ray.intersect && light_ray.norm > 0)
 				is_direct_hit = 0;
 		}
 		if (is_direct_hit)

@@ -72,8 +72,8 @@ t_light				*add_light(int fd, t_light *existing_lights, int count)
 			new_light.color = color(ft_atoi(line[1]), ft_atoi(line[2]),
 						ft_atoi(line[3]), 0);
 		else if (line_len(line) == 4 && ft_strequ(line[0], "direction"))
-			new_light.direction = vector(ft_atoi(line[1]), ft_atoi(line[2]),
-							ft_atoi(line[3]));
+			new_light.direction = normalize_vector(vector(ft_atoi(line[1]), ft_atoi(line[2]),
+							ft_atoi(line[3])));
 		else if (line_len(line) == 2 && ft_strequ(line[0], "type"))
 		{
 			if (ft_strequ(line[1], "OMNI"))
