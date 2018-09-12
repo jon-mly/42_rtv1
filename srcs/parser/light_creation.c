@@ -63,6 +63,7 @@ t_light				*add_light(int fd, t_light *existing_lights, int count)
 	new_light.typpe = OMNI;
 	new_light.posiition = point(0, 0, 0);
 	new_light.color = color(255, 255, 255, 0);
+	new_light.power = 100.0;
 	while ((line = split_new_line(fd)) && ft_strequ(line[0], "}") == FALSE)
 	{
 		if (line_len(line) == 4 && ft_strequ(line[0], "position"))
@@ -74,12 +75,18 @@ t_light				*add_light(int fd, t_light *existing_lights, int count)
 		else if (line_len(line) == 4 && ft_strequ(line[0], "direction"))
 			new_light.direction = normalize_vector(vector(ft_atoi(line[1]), ft_atoi(line[2]),
 							ft_atoi(line[3])));
+		else if (line_len(line) == 2 && ft_strequ(line[0], "power"))
+			new_light.power = fmax(ft_atoi(line[1]), 0);
+		else if (line_len(line) == 2 && ft_strequ(line[0], "angle"))
+			new_light.angle = degrees_to_radian(fmax(fmin(ft_atoi(line[1]), 90), 0));
 		else if (line_len(line) == 2 && ft_strequ(line[0], "type"))
 		{
 			if (ft_strequ(line[1], "OMNI"))
 				new_light.typpe = OMNI;
 			else if (ft_strequ(line[1], "AMBIANT"))
 				new_light.typpe = AMBIANT;
+			else if (ft_strequ(line[1], "PROJECTOR"))
+				new_light.typpe = PROJECTOR;
 		}
 		clear_line(line);
 	}

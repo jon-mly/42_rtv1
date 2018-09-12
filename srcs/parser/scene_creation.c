@@ -39,6 +39,11 @@ static t_object		*expand_objects(t_object *objects, int previous_count)
 
 static t_scene		extend_scene(int fd, t_scene scene, char **line, t_env *env)
 {
+	if (ft_strequ(line[0], "theme") && line_len(line) == 4)
+		scene.theme = color(ft_atoi(line[1]), ft_atoi(line[2]),
+						ft_atoi(line[3]), 0);
+	else if (ft_strequ(line[0], "power") && line_len(line) == 2)
+		scene.power = fmin(fmax(ft_atoi(line[1]) / 100.0, 0), 1);
 	if (line_len(line) != 2 || !(ft_strequ(line[1], "{")))
 		return (scene);
 	if (ft_strequ(line[0], "light"))
@@ -67,6 +72,8 @@ t_scene				create_scene(t_env *env, char *file_name, int fd)
 	scene.objects = NULL;
 	scene.lights_count = 0;
 	scene.lights = NULL;
+	scene.theme = color(255, 255, 255, 0);
+	scene.power = 0.25;
 	while ((line = split_new_line(fd)))
 	{
 		scene = extend_scene(fd, scene, line, env);

@@ -33,6 +33,10 @@ t_object        parse_object(int fd, t_object *object)
 			object->y_angle = degrees_to_radian(ft_atoi(line[1]));
 			object->x_angle = degrees_to_radian(ft_atoi(line[2]));
 		}
+		else if (line_len(line) == 2 && ft_strequ(line[0], "diffuse"))
+			object->diffuse = fmin(fmax(ft_atoi(line[1]) / 100.0, 0), 1);
+		else if (line_len(line) == 2 && ft_strequ(line[0], "reflection"))
+			object->reflection = fmin(fmax(ft_atoi(line[1]) / 100.0, 0), 1);
 		clear_line(line);
 	}
 	clear_line(line);

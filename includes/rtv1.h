@@ -58,7 +58,8 @@ typedef enum			e_object_type
 typedef enum			e_light_type
 {
 	OMNI,
-	AMBIANT
+	AMBIANT,
+	PROJECTOR
 }						t_light_type;
 
 /*
@@ -103,6 +104,8 @@ typedef struct			s_object
 	float				angle;
 	float				y_angle;
 	float				x_angle;
+	float				reflection;
+	float				diffuse;
 	t_object_type		typpe;
 	int					intersect;
 	char				*name;
@@ -115,6 +118,7 @@ typedef struct			s_light
 	float				angle;
 	t_light_type		typpe;
 	t_color				color;
+	float				power;
 }						t_light;
 
 typedef struct			s_camera
@@ -143,6 +147,8 @@ typedef struct			s_scene
 	t_light				*lights;
 	int					objects_count;
 	int					lights_count;
+	t_color		theme;
+	float		power;
 }						t_scene;
 
 typedef	struct			s_opencl
