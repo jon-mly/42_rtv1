@@ -740,7 +740,8 @@ t_color			projector_light_for_intersection(t_object light_ray, t_object ray, t_o
 		return (light_ray.color);
 	distance = points_norm(ray.intersectiion, light_ray.origin);
 	cosinus = dot_product(light.direction, light_ray.direction);
-	intensity = cos(2 * acos(cosinus));
+	intensity = (1 / (1 - cos(light.angle))) * cosinus - (cos(light.angle) / (1 - cos(light.angle)));
+	printf("%.2f\n", intensity);
 	color.r = projector_color_coord(intensity, distance, object.color.r, light.color.r) * object.diffuse;
 	color.g = projector_color_coord(intensity, distance, object.color.g, light.color.g) * object.diffuse;
 	color.b = projector_color_coord(intensity, distance, object.color.b, light.color.b) * object.diffuse;
