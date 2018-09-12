@@ -6,7 +6,7 @@
 /*   By: jmlynarc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/22 11:46:27 by jmlynarc          #+#    #+#             */
-/*   Updated: 2018/09/07 11:31:14 by aabelque         ###   ########.fr       */
+/*   Updated: 2018/09/12 15:48:37 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ t_env			*init_env(char *file_name)
 	t_env	*env;
 	int		fd;
 
-	if ((fd = open(file_name, O_RDONLY)) <= 2)
+	if ((fd = open(file_name, O_RDONLY)) < 0)
 		exit_usage();
 	if (!(env = (t_env*)malloc(sizeof(t_env))))
 		return (NULL);
