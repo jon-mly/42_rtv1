@@ -6,7 +6,7 @@ t_object        parse_object(int fd, t_object *object)
 
 	object->finite = 0;
 	object->covered = 0;
-    while ((line = split_new_line(fd)) && ft_strequ(line[0], "}") == FALSE)
+    while ((line = split_new_line(fd)) && !ft_strequ(line[0], "}"))
 	{
 		if (line_len(line) == 4 && ft_strequ(line[0], "color"))
 			object->color = color(ft_atoi(line[1]), ft_atoi(line[2]),
@@ -45,6 +45,8 @@ t_object        parse_object(int fd, t_object *object)
 			object->covered = 1;
 		else if (line_len(line) == 2 && ft_strequ(line[0], "height"))
 			object->height = (float)ft_atoi(line[1]);
+		else if (line_len(line) == 2 && ft_strequ(line[0], "width"))
+			object->width = (float)ft_atoi(line[1]);
 		clear_line(line);
 	}
 	clear_line(line);

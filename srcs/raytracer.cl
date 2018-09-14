@@ -7,7 +7,8 @@ typedef enum	e_object_type
 	SPHERE,
 	PLANE,
 	CYLINDER,
-	CONE
+	CONE,
+	DISC
 }				t_object_type;
 
 typedef enum	e_light_type
@@ -82,6 +83,7 @@ typedef struct	s_object
 	float				reflection;
 	float				diffuse;
 	float			height;
+	float				width;
 	t_object_type	typpe;
 	int				intersect;
 	int					finite;
@@ -142,8 +144,9 @@ t_color			ambiant_color(t_scene scene, t_object object);
 t_color			projector_light_for_intersection(t_object light_ray, t_object ray, t_object
 	object, t_light light);
 t_object	init_projector_light_ray(t_light light, t_object ray, t_object object);
-t_object		finite_cylinder_intersection(t_object ray, t_object cylinder);
-
+t_object		finite_cylinder_intersection(t_object ray, t_object cylinder, float closest_norm, float farest_norm);
+t_object	disc_intersection(t_object ray, t_object disc);
+float	farest_distance_quadratic(float a, float b, float c);
 
 
 /*
@@ -331,6 +334,31 @@ float		closest_distance_quadratic(float a, float b, float c)
 	return (x1);
 }
 
+float	farest_distance_quadratic(float a, float b, float c)
+{
+	float		discriminant;
+	float		x1;
+	float		x2;
+	float 		buffer;
+
+	discriminant = b * b - 4 * a * c;
+	if (discriminant < 0)
+		return (-1);
+	x1 = (-b - sqrt(discriminant)) / (2 * a);
+	x2 = (-b + sqrt(discriminant)) / (2 * a);
+	if (x2 < x1)
+	{
+		buffer = x2;
+		x2 = x1;
+		x1 = buffer;
+	}
+	if (x1 <= 0 && x2 <= 0)
+		return (-1);
+	else if (x2 > 0 && x1 <= 0)
+		return (x2);
+	return (x2);
+}
+
 
 float		points_norm(t_point p1, t_point p2)
 {
@@ -405,10 +433,11 @@ t_vector		cylinder_normal(t_object ray, t_object cylinder)
 	distance = vector_points(cylinder.point, ray.intersectiion);
 	distance = rotate_cylinder_angles(cylinder, distance, 0);
 	normal_point = (t_point){0, 0, distance.z};
-	if (revert_cylinder_normal(ray, cylinder))
+	normal = vector_points(normal_point, distance);
+	if ((!cylinder.finite || cylinder.covered) && revert_cylinder_normal(ray, cylinder))
+			normal = vector_points(distance, normal_point);
+	else if (dot_product(normalize_vector(normal), rotate_cylinder_angles(cylinder, ray.direction, 0)) > 0)
 		normal = vector_points(distance, normal_point);
-	else
-		normal = vector_points(normal_point, distance);
 	normal = rotate_cylinder_angles(cylinder, normal, 1);
 	return (normalize_vector(normal));
 }
@@ -453,7 +482,7 @@ t_vector			shape_normal(t_object ray, t_object object)
 {
 	if (object.typpe == SPHERE)
 		return (sphere_normal(ray, object));
-	else if (object.typpe == PLANE)
+	else if (object.typpe == PLANE || object.typpe == DISC)
 		return (plane_normal(ray, object));
 	else if (object.typpe == CYLINDER)
 		return (cylinder_normal(ray, object));
@@ -501,6 +530,18 @@ t_object	plane_intersection(t_object ray, t_object plane)
 	return (ray);
 }
 
+t_object	disc_intersection(t_object ray, t_object disc)
+{
+	ray = plane_intersection(ray, disc);
+	if (!ray.intersect)
+		return (ray);
+	ray.intersectiion.x = ray.origin.x + ray.direction.x * ray.norm;
+	ray.intersectiion.y = ray.origin.y + ray.direction.y * ray.norm;
+	ray.intersectiion.z = ray.origin.z + ray.direction.z * ray.norm;
+	ray.intersect = vector_norm(vector_points(ray.intersectiion, disc.point)) < disc.width;
+	return (ray);
+}
+
 t_object	sphere_intersection(t_object ray, t_object sphere)
 {
 	double		a;
@@ -533,20 +574,35 @@ t_object		cylinder_intersection(t_object ray, t_object cylinder)
 	c = pow((float)distance.x, (float)2) + pow((float)distance.y, (float)2) - pow((float)cylinder.radius, (float)2);
 	ray.norm = closest_distance_quadratic(a, b, c);
 	ray.intersect = ray.norm > 0;
-	// if (cylinder.finite && ray.intersect)
-	// 	return (ray);
+	if (cylinder.finite && ray.intersect)
+		return (finite_cylinder_intersection(ray, cylinder, ray.norm, farest_distance_quadratic(a,b,c)));
 	return (ray);
 }
 
-t_object		finite_cylinder_intersection(t_object ray, t_object cylinder)
+t_object		finite_cylinder_intersection(t_object ray, t_object cylinder, float closest_norm, float farest_norm)
 {
-	ray.intersectiion.x = ray.origin.x + ray.direction.x * ray.norm;
-	ray.intersectiion.y = ray.origin.y + ray.direction.y * ray.norm;
-	ray.intersectiion.z = ray.origin.z + ray.direction.z * ray.norm;
+	float		z_coord;
+
+	ray.intersectiion.x = ray.origin.x + ray.direction.x * closest_norm;
+	ray.intersectiion.y = ray.origin.y + ray.direction.y * closest_norm;
+	ray.intersectiion.z = ray.origin.z + ray.direction.z * closest_norm;
 	ray.intersectiion = rotate_cylinder_angles(cylinder, ray.intersectiion, 0);
-	if (ray.intersectiion.z >= 0 && ray.intersectiion.z <= cylinder.height)
+	z_coord = ray.intersectiion.z;
+	if (z_coord >= 0 && z_coord <= cylinder.height)
 	{
-		ray.intersect = TRUE;
+		ray.norm = closest_norm;
+		ray.intersect = closest_norm > 0;
+		return (ray);
+	}
+	ray.intersectiion.x = ray.origin.x + ray.direction.x * farest_norm;
+	ray.intersectiion.y = ray.origin.y + ray.direction.y * farest_norm;
+	ray.intersectiion.z = ray.origin.z + ray.direction.z * farest_norm;
+	ray.intersectiion = rotate_cylinder_angles(cylinder, ray.intersectiion, 0);
+	z_coord = ray.intersectiion.z;
+	if (z_coord >= 0 && z_coord <= cylinder.height)
+	{
+		ray.norm = farest_norm;
+		ray.intersect = farest_norm > 0;
 		return (ray);
 	}
 	ray.intersect = FALSE;
@@ -563,6 +619,8 @@ t_object			intersect_object(t_object ray, t_object object)
 		ray = cylinder_intersection(ray, object);
 	else if (object.typpe == CONE)
 		ray = cone_intersection(ray, object);
+	else if (object.typpe == DISC)
+		ray = disc_intersection(ray, object);
 	if (ray.intersect)
 	{
 		ray.intersectiion.x = ray.origin.x + ray.direction.x * ray.norm;
@@ -724,10 +782,13 @@ t_color			omni_light_for_intersection(t_object light_ray, t_object ray, t_object
 
 	light_ray.intersectiion = ray.intersectiion;
 	normal = shape_normal(ray, object);
-	if ((object.typpe == CONE || object.typpe == CYLINDER) &&
-			dot_product(shape_normal(ray, object),
-				shape_normal(light_ray, object)) < 0)
-		return ((t_color){0, 0, 0, 0});
+	// FIXME: if the ray is from an Ambiant light, as the direction is
+	// inverted : from the point to the light, the condition below
+	// will be false. Case to handle or remove
+	// if ((object.typpe == CONE || object.typpe == CYLINDER) &&
+	// 		dot_product(shape_normal(ray, object),
+	// 			shape_normal(light_ray, object)) < 0)
+	// 	return ((t_color){0, 0, 0, 0});
 	cosinus = dot_product(light_ray.direction, normal);
 	if (cosinus >= 0)
 		return (light_ray.color);
@@ -752,10 +813,10 @@ t_color			projector_light_for_intersection(t_object light_ray, t_object ray, t_o
 		return (light_ray.color);
 	light_ray.intersectiion = ray.intersectiion;
 	normal = shape_normal(ray, object);
-	if ((object.typpe == CONE || object.typpe == CYLINDER) &&
-			dot_product(shape_normal(ray, object),
-				shape_normal(light_ray, object)) < 0)
-		return ((t_color){0, 0, 0, 0});
+	// if ((object.typpe == CONE || object.typpe == CYLINDER) &&
+	// 		dot_product(shape_normal(ray, object),
+	// 			shape_normal(light_ray, object)) < 0)
+	// 	return ((t_color){0, 0, 0, 0});
 	distance = points_norm(ray.intersectiion, light_ray.origin) * (100.0 / light.power);
 	cosinus = dot_product(light.direction, light_ray.direction);
 	intensity = (1 / (1 - cos(light.angle))) * cosinus - (cos(light.angle) / (1 - cos(light.angle)));

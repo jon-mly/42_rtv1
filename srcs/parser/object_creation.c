@@ -25,7 +25,6 @@
 
 static t_object		add_new_sphere(int fd)
 {
-	char		**line;
 	t_object	sphere;
 
 	sphere.typpe = SPHERE;
@@ -74,7 +73,7 @@ static t_object		add_new_plane(int fd)
 ** }
 */
 
-static t_object		add_new_cone(int fd, char **line)
+static t_object		add_new_cone(int fd)
 {
 	t_object	cone;
 
@@ -101,7 +100,7 @@ static t_object		add_new_cone(int fd, char **line)
 ** }
 */
 
-static t_object		add_new_cylinder(int fd, char **line)
+static t_object		add_new_cylinder(int fd)
 {
 	t_object	cylinder;
 
@@ -115,16 +114,30 @@ static t_object		add_new_cylinder(int fd, char **line)
 	return (cylinder);
 }
 
+static t_object		add_new_disc(int fd)
+{
+	t_object	disc;
+
+	disc.typpe = DISC;
+	disc.normal = normalize_vector(vector(0, 1, 0));
+	disc.point = point(0, 0, 0);
+	disc.color = color(255, 255, 255, 0);
+	disc.width = 10;
+	disc = parse_object(fd, &disc);
+	disc.name = "Disc";
+	return (disc);
+}
+
 t_object			add_new_object(int fd, char *type)
 {
-	char		**line;
-
 	if (ft_strequ(type, "cylinder"))
-		return (add_new_cylinder(fd, line));
+		return (add_new_cylinder(fd));
 	else if (ft_strequ(type, "sphere"))
 		return (add_new_sphere(fd));
 	else if (ft_strequ(type, "plane"))
 		return (add_new_plane(fd));
+	else if (ft_strequ(type, "disc"))
+		return (add_new_disc(fd));
 	else
-		return (add_new_cone(fd, line));
+		return (add_new_cone(fd));
 }

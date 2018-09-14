@@ -52,7 +52,8 @@ typedef enum			e_object_type
 	SPHERE,
 	PLANE,
 	CYLINDER,
-	CONE
+	CONE,
+	DISC
 }						t_object_type;
 
 typedef enum			e_light_type
@@ -107,11 +108,11 @@ typedef struct			s_object
 	float				reflection;
 	float				diffuse;
 	float				height;
+	float				width;
 	t_object_type		typpe;
 	int					intersect;
 	int					finite;
 	int					covered;
-
 	char				*name;
 }						t_object;
 
@@ -129,7 +130,7 @@ typedef struct			s_camera
 {
 	t_vector			posiition;
 	t_vector			direction;
-	t_vector			plane;
+	t_vector			discplane;
 	t_point				spot;
 	t_vector			normal;
 	t_vector			up_left_corner;

@@ -52,7 +52,8 @@ static t_scene		extend_scene(int fd, t_scene scene, char **line, t_env *env)
 		scene.lights = add_light(fd, scene.lights, scene.lights_count);
 	}
 	else if (ft_strequ(line[0], "sphere") || ft_strequ(line[0], "cone") ||
-		ft_strequ(line[0], "cylinder") || ft_strequ(line[0], "plane"))
+		ft_strequ(line[0], "cylinder") || ft_strequ(line[0], "plane") ||
+		ft_strequ(line[0], "disc"))
 	{
 		scene.objects_count++;
 		scene.objects = expand_objects(scene.objects, scene.objects_count);
