@@ -106,8 +106,12 @@ typedef struct			s_object
 	float				x_angle;
 	float				reflection;
 	float				diffuse;
+	float				height;
 	t_object_type		typpe;
 	int					intersect;
+	int					finite;
+	int					covered;
+
 	char				*name;
 }						t_object;
 

@@ -4,6 +4,8 @@ t_object        parse_object(int fd, t_object *object)
 {
 	char		**line;
 
+	object->finite = 0;
+	object->covered = 0;
     while ((line = split_new_line(fd)) && ft_strequ(line[0], "}") == FALSE)
 	{
 		if (line_len(line) == 4 && ft_strequ(line[0], "color"))
@@ -37,6 +39,12 @@ t_object        parse_object(int fd, t_object *object)
 			object->diffuse = fmin(fmax(ft_atoi(line[1]) / 100.0, 0), 1);
 		else if (line_len(line) == 2 && ft_strequ(line[0], "reflection"))
 			object->reflection = fmin(fmax(ft_atoi(line[1]) / 100.0, 0), 1);
+		else if (line_len(line) == 1 && ft_strequ(line[0], "finite"))
+			object->finite = 1;
+		else if (line_len(line) == 1 && ft_strequ(line[0], "covered"))
+			object->covered = 1;
+		else if (line_len(line) == 2 && ft_strequ(line[0], "height"))
+			object->height = (float)ft_atoi(line[1]);
 		clear_line(line);
 	}
 	clear_line(line);

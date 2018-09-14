@@ -81,8 +81,11 @@ typedef struct	s_object
 	float			x_angle;
 	float				reflection;
 	float				diffuse;
+	float			height;
 	t_object_type	typpe;
 	int				intersect;
+	int					finite;
+	int					covered;
 	char			*name;
 }				t_object;
 
@@ -139,6 +142,7 @@ t_color			ambiant_color(t_scene scene, t_object object);
 t_color			projector_light_for_intersection(t_object light_ray, t_object ray, t_object
 	object, t_light light);
 t_object	init_projector_light_ray(t_light light, t_object ray, t_object object);
+t_object		finite_cylinder_intersection(t_object ray, t_object cylinder);
 
 
 
@@ -529,6 +533,23 @@ t_object		cylinder_intersection(t_object ray, t_object cylinder)
 	c = pow((float)distance.x, (float)2) + pow((float)distance.y, (float)2) - pow((float)cylinder.radius, (float)2);
 	ray.norm = closest_distance_quadratic(a, b, c);
 	ray.intersect = ray.norm > 0;
+	// if (cylinder.finite && ray.intersect)
+	// 	return (ray);
+	return (ray);
+}
+
+t_object		finite_cylinder_intersection(t_object ray, t_object cylinder)
+{
+	ray.intersectiion.x = ray.origin.x + ray.direction.x * ray.norm;
+	ray.intersectiion.y = ray.origin.y + ray.direction.y * ray.norm;
+	ray.intersectiion.z = ray.origin.z + ray.direction.z * ray.norm;
+	ray.intersectiion = rotate_cylinder_angles(cylinder, ray.intersectiion, 0);
+	if (ray.intersectiion.z >= 0 && ray.intersectiion.z <= cylinder.height)
+	{
+		ray.intersect = TRUE;
+		return (ray);
+	}
+	ray.intersect = FALSE;
 	return (ray);
 }
 
@@ -646,7 +667,7 @@ int		omni_color_coord(float cosinus, float distance, int obj_color,
 
 	distance_factor = 0.02 * pow((float)(distance / 1.3), (float)2) + 1;
 	k = sqrt(-cosinus) / distance_factor;
-	color_value = ((float)obj_color / (4 * distance_factor)) + k * (float)light_color;
+	color_value = ((float)obj_color + (float)light_color) * k;
 	color_value = fmax(fmin((float)color_value, (float)255), 0);
 	return ((int)color_value);
 }
@@ -710,7 +731,7 @@ t_color			omni_light_for_intersection(t_object light_ray, t_object ray, t_object
 	cosinus = dot_product(light_ray.direction, normal);
 	if (cosinus >= 0)
 		return (light_ray.color);
-	distance = points_norm(ray.intersectiion, light_ray.origin);
+	distance = points_norm(ray.intersectiion, light_ray.origin) * (100.0 / light.power);
 	color.r = omni_color_coord(cosinus, distance, object.color.r, light.color.r) * object.diffuse;
 	color.g = omni_color_coord(cosinus, distance, object.color.g, light.color.g) * object.diffuse;
 	color.b = omni_color_coord(cosinus, distance, object.color.b, light.color.b) * object.diffuse;
@@ -735,13 +756,13 @@ t_color			projector_light_for_intersection(t_object light_ray, t_object ray, t_o
 			dot_product(shape_normal(ray, object),
 				shape_normal(light_ray, object)) < 0)
 		return ((t_color){0, 0, 0, 0});
+	distance = points_norm(ray.intersectiion, light_ray.origin) * (100.0 / light.power);
+	cosinus = dot_product(light.direction, light_ray.direction);
+	intensity = (1 / (1 - cos(light.angle))) * cosinus - (cos(light.angle) / (1 - cos(light.angle)));
 	cosinus = dot_product(light_ray.direction, normal);
 	if (cosinus >= 0)
 		return (light_ray.color);
-	distance = points_norm(ray.intersectiion, light_ray.origin);
-	cosinus = dot_product(light.direction, light_ray.direction);
-	intensity = (1 / (1 - cos(light.angle))) * cosinus - (cos(light.angle) / (1 - cos(light.angle)));
-	printf("%.2f\n", intensity);
+	intensity = -cosinus * intensity;
 	color.r = projector_color_coord(intensity, distance, object.color.r, light.color.r) * object.diffuse;
 	color.g = projector_color_coord(intensity, distance, object.color.g, light.color.g) * object.diffuse;
 	color.b = projector_color_coord(intensity, distance, object.color.b, light.color.b) * object.diffuse;
