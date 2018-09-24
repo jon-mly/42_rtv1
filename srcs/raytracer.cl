@@ -562,7 +562,7 @@ t_object	finite_cone_intersection(t_object ray, t_object cone)
 	{
 		ray.norm = closest_norm;
 		ray.intersectiion = point_from_vector(ray.origin, ray.direction, ray.norm);
-		distance = vector_points(cone.point, ray.intersectiion);
+		distance = vector_points(cone.center, ray.intersectiion);
 		distance = rotate_cone_angles(cone, distance, 0);
 		ray.intersect = (distance.z >= 0 && distance.z <= cone.height);
 	}
@@ -570,7 +570,7 @@ t_object	finite_cone_intersection(t_object ray, t_object cone)
 	{
 		ray.norm = farest_norm;
 		ray.intersectiion = point_from_vector(ray.origin, ray.direction, ray.norm);
-		distance = vector_points(cone.point, ray.intersectiion);
+		distance = vector_points(cone.center, ray.intersectiion);
 		distance = rotate_cone_angles(cone, distance, 0);
 		ray.intersect = (distance.z >= 0 && distance.z <= cone.height);		
 	}
@@ -655,8 +655,6 @@ t_object		finite_cylinder_intersection(t_object ray, t_object cylinder)
 	closest_norm = closest_distance_quadratic(a, b, c);
 	farest_norm = farest_distance_quadratic(a, b, c);
 	ray.intersect = FALSE;
-	// if (closest_norm <= 0 || farest_norm <= 0)
-	// 	return (ray);
 	if (closest_norm > 0.01)
 	{
 		ray.norm = closest_norm;
