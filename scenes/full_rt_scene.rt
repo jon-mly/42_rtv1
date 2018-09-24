@@ -10,14 +10,14 @@ light {
 type AMBIANT
 position 10 4 0
 color 255 255 255
-direction -4 -1 -2
+direction -4 -4 -2
 power 900
 }
 
 light {
 type OMNI
 color 200 200 200
-position -2 0 -12
+position -4 0 -12
 power 100
 }
 
@@ -38,10 +38,21 @@ power 200
 # reflect 100
 # }
 
+cylinder {
+finite
+height 6
+radius 6
+angles 0 -90
+color 200 200 200
+position 0 -2 0
+diffuse 100
+reflect 10
+}
+
 # cylinder {
 # finite
-# height 6
-# radius 6
+# height 8
+# radius 3
 # angles 0 -90
 # color 200 200 200
 # position 0 -2 0

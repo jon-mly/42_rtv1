@@ -555,6 +555,7 @@ t_object	finite_cone_intersection(t_object ray, t_object cone)
 	a = pow((float)vector_norm(ray_dir), (float)2) + k * pow((float)ray_dir.z, (float)2);
 	b = 2 * (dot_product(distance, ray_dir) + k * ray_dir.z * distance.z);
 	c = pow((float)vector_norm(distance), (float)2) + k * pow((float)distance.z, (float)2);
+	ray.intersect = FALSE;
 	closest_norm = closest_distance_quadratic(a, b, c);
 	farest_norm = farest_distance_quadratic(a, b, c);
 	if (closest_norm > 0.01)
@@ -653,8 +654,9 @@ t_object		finite_cylinder_intersection(t_object ray, t_object cylinder)
 	c = pow((float)distance.x, (float)2) + pow((float)distance.y, (float)2) - pow((float)cylinder.radius, (float)2);
 	closest_norm = closest_distance_quadratic(a, b, c);
 	farest_norm = farest_distance_quadratic(a, b, c);
-	if (closest_norm <= 0 || farest_norm <= 0)
-		return (ray);
+	ray.intersect = FALSE;
+	// if (closest_norm <= 0 || farest_norm <= 0)
+	// 	return (ray);
 	if (closest_norm > 0.01)
 	{
 		ray.norm = closest_norm;
@@ -671,8 +673,6 @@ t_object		finite_cylinder_intersection(t_object ray, t_object cylinder)
 		distance = rotate_cylinder_angles(cylinder, distance, 0);
 		ray.intersect = (distance.z >= 0 && distance.z <= cylinder.height);		
 	}
-	// if (points_norm(ray.intersectiion, ray.origin) < 0.1)
-	// 	printf("%.2f\n", points_norm(ray.intersectiion, ray.origin));
 	return (ray);
 }
 
@@ -910,7 +910,7 @@ t_color			light_for_intersection(t_object light_ray, t_object ray, t_object
 
 int				hit_test(global t_object *clt_obj, global t_object *obj, t_object l_ray, float norm)
 {
-	if (!(l_ray.intersect && l_ray.norm > 0))
+	if (!(l_ray.intersect && l_ray.norm > 0.01))
 		return (0);
 	if (clt_obj == obj)
 		return (l_ray.norm < norm - 0.1);
