@@ -103,7 +103,7 @@ typedef struct	s_scene
 
 int				omni_color_coord(float cosinus, float distance, int obj_color, int light_color);
 int             projector_color_coord(float intensity, float distance, int obj_color, int light_color);
-t_color			light_for_intersection(t_object light_ray, t_object ray, t_object object, t_light light);
+t_color			diffuse_light_for_intersection(t_object light_ray, t_object ray, t_object object, t_light light);
 t_object		init_omni_light_ray(t_light light, t_object ray, t_object object);
 t_object	init_ambiant_light_ray(t_light light, t_object ray, t_object object);
 int				color_to_int(t_color color);
@@ -150,6 +150,10 @@ float	farest_distance_quadratic(float a, float b, float c);
 t_vector	point_from_vector(t_point origin, t_vector direction, float norm);
 t_vector	scale_vector(t_vector vect, float scale);
 t_object	finite_cone_intersection(t_object ray, t_object cone);
+t_vector		specular_vector(t_vector incident, t_vector normal);
+t_color			specular_light_for_intersection(t_object light_ray, t_object ray,
+	t_object object, t_light light);
+
 
 /*
 ** ========== MATHEMATIC HELPERS
@@ -696,9 +700,32 @@ t_object			intersect_object(t_object ray, t_object object)
 }
 
 
+/*
+** ========== SPECULAR VECTOR CALCULATION
+*/
 
 /*
-** ========== NORMAL VECTOR CALCULATION
+** Returns the symetric of the incident vector (from light to object) around
+** the normal on the surface.
+*/
+
+t_vector		specular_vector(t_vector incident, t_vector normal)
+{
+	float		dot_coeff;
+	t_vector	reflected;
+
+	dot_coeff = dot_product(scale_vector(incident, 2), normal);
+	reflected = scale_vector(normal, -dot_coeff);
+	reflected.x += incident.x;
+	reflected.y += incident.y;
+	reflected.z += incident.z;
+	return (normalize_vector(reflected));
+}
+
+
+
+/*
+** ========== COLORATION TOOL
 */
 
 int			color_to_int(t_color color)
@@ -896,7 +923,7 @@ t_color			projector_light_for_intersection(t_object light_ray, t_object ray, t_o
 	return (color);
 }
 
-t_color			light_for_intersection(t_object light_ray, t_object ray, t_object
+t_color			diffuse_light_for_intersection(t_object light_ray, t_object ray, t_object
 	object, t_light light)
 {
 	if (light.typpe == AMBIANT)
@@ -905,6 +932,31 @@ t_color			light_for_intersection(t_object light_ray, t_object ray, t_object
 		return (projector_light_for_intersection(light_ray, ray, object, light));
 	return (omni_light_for_intersection(light_ray, ray, object, light));
 }
+
+t_color			specular_light_for_intersection(t_object light_ray, t_object ray,
+	t_object object, t_light light)
+{
+	float		distance;
+	float		intensity;
+	t_vector	incident;
+	t_vector	reflected;
+	t_color		specular;
+
+	incident = (light.typpe != AMBIANT) ? scale_vector(light_ray.direction, -1) : light_ray.direction;
+	distance = (light.typpe != AMBIANT)
+		? points_norm(ray.intersectiion, light_ray.origin) * (100.0 / light.power)
+		: 100.0 * (100.0 / light.power);
+		distance = 1;
+	reflected = specular_vector(incident, shape_normal(ray, object));
+	intensity = pow(fmax(dot_product(reflected, ray.direction), 0), 15) * object.reflection;
+	// printf("intensity : %.2f\n", intensity);
+	specular.r = projector_color_coord(intensity, distance, object.color.r, light.color.r);
+	specular.g = projector_color_coord(intensity, distance, object.color.g, light.color.g);
+	specular.b = projector_color_coord(intensity, distance, object.color.b, light.color.b);
+	specular.a = 0;
+	return (specular);
+}
+
 
 int				hit_test(global t_object *clt_obj, global t_object *obj, t_object l_ray, float norm)
 {
@@ -974,7 +1026,10 @@ t_color			get_color_on_intersection(t_object ray, global t_object *closest_objec
 			}
 		}
 		if (is_direct_hit)
-			coloration = add_color(coloration, light_for_intersection(light_ray, ray, *closest_object, light[light_index]));
+		{
+			coloration = add_color(coloration, diffuse_light_for_intersection(light_ray, ray, *closest_object, light[light_index]));
+			coloration = add_color(coloration, specular_light_for_intersection(light_ray, ray, *closest_object, light[light_index]));
+		}
 	}
 	return (coloration);
 }
