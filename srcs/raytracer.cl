@@ -144,10 +144,12 @@ t_color			ambiant_color(t_scene scene, t_object object);
 t_color			projector_light_for_intersection(t_object light_ray, t_object ray, t_object
 	object, t_light light);
 t_object	init_projector_light_ray(t_light light, t_object ray, t_object object);
-t_object		finite_cylinder_intersection(t_object ray, t_object cylinder, float closest_norm, float farest_norm);
+t_object		finite_cylinder_intersection(t_object ray, t_object cylinder);
 t_object	disc_intersection(t_object ray, t_object disc);
 float	farest_distance_quadratic(float a, float b, float c);
-
+t_vector	point_from_vector(t_point origin, t_vector direction, float norm);
+t_vector	scale_vector(t_vector vect, float scale);
+t_object	finite_cone_intersection(t_object ray, t_object cone);
 
 /*
 ** ========== MATHEMATIC HELPERS
@@ -173,6 +175,24 @@ t_vector	normalize_vector(t_vector vec)
 	vec.y /= norm;
 	vec.z /= norm;
 	return (vec);
+}
+
+t_vector	point_from_vector(t_point origin, t_vector direction, float norm)
+{
+	t_point		point;
+
+	point.x = origin.x + direction.x * norm;
+	point.y = origin.y + direction.y * norm;
+	point.z = origin.z + direction.z * norm;
+	return (point);
+}
+
+t_vector	scale_vector(t_vector vect, float scale)
+{
+	vect.x *= scale;
+	vect.y *= scale;
+	vect.z *= scale;
+	return (vect);
 }
 
 t_vector	vector_points(t_point p1, t_point p2)
@@ -403,10 +423,11 @@ t_vector		cone_normal(t_object ray, t_object cone)
 	if (points_norm(normal_point, distance) > points_norm(normal_point_2,
 				distance))
 		normal_point = normal_point_2;
-	if (revert_cone_normal(ray, cone))
+	normal = vector_points(normal_point, distance);
+	if ((!cone.finite || cone.covered) && revert_cone_normal(ray, cone))
 		normal = vector_points(distance, normal_point);
-	else
-		normal = vector_points(normal_point, distance);
+	else if (dot_product(normalize_vector(normal), rotate_cone_angles(cone, ray.direction, 0)) > 0)
+		normal = vector_points(distance, normal_point);
 	normal = rotate_cone_angles(cone, normal, 1);
 	return (normalize_vector(normal));
 }
@@ -434,8 +455,9 @@ t_vector		cylinder_normal(t_object ray, t_object cylinder)
 	distance = rotate_cylinder_angles(cylinder, distance, 0);
 	normal_point = (t_point){0, 0, distance.z};
 	normal = vector_points(normal_point, distance);
+	// Could be removed since light inside a cylinder is not to be managed
 	if ((!cylinder.finite || cylinder.covered) && revert_cylinder_normal(ray, cylinder))
-			normal = vector_points(distance, normal_point);
+		normal = vector_points(distance, normal_point);
 	else if (dot_product(normalize_vector(normal), rotate_cylinder_angles(cylinder, ray.direction, 0)) > 0)
 		normal = vector_points(distance, normal_point);
 	normal = rotate_cylinder_angles(cylinder, normal, 1);
@@ -490,8 +512,6 @@ t_vector			shape_normal(t_object ray, t_object object)
 		return (cone_normal(ray, object));
 }
 
-
-
 /*
 ** ========== INTERSECTION POINTS CALCULATION
 */
@@ -517,6 +537,45 @@ t_object		cone_intersection(t_object ray, t_object cone)
 	return (ray);
 }
 
+t_object	finite_cone_intersection(t_object ray, t_object cone)
+{
+	t_vector	distance;
+	t_vector	ray_dir;
+	float		a;
+	float		b;
+	float		c;
+	float		k;
+	float		closest_norm;
+	float		farest_norm;
+
+	distance = vector_points(cone.center, ray.origin);
+	ray_dir = rotate_cone_angles(cone, ray.direction, 0);
+	distance = rotate_cone_angles(cone, distance, 0);
+	k = -1 - pow((float)(tan((float)(cone.angle))), (float)2);
+	a = pow((float)vector_norm(ray_dir), (float)2) + k * pow((float)ray_dir.z, (float)2);
+	b = 2 * (dot_product(distance, ray_dir) + k * ray_dir.z * distance.z);
+	c = pow((float)vector_norm(distance), (float)2) + k * pow((float)distance.z, (float)2);
+	closest_norm = closest_distance_quadratic(a, b, c);
+	farest_norm = farest_distance_quadratic(a, b, c);
+	if (closest_norm > 0.01)
+	{
+		ray.norm = closest_norm;
+		ray.intersectiion = point_from_vector(ray.origin, ray.direction, ray.norm);
+		distance = vector_points(cone.point, ray.intersectiion);
+		distance = rotate_cone_angles(cone, distance, 0);
+		ray.intersect = (distance.z >= 0 && distance.z <= cone.height);
+	}
+	if (!ray.intersect && farest_norm > 0.01)
+	{
+		ray.norm = farest_norm;
+		ray.intersectiion = point_from_vector(ray.origin, ray.direction, ray.norm);
+		distance = vector_points(cone.point, ray.intersectiion);
+		distance = rotate_cone_angles(cone, distance, 0);
+		ray.intersect = (distance.z >= 0 && distance.z <= cone.height);		
+	}
+	return (ray);
+}
+
 t_object	plane_intersection(t_object ray, t_object plane)
 {
 	if (dot_product(plane.normal, ray.direction) == 0)
@@ -535,10 +594,8 @@ t_object	disc_intersection(t_object ray, t_object disc)
 	ray = plane_intersection(ray, disc);
 	if (!ray.intersect)
 		return (ray);
-	ray.intersectiion.x = ray.origin.x + ray.direction.x * ray.norm;
-	ray.intersectiion.y = ray.origin.y + ray.direction.y * ray.norm;
-	ray.intersectiion.z = ray.origin.z + ray.direction.z * ray.norm;
-	ray.intersect = vector_norm(vector_points(ray.intersectiion, disc.point)) < disc.width;
+	ray.intersectiion = point_from_vector(ray.origin, ray.direction, ray.norm);
+	ray.intersect = vector_norm(vector_points(ray.intersectiion, disc.point)) < disc.radius;
 	return (ray);
 }
 
@@ -574,38 +631,48 @@ t_object		cylinder_intersection(t_object ray, t_object cylinder)
 	c = pow((float)distance.x, (float)2) + pow((float)distance.y, (float)2) - pow((float)cylinder.radius, (float)2);
 	ray.norm = closest_distance_quadratic(a, b, c);
 	ray.intersect = ray.norm > 0;
-	if (cylinder.finite && ray.intersect)
-		return (finite_cylinder_intersection(ray, cylinder, ray.norm, farest_distance_quadratic(a,b,c)));
 	return (ray);
 }
 
-t_object		finite_cylinder_intersection(t_object ray, t_object cylinder, float closest_norm, float farest_norm)
+t_object		finite_cylinder_intersection(t_object ray, t_object cylinder)
 {
-	float		z_coord;
+	t_vector	distance;
+	t_vector	ray_dir;
+	float		a;
+	float		b;
+	float		c;
+	float		closest_norm;
+	float		farest_norm;
+	//t_object	disc;
 
-	ray.intersectiion.x = ray.origin.x + ray.direction.x * closest_norm;
-	ray.intersectiion.y = ray.origin.y + ray.direction.y * closest_norm;
-	ray.intersectiion.z = ray.origin.z + ray.direction.z * closest_norm;
-	ray.intersectiion = rotate_cylinder_angles(cylinder, ray.intersectiion, 0);
-	z_coord = ray.intersectiion.z;
-	if (z_coord >= 0 && z_coord <= cylinder.height)
+	distance = vector_points(cylinder.point, ray.origin);
+	ray_dir = rotate_cylinder_angles(cylinder, ray.direction, 0);
+	distance = rotate_cylinder_angles(cylinder, distance, 0);
+	a = pow((float)ray_dir.x, (float)2) + pow((float)ray_dir.y, (float)2);
+	b = 2 * (distance.x * ray_dir.x + distance.y * ray_dir.y);
+	c = pow((float)distance.x, (float)2) + pow((float)distance.y, (float)2) - pow((float)cylinder.radius, (float)2);
+	closest_norm = closest_distance_quadratic(a, b, c);
+	farest_norm = farest_distance_quadratic(a, b, c);
+	if (closest_norm <= 0 || farest_norm <= 0)
+		return (ray);
+	if (closest_norm > 0.01)
 	{
 		ray.norm = closest_norm;
-		ray.intersect = closest_norm > 0;
-		return (ray);
+		ray.intersectiion = point_from_vector(ray.origin, ray.direction, ray.norm);
+		distance = vector_points(cylinder.point, ray.intersectiion);
+		distance = rotate_cylinder_angles(cylinder, distance, 0);
+		ray.intersect = (distance.z >= 0 && distance.z <= cylinder.height);
 	}
-	ray.intersectiion.x = ray.origin.x + ray.direction.x * farest_norm;
-	ray.intersectiion.y = ray.origin.y + ray.direction.y * farest_norm;
-	ray.intersectiion.z = ray.origin.z + ray.direction.z * farest_norm;
-	ray.intersectiion = rotate_cylinder_angles(cylinder, ray.intersectiion, 0);
-	z_coord = ray.intersectiion.z;
-	if (z_coord >= 0 && z_coord <= cylinder.height)
+	if (!ray.intersect && farest_norm > 0.01)
 	{
 		ray.norm = farest_norm;
-		ray.intersect = farest_norm > 0;
-		return (ray);
+		ray.intersectiion = point_from_vector(ray.origin, ray.direction, ray.norm);
+		distance = vector_points(cylinder.point, ray.intersectiion);
+		distance = rotate_cylinder_angles(cylinder, distance, 0);
+		ray.intersect = (distance.z >= 0 && distance.z <= cylinder.height);		
 	}
-	ray.intersect = FALSE;
+	// if (points_norm(ray.intersectiion, ray.origin) < 0.1)
+	// 	printf("%.2f\n", points_norm(ray.intersectiion, ray.origin));
 	return (ray);
 }
 
@@ -616,17 +683,17 @@ t_object			intersect_object(t_object ray, t_object object)
 	else if (object.typpe == PLANE)
 		ray = plane_intersection(ray, object);
 	else if (object.typpe == CYLINDER)
-		ray = cylinder_intersection(ray, object);
+		ray = (object.finite) 
+			? finite_cylinder_intersection(ray, object) 
+			: cylinder_intersection(ray, object);
 	else if (object.typpe == CONE)
-		ray = cone_intersection(ray, object);
+		ray = (object.finite)
+			? finite_cone_intersection(ray, object)
+			: cone_intersection(ray, object);
 	else if (object.typpe == DISC)
 		ray = disc_intersection(ray, object);
 	if (ray.intersect)
-	{
-		ray.intersectiion.x = ray.origin.x + ray.direction.x * ray.norm;
-		ray.intersectiion.y = ray.origin.y + ray.direction.y * ray.norm;
-		ray.intersectiion.z = ray.origin.z + ray.direction.z * ray.norm;
-	}
+	ray.intersectiion = point_from_vector(ray.origin, ray.direction, ray.norm);
 	return (ray);
 }
 
@@ -900,8 +967,13 @@ t_color			get_color_on_intersection(t_object ray, global t_object *closest_objec
 					obj[object_index]);
 			if (light[light_index].typpe != AMBIANT && hit_test(closest_object, &obj[object_index], light_ray, norm))
 				is_direct_hit = 0;
-			else if (light[light_index].typpe == AMBIANT && light_ray.intersect && light_ray.norm > 0.05)
-				is_direct_hit = 0;
+			else if (light[light_index].typpe == AMBIANT && light_ray.intersect)
+			{
+				if (closest_object == &obj[object_index] && light_ray.norm > 0.01)
+					is_direct_hit = 0;
+				else if (closest_object != &obj[object_index] && light_ray.norm > 0/01)
+					is_direct_hit = 0;
+			}
 		}
 		if (is_direct_hit)
 			coloration = add_color(coloration, light_for_intersection(light_ray, ray, *closest_object, light[light_index]));

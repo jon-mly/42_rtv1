@@ -122,7 +122,7 @@ static t_object		add_new_disc(int fd)
 	disc.normal = normalize_vector(vector(0, 1, 0));
 	disc.point = point(0, 0, 0);
 	disc.color = color(255, 255, 255, 0);
-	disc.width = 10;
+	disc.radius = 10;
 	disc = parse_object(fd, &disc);
 	disc.name = "Disc";
 	return (disc);
