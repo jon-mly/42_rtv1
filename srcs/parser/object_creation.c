@@ -130,20 +130,21 @@ static t_object		add_new_disc(int fd)
 	return (disc);
 }
 
-static t_object		add_new_square(int fd)
+static t_object		add_new_rectangle(int fd)
 {
-	t_object	square;
+	t_object	rectangle;
 
-	square.typpe = SQUARE;
-	square.color = color(255, 255, 255, 0);
-	square.x_angle = 0;
-	square.y_angle = 0;
-	square.normal = vector(0, 1, 0);
-	square.width = 0;
-	square = parse_object(fd, &square);
-	square.name = "Square";
-	square.normal = rotate_vector_angles(square, square.normal, 1);
-	return (square);
+	rectangle.typpe = RECTANGLE;
+	rectangle.color = color(255, 255, 255, 0);
+	rectangle.x_angle = 0;
+	rectangle.y_angle = 0;
+	rectangle.normal = vector(0, 1, 0);
+	rectangle.width = 0;
+	rectangle.height = 0;
+	rectangle = parse_object(fd, &rectangle);
+	rectangle.name = "Rectangle";
+	rectangle.normal = rotate_vector_angles(rectangle, rectangle.normal, 1);
+	return (rectangle);
 }
 
 t_object			add_new_object(int fd, char *type)
@@ -156,8 +157,8 @@ t_object			add_new_object(int fd, char *type)
 		return (add_new_plane(fd));
 	else if (ft_strequ(type, "disc"))
 		return (add_new_disc(fd));
-	else if (ft_strequ(type, "square"))
-		return add_new_square(fd);
+	else if (ft_strequ(type, "rectangle"))
+		return add_new_rectangle(fd);
 	else
 		return (add_new_cone(fd));
 }

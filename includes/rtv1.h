@@ -54,7 +54,7 @@ typedef enum			e_object_type
 	CYLINDER,
 	CONE,
 	DISC,
-	SQUARE
+	RECTANGLE
 }						t_object_type;
 
 typedef enum			e_light_type

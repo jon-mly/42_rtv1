@@ -9,7 +9,7 @@ typedef enum	e_object_type
 	CYLINDER,
 	CONE,
 	DISC,
-	SQUARE
+	RECTANGLE
 }				t_object_type;
 
 typedef enum	e_light_type
@@ -157,6 +157,8 @@ t_color		average_color(t_color c1, t_color c2);
 int			maximize_color_value(int color_value);
 t_vector	rotate_vector_angles(t_object reference, t_vector vect,
 			int reverse);
+t_object		rectangle_intersection(t_object ray, t_object rectangle);
+
 
 
 
@@ -504,7 +506,7 @@ t_vector			shape_normal(t_object ray, t_object object)
 {
 	if (object.typpe == SPHERE)
 		return (sphere_normal(ray, object));
-	else if (object.typpe == PLANE || object.typpe == DISC || object.typpe == SQUARE)
+	else if (object.typpe == PLANE || object.typpe == DISC || object.typpe == RECTANGLE)
 		return (plane_normal(ray, object));
 	else if (object.typpe == CYLINDER)
 		return (cylinder_normal(ray, object));
@@ -673,18 +675,18 @@ t_object		finite_cylinder_intersection(t_object ray, t_object cylinder)
 	return (ray);
 }
 
-t_object		square_intersection(t_object ray, t_object square)
+t_object		rectangle_intersection(t_object ray, t_object rectangle)
 {
 	t_vector	intersection_dist;
 
-	ray = plane_intersection(ray, square);
+	ray = plane_intersection(ray, rectangle);
 	if (!ray.intersect)
 		return (ray);
 	ray.intersectiion = point_from_vector(ray.origin, ray.direction, ray.norm);
-	intersection_dist = vector_points(square.point, ray.intersectiion);
-	intersection_dist = rotate_vector_angles(square, intersection_dist, 0);
+	intersection_dist = vector_points(rectangle.point, ray.intersectiion);
+	intersection_dist = rotate_vector_angles(rectangle, intersection_dist, 0);
 	ray.intersect = (intersection_dist.x >= 0 && intersection_dist.z >= 0
-		&& intersection_dist.x < square.width && intersection_dist.z < square.width);
+		&& intersection_dist.x < rectangle.width && intersection_dist.z < rectangle.height);
 	return (ray);
 }
 
@@ -704,8 +706,8 @@ t_object			intersect_object(t_object ray, t_object object)
 			: cone_intersection(ray, object);
 	else if (object.typpe == DISC)
 		ray = disc_intersection(ray, object);
-	else if (object.typpe == SQUARE)
-		ray = square_intersection(ray, object);
+	else if (object.typpe == RECTANGLE)
+		ray = rectangle_intersection(ray, object);
 	if (ray.intersect)
 		ray.intersectiion = point_from_vector(ray.origin, ray.direction, ray.norm);
 	return (ray);

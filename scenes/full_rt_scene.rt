@@ -73,11 +73,12 @@ power 600
 # reflect 100
 # }
 
-square {
-point 10 0 0
+rectangle {
+point -20 0 0
 angles 0 0
 color 0 180 120
-width 20
+width 40
+height 1
 diffuse 100
 reflect 0
 }
