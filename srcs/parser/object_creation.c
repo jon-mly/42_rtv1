@@ -79,11 +79,12 @@ static t_object		add_new_cone(int fd)
 
 	cone.typpe = CONE;
 	cone.angle = M_PI / 6;
-	cone.direction = normalize_vector(vector(0, 1, 0));
+	cone.direction = normalize_vector(vector(0, 0, 1));
 	cone.center = point(0, 0, 0);
 	cone.color = color(255, 255, 255, 0);
 	cone.name = "Cone";
 	cone = parse_object(fd, &cone);
+	cone.direction = rotate_cone_angles(cone, cone.direction, 1);
 	return (cone);
 }
 
@@ -106,11 +107,12 @@ static t_object		add_new_cylinder(int fd)
 
 	cylinder.typpe = CYLINDER;
 	cylinder.radius = 1;
-	cylinder.direction = normalize_vector(vector(0, 1, 0));
+	cylinder.direction = normalize_vector(vector(0, 0, 1));
 	cylinder.point = point(0, 0, 0);
 	cylinder.color = color(255, 255, 255, 0);
 	cylinder.name = "Cylinder";
 	cylinder = parse_object(fd, &cylinder);
+	cylinder.direction = rotate_cylinder_angles(cylinder, cylinder.direction, 1);
 	return (cylinder);
 }
 

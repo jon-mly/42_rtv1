@@ -942,6 +942,8 @@ t_color			specular_light_for_intersection(t_object light_ray, t_object ray,
 	t_vector	reflected;
 	t_color		specular;
 
+	if (light.typpe == PROJECTOR && dot_product(light_ray.direction, light.direction) < cos(light.angle))
+		return (color(0, 0, 0, 0));
 	incident = (light.typpe != AMBIANT) ? scale_vector(light_ray.direction, -1) : light_ray.direction;
 	distance = (light.typpe != AMBIANT)
 		? points_norm(ray.intersectiion, light_ray.origin) * (100.0 / light.power)
@@ -949,6 +951,8 @@ t_color			specular_light_for_intersection(t_object light_ray, t_object ray,
 		distance = 1;
 	reflected = specular_vector(incident, shape_normal(ray, object));
 	intensity = pow(fmax(dot_product(reflected, ray.direction), 0), 15) * object.reflection;
+	if (light.typpe == PROJECTOR)
+		intensity *= (1 / (1 - cos(light.angle))) * dot_product(light.direction, light_ray.direction) - (cos(light.angle) / (1 - cos(light.angle)));
 	// printf("intensity : %.2f\n", intensity);
 	specular.r = projector_color_coord(intensity, distance, object.color.r, light.color.r);
 	specular.g = projector_color_coord(intensity, distance, object.color.g, light.color.g);

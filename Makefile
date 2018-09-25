@@ -42,6 +42,7 @@ SRCS = main.c \
 		$(PARSER_REP)scene_creation.c \
 		$(PARSER_REP)camera_parser.c \
 		$(PARSER_REP)object_parser.c \
+		$(PARSER_REP)finite_objects_expander.c \
 		$(SHAPES_REP)cylinder.c \
 		$(SHAPES_REP)cone.c \
 		$(SHAPES_REP)plane.c \

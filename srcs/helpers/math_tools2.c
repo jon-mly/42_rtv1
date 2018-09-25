@@ -59,3 +59,13 @@ float		points_norm(t_point p1, t_point p2)
 			pow(p2.z - p1.z, 2));
 	return (distance);
 }
+
+t_vector	point_from_vector(t_point origin, t_vector direction, float norm)
+{
+	t_point		point;
+
+	point.x = origin.x + direction.x * norm;
+	point.y = origin.y + direction.y * norm;
+	point.z = origin.z + direction.z * norm;
+	return (point);
+}

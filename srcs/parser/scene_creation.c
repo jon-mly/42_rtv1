@@ -19,7 +19,7 @@
 ** By default, the scene is empty.
 */
 
-static t_object		*expand_objects(t_object *objects, int previous_count)
+t_object		*expand_objects(t_object *objects, int previous_count)
 {
 	t_object		*new_list;
 	int				i;
@@ -58,6 +58,8 @@ static t_scene		extend_scene(int fd, t_scene scene, char **line, t_env *env)
 		scene.objects_count++;
 		scene.objects = expand_objects(scene.objects, scene.objects_count);
 		scene.objects[scene.objects_count - 1] = add_new_object(fd, line[0]);
+		if (scene.objects[scene.objects_count - 1].finite && scene.objects[scene.objects_count - 1].covered)
+			scene = create_dependant_objects(scene.objects[scene.objects_count - 1], fd, scene);
 	}
 	else if (ft_strequ(line[0], "camera"))
 		env->camera = set_camera(fd, env);
