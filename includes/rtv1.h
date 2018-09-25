@@ -53,7 +53,8 @@ typedef enum			e_object_type
 	PLANE,
 	CYLINDER,
 	CONE,
-	DISC
+	DISC,
+	SQUARE
 }						t_object_type;
 
 typedef enum			e_light_type
@@ -283,6 +284,8 @@ t_scene        create_dependant_objects(t_object object, int fd, t_scene scene);
 t_vector		rotate_cylinder_angles(t_object cylinder, t_vector vect,
 			int reverse);
 t_vector		rotate_cone_angles(t_object cone, t_vector vect,
+			int reverse);
+t_vector		rotate_vector_angles(t_object reference, t_vector vect,
 			int reverse);
 
 #endif

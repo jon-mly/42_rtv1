@@ -8,7 +8,8 @@ typedef enum	e_object_type
 	PLANE,
 	CYLINDER,
 	CONE,
-	DISC
+	DISC,
+	SQUARE
 }				t_object_type;
 
 typedef enum	e_light_type
@@ -116,7 +117,6 @@ t_vector	vect_rotate_x(t_vector vector, float angle, int inverse);
 t_vector	vect_rotate_y(t_vector vector, float angle, int inverse);
 t_vector	vect_rotate_z(t_vector vector, float angle, int inverse);
 float			vector_norm(t_vector vec);
-t_vector		rotate_cone_angles(t_object cone, t_vector vect, int revers);
 float			dot_product(t_vector vect_1, t_vector vect_2);
 float			closest_distance_quadratic(float a, float b, float c);
 t_object		cone_intersection(t_object ray, t_object cone);
@@ -127,7 +127,6 @@ t_vector		plane_normal(t_object ray, t_object plane);
 t_vector		cylinder_normal(t_object ray, t_object cylinder);
 t_vector		cone_normal(t_object ray, t_object cone);
 float			points_norm(t_point p1, t_point p2);
-t_vector		rotate_cylinder_angles(t_object cylinder, t_vector vect, int revers);
 t_object		sphere_intersection(t_object ray, t_object sphere);
 t_object		plane_intersection(t_object ray, t_object plane);
 t_object		cylinder_intersection(t_object ray, t_object cylinder);
@@ -155,6 +154,9 @@ t_color			specular_light_for_intersection(t_object light_ray, t_object ray,
 	t_object object, t_light light);
 t_color			raytracing(global t_scene *scene, global t_camera *camera, global t_object *obj, global t_light *light, float aliasing_variation);
 t_color		average_color(t_color c1, t_color c2);
+int			maximize_color_value(int color_value);
+t_vector	rotate_vector_angles(t_object reference, t_vector vect,
+			int reverse);
 
 
 
@@ -278,33 +280,17 @@ float		vector_norm(t_vector vec)
 	return (norm);
 }
 
-t_vector	rotate_cone_angles(t_object cone, t_vector vect,
-			int reverse)
-{
-	if (!reverse)
-	{
-		vect = vect_rotate_y(vect, cone.y_angle, reverse);
-		vect = vect_rotate_x(vect, cone.x_angle, reverse);
-	}
-	else
-	{
-		vect = vect_rotate_x(vect, cone.x_angle, reverse);
-		vect = vect_rotate_y(vect, cone.y_angle, reverse);
-	}
-	return (vect);
-}
-
-t_vector	rotate_cylinder_angles(t_object cylinder, t_vector vect,
+t_vector	rotate_vector_angles(t_object reference, t_vector vect,
 			int reverse)
 {	if (!reverse)
 	{
-		vect = vect_rotate_y(vect, cylinder.y_angle, reverse);
-		vect = vect_rotate_x(vect, cylinder.x_angle, reverse);
+		vect = vect_rotate_y(vect, reference.y_angle, reverse);
+		vect = vect_rotate_x(vect, reference.x_angle, reverse);
 	}
 	else
 	{
-		vect = vect_rotate_x(vect, cylinder.x_angle, reverse);
-		vect = vect_rotate_y(vect, cylinder.y_angle, reverse);
+		vect = vect_rotate_x(vect, reference.x_angle, reverse);
+		vect = vect_rotate_y(vect, reference.y_angle, reverse);
 	}
 	return (vect);
 }
@@ -396,6 +382,12 @@ float		points_norm(t_point p1, t_point p2)
 	return (distance);
 }
 
+int			maximize_color_value(int color_value)
+{
+	return ((int)(fmax(fmin((float)color_value, (float)255), 0)));
+	// return ((int)(((1 - exp((float)(-0.0050 * color_value))) * 255)));
+}
+
 
 /*
 ** ========== NORMAL VECTOR CALCULATION
@@ -408,7 +400,7 @@ int		revert_cone_normal(t_object ray, t_object cone)
 	float		light_distance;
 
 	light_to_center = vector_points(cone.center, ray.origin);
-	rotate_cone_angles(cone, light_to_center, 0);
+	rotate_vector_angles(cone, light_to_center, 0);
 	border = pow((float)light_to_center.z, (float)2) * pow((float)tan(cone.angle), (float)2);
 	light_distance = pow((float)light_to_center.x, (float)2) + pow((float)light_to_center.y, (float)2);
 	return (light_distance < border);
@@ -423,7 +415,7 @@ t_vector		cone_normal(t_object ray, t_object cone)
 	t_vector	normal;
 
 	distance = vector_points(cone.center, ray.intersectiion);
-	distance = rotate_cone_angles(cone, distance, 0);
+	distance = rotate_vector_angles(cone, distance, 0);
 	normal_dist = (cos(cone.angle) + tan(cone.angle) * sin(cone.angle)) *
 		vector_norm(distance);
 	normal_point = (t_point){0, 0, normal_dist};
@@ -434,9 +426,9 @@ t_vector		cone_normal(t_object ray, t_object cone)
 	normal = vector_points(normal_point, distance);
 	if ((!cone.finite || cone.covered) && revert_cone_normal(ray, cone))
 		normal = vector_points(distance, normal_point);
-	else if (dot_product(normalize_vector(normal), rotate_cone_angles(cone, ray.direction, 0)) > 0)
+	else if (dot_product(normalize_vector(normal), rotate_vector_angles(cone, ray.direction, 0)) > 0)
 		normal = vector_points(distance, normal_point);
-	normal = rotate_cone_angles(cone, normal, 1);
+	normal = rotate_vector_angles(cone, normal, 1);
 	return (normalize_vector(normal));
 }
 
@@ -447,7 +439,7 @@ int		revert_cylinder_normal(t_object ray, t_object cylinder)
 	float		light_distance;
 
 	light_to_center = vector_points(cylinder.point, ray.origin);
-	rotate_cylinder_angles(cylinder, light_to_center, 0);
+	rotate_vector_angles(cylinder, light_to_center, 0);
 	border = pow(cylinder.radius, 2);
 	light_distance = pow(light_to_center.x, 2) + pow(light_to_center.y, 2);
 	return (light_distance < border);
@@ -460,15 +452,15 @@ t_vector		cylinder_normal(t_object ray, t_object cylinder)
 	t_vector	normal;
 
 	distance = vector_points(cylinder.point, ray.intersectiion);
-	distance = rotate_cylinder_angles(cylinder, distance, 0);
+	distance = rotate_vector_angles(cylinder, distance, 0);
 	normal_point = (t_point){0, 0, distance.z};
 	normal = vector_points(normal_point, distance);
 	// Could be removed since light inside a cylinder is not to be managed
 	if ((!cylinder.finite || cylinder.covered) && revert_cylinder_normal(ray, cylinder))
 		normal = vector_points(distance, normal_point);
-	else if (dot_product(normalize_vector(normal), rotate_cylinder_angles(cylinder, ray.direction, 0)) > 0)
+	else if (dot_product(normalize_vector(normal), rotate_vector_angles(cylinder, ray.direction, 0)) > 0)
 		normal = vector_points(distance, normal_point);
-	normal = rotate_cylinder_angles(cylinder, normal, 1);
+	normal = rotate_vector_angles(cylinder, normal, 1);
 	return (normalize_vector(normal));
 }
 
@@ -512,7 +504,7 @@ t_vector			shape_normal(t_object ray, t_object object)
 {
 	if (object.typpe == SPHERE)
 		return (sphere_normal(ray, object));
-	else if (object.typpe == PLANE || object.typpe == DISC)
+	else if (object.typpe == PLANE || object.typpe == DISC || object.typpe == SQUARE)
 		return (plane_normal(ray, object));
 	else if (object.typpe == CYLINDER)
 		return (cylinder_normal(ray, object));
@@ -534,8 +526,8 @@ t_object		cone_intersection(t_object ray, t_object cone)
 	float		k;
 
 	distance = vector_points(cone.center, ray.origin);
-	ray_dir = rotate_cone_angles(cone, ray.direction, 0);
-	distance = rotate_cone_angles(cone, distance, 0);
+	ray_dir = rotate_vector_angles(cone, ray.direction, 0);
+	distance = rotate_vector_angles(cone, distance, 0);
 	k = -1 - pow((float)(tan((float)(cone.angle))), (float)2);
 	a = pow((float)vector_norm(ray_dir), (float)2) + k * pow((float)ray_dir.z, (float)2);
 	b = 2 * (dot_product(distance, ray_dir) + k * ray_dir.z * distance.z);
@@ -557,8 +549,8 @@ t_object	finite_cone_intersection(t_object ray, t_object cone)
 	float		farest_norm;
 
 	distance = vector_points(cone.center, ray.origin);
-	ray_dir = rotate_cone_angles(cone, ray.direction, 0);
-	distance = rotate_cone_angles(cone, distance, 0);
+	ray_dir = rotate_vector_angles(cone, ray.direction, 0);
+	distance = rotate_vector_angles(cone, distance, 0);
 	k = -1 - pow((float)(tan((float)(cone.angle))), (float)2);
 	a = pow((float)vector_norm(ray_dir), (float)2) + k * pow((float)ray_dir.z, (float)2);
 	b = 2 * (dot_product(distance, ray_dir) + k * ray_dir.z * distance.z);
@@ -571,7 +563,7 @@ t_object	finite_cone_intersection(t_object ray, t_object cone)
 		ray.norm = closest_norm;
 		ray.intersectiion = point_from_vector(ray.origin, ray.direction, ray.norm);
 		distance = vector_points(cone.center, ray.intersectiion);
-		distance = rotate_cone_angles(cone, distance, 0);
+		distance = rotate_vector_angles(cone, distance, 0);
 		ray.intersect = (distance.z >= 0 && distance.z <= cone.height);
 	}
 	if (!ray.intersect && farest_norm > 0.01)
@@ -579,7 +571,7 @@ t_object	finite_cone_intersection(t_object ray, t_object cone)
 		ray.norm = farest_norm;
 		ray.intersectiion = point_from_vector(ray.origin, ray.direction, ray.norm);
 		distance = vector_points(cone.center, ray.intersectiion);
-		distance = rotate_cone_angles(cone, distance, 0);
+		distance = rotate_vector_angles(cone, distance, 0);
 		ray.intersect = (distance.z >= 0 && distance.z <= cone.height);		
 	}
 	return (ray);
@@ -633,8 +625,8 @@ t_object		cylinder_intersection(t_object ray, t_object cylinder)
 	float		c;
 
 	distance = vector_points(cylinder.point, ray.origin);
-	ray_dir = rotate_cylinder_angles(cylinder, ray.direction, 0);
-	distance = rotate_cylinder_angles(cylinder, distance, 0);
+	ray_dir = rotate_vector_angles(cylinder, ray.direction, 0);
+	distance = rotate_vector_angles(cylinder, distance, 0);
 	a = pow((float)ray_dir.x, (float)2) + pow((float)ray_dir.y, (float)2);
 	b = 2 * (distance.x * ray_dir.x + distance.y * ray_dir.y);
 	c = pow((float)distance.x, (float)2) + pow((float)distance.y, (float)2) - pow((float)cylinder.radius, (float)2);
@@ -652,11 +644,10 @@ t_object		finite_cylinder_intersection(t_object ray, t_object cylinder)
 	float		c;
 	float		closest_norm;
 	float		farest_norm;
-	//t_object	disc;
 
 	distance = vector_points(cylinder.point, ray.origin);
-	ray_dir = rotate_cylinder_angles(cylinder, ray.direction, 0);
-	distance = rotate_cylinder_angles(cylinder, distance, 0);
+	ray_dir = rotate_vector_angles(cylinder, ray.direction, 0);
+	distance = rotate_vector_angles(cylinder, distance, 0);
 	a = pow((float)ray_dir.x, (float)2) + pow((float)ray_dir.y, (float)2);
 	b = 2 * (distance.x * ray_dir.x + distance.y * ray_dir.y);
 	c = pow((float)distance.x, (float)2) + pow((float)distance.y, (float)2) - pow((float)cylinder.radius, (float)2);
@@ -668,7 +659,7 @@ t_object		finite_cylinder_intersection(t_object ray, t_object cylinder)
 		ray.norm = closest_norm;
 		ray.intersectiion = point_from_vector(ray.origin, ray.direction, ray.norm);
 		distance = vector_points(cylinder.point, ray.intersectiion);
-		distance = rotate_cylinder_angles(cylinder, distance, 0);
+		distance = rotate_vector_angles(cylinder, distance, 0);
 		ray.intersect = (distance.z >= 0 && distance.z <= cylinder.height);
 	}
 	if (!ray.intersect && farest_norm > 0.01)
@@ -676,9 +667,24 @@ t_object		finite_cylinder_intersection(t_object ray, t_object cylinder)
 		ray.norm = farest_norm;
 		ray.intersectiion = point_from_vector(ray.origin, ray.direction, ray.norm);
 		distance = vector_points(cylinder.point, ray.intersectiion);
-		distance = rotate_cylinder_angles(cylinder, distance, 0);
+		distance = rotate_vector_angles(cylinder, distance, 0);
 		ray.intersect = (distance.z >= 0 && distance.z <= cylinder.height);		
 	}
+	return (ray);
+}
+
+t_object		square_intersection(t_object ray, t_object square)
+{
+	t_vector	intersection_dist;
+
+	ray = plane_intersection(ray, square);
+	if (!ray.intersect)
+		return (ray);
+	ray.intersectiion = point_from_vector(ray.origin, ray.direction, ray.norm);
+	intersection_dist = vector_points(square.point, ray.intersectiion);
+	intersection_dist = rotate_vector_angles(square, intersection_dist, 0);
+	ray.intersect = (intersection_dist.x >= 0 && intersection_dist.z >= 0
+		&& intersection_dist.x < square.width && intersection_dist.z < square.width);
 	return (ray);
 }
 
@@ -698,8 +704,10 @@ t_object			intersect_object(t_object ray, t_object object)
 			: cone_intersection(ray, object);
 	else if (object.typpe == DISC)
 		ray = disc_intersection(ray, object);
+	else if (object.typpe == SQUARE)
+		ray = square_intersection(ray, object);
 	if (ray.intersect)
-	ray.intersectiion = point_from_vector(ray.origin, ray.direction, ray.norm);
+		ray.intersectiion = point_from_vector(ray.origin, ray.direction, ray.norm);
 	return (ray);
 }
 
@@ -822,7 +830,7 @@ int		omni_color_coord(float cosinus, float distance, int obj_color,
 	distance_factor = 0.02 * pow((float)(distance / 1.3), (float)2) + 1;
 	k = sqrt(-cosinus) / distance_factor;
 	color_value = ((float)obj_color + (float)light_color) * k;
-	color_value = fmax(fmin((float)color_value, (float)255), 0);
+	color_value = maximize_color_value((int)color_value);
 	return ((int)color_value);
 }
 
@@ -835,7 +843,7 @@ int		projector_color_coord(float intensity, float distance, int obj_color, int l
 	distance_factor = 0.02 * pow((float)(distance / 1.3), (float)2) + 1;
 	k = intensity / distance_factor;
 	color_value = ((float)obj_color + (float)light_color) * k;
-	color_value = fmax(fmin((float)color_value, (float)255), 0);
+	color_value = maximize_color_value((int)color_value);
 	return ((int)color_value);
 }
 
@@ -843,10 +851,10 @@ t_color 	add_color(t_color base, t_color overlay)
 {
 	t_color 	final;
 
-	final.r = (int)fmin((double)(base.r + overlay.r), (double)255);
-	final.g = (int)fmin((double)(base.g + overlay.g), (double)255);
-	final.b = (int)fmin((double)(base.b + overlay.b), (double)255);
-	final.a = (int)fmin((double)(base.a + overlay.a), (double)255);
+	final.r = maximize_color_value(base.r + overlay.r);
+	final.g = maximize_color_value(base.g + overlay.g);
+	final.b = maximize_color_value(base.b + overlay.b);
+	final.a = maximize_color_value(base.a + overlay.a);
 	return (final);
 }
 
