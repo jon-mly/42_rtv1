@@ -6,7 +6,7 @@ static      t_scene create_cylinders_ends(t_object cylinder, t_scene scene)
     t_object      bottom_disc;
 
     bottom_disc = (t_object){.typpe = DISC, .point = cylinder.point, .normal = cylinder.direction,
-        .color = cylinder.color, .diffuse = cylinder.diffuse, .reflection = cylinder.reflection,
+        .color = cylinder.color, .diffuse = cylinder.diffuse, .brillance = cylinder.brillance,
         .radius = cylinder.radius};
     top_disc = bottom_disc;
     top_disc.point = point_from_vector(bottom_disc.point, cylinder.direction, cylinder.height);
@@ -24,7 +24,7 @@ static      t_scene create_cone_end(t_object cone, t_scene scene)
     t_object    top_disc;
 
     top_disc = (t_object){.typpe = DISC, .normal = cone.direction,
-        .color = cone.color, .diffuse = cone.diffuse, .reflection = cone.reflection};
+        .color = cone.color, .diffuse = cone.diffuse, .brillance = cone.brillance};
     top_disc.point = point_from_vector(cone.center, cone.direction, cone.height);
     top_disc.radius = cone.height * tan(cone.angle);
     scene.objects_count++;

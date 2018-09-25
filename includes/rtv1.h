@@ -110,8 +110,9 @@ typedef struct			s_object
 	float				angle;
 	float				y_angle;
 	float				x_angle;
-	float				reflection;
+	float				brillance;
 	float				diffuse;
+	float				reflection;
 	float				height;
 	float				width;
 	t_object_type		typpe;

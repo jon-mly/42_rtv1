@@ -2,7 +2,7 @@
 # power 40
 
 camera {
-position 0 20 -60
+position 0 5 -30
 angles -10 0
 }
 
@@ -14,29 +14,35 @@ direction -4 -4 -2
 power 900
 }
 
-light {
-type OMNI
-color 200 200 200
-position 0 -3 0
-power 100
-}
-
-light {
-type PROJECTOR
-color 255 255 255
-position 15 5 0
-direction -5 -3 0
-angle 60
-power 600
-}
-
-# sphere {
-# center 0 0 0
-# radius 4
-# color 255 0 0
-# diffuse 100
-# reflect 100
+# light {
+# type PROJECTOR
+# color 255 255 255
+# position 15 5 0
+# direction -5 -3 0
+# angle 60
+# power 300
 # }
+
+sphere {
+center 10 0 0
+radius 8
+color 100 0 0
+diffuse 100
+reflect 100
+brillance 100
+}
+
+sphere {
+center -10 0 0
+radius 8
+color 0 100 0
+diffuse 100
+reflect 100
+brillance 100
+}
+
+
+
 
 # cylinder {
 # finite
@@ -71,6 +77,7 @@ power 600
 # center 0 0 0
 # diffuse 10
 # reflect 100
+# brillance 100
 # }
 
 # rectangle {
@@ -83,14 +90,15 @@ power 600
 # reflect 0
 # }
 
-triangle {
-point 0 10 0
-first_vector 10 3 8
-second_vector 0 20 48
-color 255 10 10
-diffuse 100
-reflect 0
-}
+# triangle {
+# point 0 10 0
+# first_vector 10 3 8
+# second_vector 0 20 48
+# color 0 0 0
+# diffuse 100
+# brillance 100
+# reflect 100
+# }
 
 # disc {
 # point 0 4 0
@@ -104,7 +112,8 @@ reflect 0
 plane {
 point 0 -5 0
 normal 0 1 0
-color 0 0 255
-diffuse 100
-reflect 0
+color 0 0 0
+diffuse 30
+brillance 0
+reflect 100
 }

@@ -43,6 +43,8 @@ t_object        parse_object(int fd, t_object *object)
 		}
 		else if (line_len(line) == 2 && ft_strequ(line[0], "diffuse"))
 			object->diffuse = fmin(fmax(ft_atoi(line[1]) / 100.0, 0), 1);
+		else if (line_len(line) == 2 && ft_strequ(line[0], "brillance"))
+			object->brillance = fmin(fmax(ft_atoi(line[1]) / 100.0, 0), 1);
 		else if (line_len(line) == 2 && ft_strequ(line[0], "reflect"))
 			object->reflection = fmin(fmax(ft_atoi(line[1]) / 100.0, 0), 1);
 		else if (line_len(line) == 1 && ft_strequ(line[0], "finite"))
