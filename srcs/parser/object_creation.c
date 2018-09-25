@@ -147,6 +147,36 @@ static t_object		add_new_rectangle(int fd)
 	return (rectangle);
 }
 
+static t_object		add_new_triangle(int fd)
+{
+	t_object	triangle;
+
+	triangle.typpe = TRIANGLE;
+	triangle.color = color(255, 255, 255, 0);
+	triangle.first_vect = vector(1, 0, 0);
+	triangle.second_vect = vector(0, 0, 1);
+	triangle.point = point(0, 0, 0);
+	triangle = parse_object(fd, &triangle);
+	triangle.normal = normalize_vector(cross_product(triangle.first_vect, triangle.second_vect));
+	triangle.name = "Triangle";
+	return (triangle);
+}
+
+static t_object		add_new_parallelogram(int fd)
+{
+	t_object	parallelogram;
+
+	parallelogram.typpe = PARALLELOGRAM;
+	parallelogram.color = color(255, 255, 255, 0);
+	parallelogram.first_vect = vector(1, 0, 0);
+	parallelogram.second_vect = vector(0, 0, 1);
+	parallelogram.point = point(0, 0, 0);
+	parallelogram = parse_object(fd, &parallelogram);
+	parallelogram.normal = normalize_vector(cross_product(parallelogram.first_vect, parallelogram.second_vect));
+	parallelogram.name = "parallelogram";
+	return (parallelogram);
+}
+
 t_object			add_new_object(int fd, char *type)
 {
 	if (ft_strequ(type, "cylinder"))
@@ -159,6 +189,10 @@ t_object			add_new_object(int fd, char *type)
 		return (add_new_disc(fd));
 	else if (ft_strequ(type, "rectangle"))
 		return add_new_rectangle(fd);
+	else if (ft_strequ(type, "triangle"))
+		return add_new_triangle(fd);
+	else if (ft_strequ(type, "parallelogram"))
+		return add_new_parallelogram(fd);
 	else
 		return (add_new_cone(fd));
 }

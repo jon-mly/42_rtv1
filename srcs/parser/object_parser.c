@@ -17,6 +17,12 @@ t_object        parse_object(int fd, t_object *object)
         else if (line_len(line) == 4 && ft_strequ(line[0], "point"))
 			object->point = point(ft_atoi(line[1]), ft_atoi(line[2]),
 					ft_atoi(line[3]));
+		else if (line_len(line) == 4 && ft_strequ(line[0], "first_vector"))
+			object->first_vect = point(ft_atoi(line[1]), ft_atoi(line[2]),
+					ft_atoi(line[3]));
+		else if (line_len(line) == 4 && ft_strequ(line[0], "second_vector"))
+			object->second_vect = point(ft_atoi(line[1]), ft_atoi(line[2]),
+					ft_atoi(line[3]));
         else if (line_len(line) == 2 && ft_strequ(line[0], "radius"))
 			object->radius = ft_atoi(line[1]);
         else if (line_len(line) == 4 && ft_strequ(line[0], "center"))

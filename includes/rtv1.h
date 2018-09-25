@@ -54,7 +54,9 @@ typedef enum			e_object_type
 	CYLINDER,
 	CONE,
 	DISC,
-	RECTANGLE
+	RECTANGLE,
+	TRIANGLE,
+	PARALLELOGRAM
 }						t_object_type;
 
 typedef enum			e_light_type
@@ -100,6 +102,8 @@ typedef struct			s_object
 	t_point				intersectiion;
 	t_vector			direction;
 	t_vector			normal;
+	t_vector			first_vect;
+	t_vector			second_vect;
 	float				norm;
 	float				test;
 	float				radius;
@@ -287,5 +291,7 @@ t_vector		rotate_cone_angles(t_object cone, t_vector vect,
 			int reverse);
 t_vector		rotate_vector_angles(t_object reference, t_vector vect,
 			int reverse);
+t_vector	cross_product(t_vector vect_1, t_vector vect_2);
+
 
 #endif

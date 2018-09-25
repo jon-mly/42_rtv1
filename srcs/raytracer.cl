@@ -9,7 +9,9 @@ typedef enum	e_object_type
 	CYLINDER,
 	CONE,
 	DISC,
-	RECTANGLE
+	RECTANGLE,
+	TRIANGLE,
+	PARALLELOGRAM
 }				t_object_type;
 
 typedef enum	e_light_type
@@ -75,6 +77,8 @@ typedef struct	s_object
 	t_point			intersectiion;
 	t_vector		direction;
 	t_vector		normal;
+	t_vector		first_vect;
+	t_vector		second_vect;
 	float			norm;
 	float			test;
 	float			radius;
@@ -158,6 +162,9 @@ int			maximize_color_value(int color_value);
 t_vector	rotate_vector_angles(t_object reference, t_vector vect,
 			int reverse);
 t_object		rectangle_intersection(t_object ray, t_object rectangle);
+t_vector	cross_product(t_vector vect_1, t_vector vect_2);
+t_object		triangle_intersection(t_object ray, t_object triangle);
+t_object		parallelogram_intersection(t_object ray, t_object parallelogram);
 
 
 
@@ -305,6 +312,16 @@ float		dot_product(t_vector vect_1, t_vector vect_2)
 				(vect_1.y * vect_2.y) +
 				(vect_1.z * vect_2.z);
 	return (product);
+}
+
+t_vector	cross_product(t_vector vect_1, t_vector vect_2)
+{
+	t_vector	cross;
+
+	cross.x = vect_1.y * vect_2.z - vect_1.z * vect_2.y;
+	cross.y = vect_1.z * vect_2.x - vect_1.x * vect_2.z;
+	cross.z = vect_1.x * vect_2.y - vect_1.y * vect_2.x;
+	return (cross);
 }
 
 /*
@@ -506,7 +523,8 @@ t_vector			shape_normal(t_object ray, t_object object)
 {
 	if (object.typpe == SPHERE)
 		return (sphere_normal(ray, object));
-	else if (object.typpe == PLANE || object.typpe == DISC || object.typpe == RECTANGLE)
+	else if (object.typpe == PLANE || object.typpe == DISC || object.typpe == RECTANGLE
+		|| object.typpe == TRIANGLE || object.typpe == PARALLELOGRAM)
 		return (plane_normal(ray, object));
 	else if (object.typpe == CYLINDER)
 		return (cylinder_normal(ray, object));
@@ -690,6 +708,44 @@ t_object		rectangle_intersection(t_object ray, t_object rectangle)
 	return (ray);
 }
 
+t_object		triangle_intersection(t_object ray, t_object triangle)
+{
+	t_vector	distance;
+	float		a;
+	float		b;
+	float		k;
+
+	distance = vector_points(triangle.point, ray.origin);
+	k = -dot_product(cross_product(triangle.second_vect, triangle.first_vect), ray.direction);
+	if (k == 0)
+		return (ray);
+	a = -dot_product(cross_product(distance, triangle.first_vect), ray.direction) / k;
+	b = -dot_product(cross_product(triangle.second_vect, distance), ray.direction) / k;
+	ray.intersect = (a >= 0 && b >= 0 && a + b < 1);
+	ray.norm = dot_product(cross_product(triangle.second_vect, triangle.first_vect), distance) / k;
+	return (ray);
+}
+
+t_object		parallelogram_intersection(t_object ray, t_object parallelogram)
+{
+	t_vector	distance;
+	float		a;
+	float		b;
+	float		k;
+
+	distance = vector_points(parallelogram.point, ray.origin);
+	k = -dot_product(cross_product(parallelogram.second_vect, parallelogram.first_vect), ray.direction);
+	if (k == 0)
+		return (ray);
+	a = -dot_product(cross_product(distance, parallelogram.first_vect), ray.direction) / k;
+	b = -dot_product(cross_product(parallelogram.second_vect, distance), ray.direction) / k;
+	ray.intersect = (a >= 0 && b >= 0 && a < 1 && b < 1);
+	ray.norm = dot_product(cross_product(parallelogram.second_vect, parallelogram.first_vect), distance) / k;
+	// if (ray.intersect)
+	// 	printf("%.2f\n", ray.norm);
+	return (ray);
+}
+
 t_object			intersect_object(t_object ray, t_object object)
 {
 	if (object.typpe == SPHERE)
@@ -708,6 +764,10 @@ t_object			intersect_object(t_object ray, t_object object)
 		ray = disc_intersection(ray, object);
 	else if (object.typpe == RECTANGLE)
 		ray = rectangle_intersection(ray, object);
+	else if (object.typpe == TRIANGLE)
+		ray = triangle_intersection(ray, object);
+	else if (object.typpe == PARALLELOGRAM)
+		ray = parallelogram_intersection(ray, object);
 	if (ray.intersect)
 		ray.intersectiion = point_from_vector(ray.origin, ray.direction, ray.norm);
 	return (ray);
@@ -1134,7 +1194,7 @@ __kernel void				pixel_raytracing_gpu(__write_only image2d_t out, global t_scene
 	float		aliasing_variation;
 	t_color		average;
 
-	int ALIASING = 2;
+	int ALIASING = 1;
 
 	x = get_global_id(0);
 	y = get_global_id(1);

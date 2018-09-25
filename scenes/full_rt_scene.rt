@@ -73,12 +73,21 @@ power 600
 # reflect 100
 # }
 
-rectangle {
-point -20 0 0
-angles 0 0
-color 0 180 120
-width 40
-height 1
+# rectangle {
+# point -20 0 0
+# angles 0 0
+# color 0 180 120
+# width 40
+# height 1
+# diffuse 100
+# reflect 0
+# }
+
+triangle {
+point 0 10 0
+first_vector 10 3 8
+second_vector 0 20 48
+color 255 10 10
 diffuse 100
 reflect 0
 }
