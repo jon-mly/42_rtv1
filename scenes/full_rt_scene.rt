@@ -27,7 +27,7 @@ sphere {
 center 10 0 0
 radius 8
 color 100 0 0
-diffuse 100
+diffuse 10
 reflect 100
 brillance 100
 }
@@ -36,7 +36,7 @@ sphere {
 center -10 0 0
 radius 8
 color 0 100 0
-diffuse 100
+diffuse 10
 reflect 100
 brillance 100
 }
@@ -115,5 +115,5 @@ normal 0 1 0
 color 0 0 0
 diffuse 30
 brillance 0
-reflect 100
+reflect 10
 }
