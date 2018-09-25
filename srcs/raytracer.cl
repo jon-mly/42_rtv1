@@ -1,7 +1,7 @@
 # define TRUE 1
 # define FALSE 0
 # define NULL 0
-# define MAX_REFLECTION_ITER 10
+# define MAX_REFLECTION_ITER 4
 
 typedef enum	e_object_type
 {
@@ -167,8 +167,9 @@ t_object		rectangle_intersection(t_object ray, t_object rectangle);
 t_vector	cross_product(t_vector vect_1, t_vector vect_2);
 t_object		triangle_intersection(t_object ray, t_object triangle);
 t_object		parallelogram_intersection(t_object ray, t_object parallelogram);
-t_object		init_reflected_ray(t_object original_ray, t_object intersected_object);
-t_color			reflected_raytracing(global t_scene *scene, global t_object *obj, global t_light *light, t_object ray, int iter_count);
+t_object		init_reflected_ray(t_object original_ray, t_object intersected_object, float previous_reflection);
+t_color			reflected_raytracing(global t_scene *scene, global t_object *obj, global t_light *light,
+	t_object ray, int iter_count, t_color colorout);
 
 
 
@@ -1150,7 +1151,7 @@ t_object		init_ray(int x, int y, t_camera camera, float aliasing_variation)
 	return (ray);
 }
 
-t_object		init_reflected_ray(t_object original_ray, t_object intersected_object)
+t_object		init_reflected_ray(t_object original_ray, t_object intersected_object, float previous_reflection)
 {
 	t_object	ray;
 
@@ -1158,19 +1159,22 @@ t_object		init_reflected_ray(t_object original_ray, t_object intersected_object)
 	ray.direction = normalize_vector(ray.direction);
 	ray.origin = original_ray.intersectiion;
 	ray.intersect = FALSE;
-	ray.reflection = intersected_object.reflection;
+	ray.reflection = intersected_object.reflection * previous_reflection;
 	return (ray);
 }
 
 t_color			reflected_raytracing(global t_scene *scene, global t_object *obj, global t_light *light,
-	t_object ray, int iter_count)
+	t_object ray, int iter_count, t_color colorout)
 {
 	int					object_index;
 	int 				closest_object_index;
 	float				closest_distance;
-	t_color				colorout;
+	t_color				added_color;
 
-	colorout = color(0, 0, 0, 0);
+	added_color = color(0, 0, 0, 0);
+	if (iter_count == MAX_REFLECTION_ITER)
+		return (colorout);
+// printf("count = %d\n", iter_count);
 	closest_object_index = -1;
 	object_index = -1;
 	while (++object_index < scene->objects_count)
@@ -1186,16 +1190,15 @@ t_color			reflected_raytracing(global t_scene *scene, global t_object *obj, glob
 	{
 		ray.norm = closest_distance;
 		ray.intersectiion = point_from_vector(ray.origin, ray.direction, closest_distance);
-		colorout = get_color_on_intersection(ray, &obj[closest_object_index], scene, light, obj);
-		if (iter_count < MAX_REFLECTION_ITER)
-			colorout = add_color(colorout, reflected_raytracing(scene, obj, light,
-				init_reflected_ray(ray, obj[closest_object_index]), iter_count + 1));
+		added_color = get_color_on_intersection(ray, &obj[closest_object_index], scene, light, obj);
+		added_color.r *= ray.reflection;
+		added_color.g *= ray.reflection;
+		added_color.b *= ray.reflection;
+		added_color.a *= ray.reflection;
 	}
-	colorout.r *= ray.reflection;
-	colorout.g *= ray.reflection;
-	colorout.b *= ray.reflection;
-	colorout.a *= ray.reflection;
-	return (colorout);
+	colorout = add_color(colorout, added_color);
+	ray = init_reflected_ray(ray, obj[closest_object_index], ray.reflection);
+	return (reflected_raytracing(scene, obj, light, ray, iter_count + 1, colorout));
 }
 
 t_color			raytracing(global t_scene *scene, global t_camera *camera, global t_object *obj, global t_light *light, float aliasing_variation)
@@ -1232,7 +1235,7 @@ t_color			raytracing(global t_scene *scene, global t_camera *camera, global t_ob
 		colorout = get_color_on_intersection(ray, &obj[closest_object_index], scene, light, obj);
 		if (&obj[closest_object_index].reflection > 0)
 			colorout = add_color(colorout, reflected_raytracing(scene, obj, light,
-				init_reflected_ray(ray, obj[closest_object_index]), 0));
+				init_reflected_ray(ray, obj[closest_object_index], 1), 0, color(0, 0, 0, 0)));
 	}
 	return (colorout);
 }
