@@ -111,7 +111,7 @@ t_color			get_color_on_intersection(t_object ray, global t_object *closest_objec
 t_object		intersect_object(t_object ray, t_object object);
 t_vector		normalize_vector(t_vector vec);
 t_vector		vector_points(t_point p1, t_point p2);
-t_object		init_ray(int x, int y, t_camera camera);
+t_object		init_ray(int x, int y, t_camera camera, float aliasing_variation);
 t_vector	vect_rotate_x(t_vector vector, float angle, int inverse);
 t_vector	vect_rotate_y(t_vector vector, float angle, int inverse);
 t_vector	vect_rotate_z(t_vector vector, float angle, int inverse);
@@ -153,6 +153,10 @@ t_object	finite_cone_intersection(t_object ray, t_object cone);
 t_vector		specular_vector(t_vector incident, t_vector normal);
 t_color			specular_light_for_intersection(t_object light_ray, t_object ray,
 	t_object object, t_light light);
+t_color			raytracing(global t_scene *scene, global t_camera *camera, global t_object *obj, global t_light *light, float aliasing_variation);
+t_color		average_color(t_color c1, t_color c2);
+
+
 
 
 /*
@@ -846,6 +850,17 @@ t_color 	add_color(t_color base, t_color overlay)
 	return (final);
 }
 
+t_color		average_color(t_color c1, t_color c2)
+{
+	t_color		final;
+
+	final.r = (c1.r + c2.r) / 2;
+	final.g = (c1.g + c2.g) / 2;
+	final.b = (c1.b + c2.b) / 2;
+	final.a = (c1.a + c2.a) / 2;
+	return (final);
+}
+
 t_color			ambiant_light_for_intersection(t_object light_ray, t_object ray, t_object
 	object, t_light light)
 {
@@ -1038,14 +1053,18 @@ t_color			get_color_on_intersection(t_object ray, global t_object *closest_objec
 ** ========== MAIN FUNCTIONS
 */
 
-t_object		init_ray(int x, int y, t_camera camera)
+t_object		init_ray(int x, int y, t_camera camera, float aliasing_variation)
 {
 	t_object	ray;
 	t_point		projector_point;
+	double			virtual_x;
+	double			virtual_y;			
 
-	projector_point.x = camera.up_left_corner.x + (double)x * camera.horizontal_vect.x + (double)y * camera.vertical_vect.x;
-	projector_point.y = camera.up_left_corner.y + (double)x * camera.horizontal_vect.y + (double)y * camera.vertical_vect.y;
-	projector_point.z = camera.up_left_corner.z + (double)x * camera.horizontal_vect.z + (double)y * camera.vertical_vect.z;
+	virtual_x = (double)x + aliasing_variation;
+	virtual_y = (double)y + aliasing_variation;
+	projector_point.x = camera.up_left_corner.x + virtual_x * camera.horizontal_vect.x + virtual_y * camera.vertical_vect.x;
+	projector_point.y = camera.up_left_corner.y + virtual_x * camera.horizontal_vect.y + virtual_y * camera.vertical_vect.y;
+	projector_point.z = camera.up_left_corner.z + virtual_x * camera.horizontal_vect.z + virtual_y * camera.vertical_vect.z;
 	ray.direction = vector_points(camera.spot, projector_point);
 	ray.direction = normalize_vector(ray.direction);
 	ray.origin = camera.spot;
@@ -1053,7 +1072,7 @@ t_object		init_ray(int x, int y, t_camera camera)
 	return (ray);
 }
 
-__kernel void				pixel_raytracing_gpu(__write_only image2d_t out, global t_scene *scene, global t_camera *camera, global t_object *obj, global t_light *light)
+t_color			raytracing(global t_scene *scene, global t_camera *camera, global t_object *obj, global t_light *light, float aliasing_variation)
 {
 	int					x;
 	int					y;
@@ -1069,7 +1088,7 @@ __kernel void				pixel_raytracing_gpu(__write_only image2d_t out, global t_scene
 	x = get_global_id(0);
 	y = get_global_id(1);
 	idx = get_global_size(0) * get_global_id(1) + get_global_id(0);
-	ray = init_ray(x, y, *camera);
+	ray = init_ray(x, y, *camera, aliasing_variation);
 	closest_object = NULL;
 	closest_object_index = -1;
 	object_index = -1;
@@ -1090,5 +1109,30 @@ __kernel void				pixel_raytracing_gpu(__write_only image2d_t out, global t_scene
 		ray.intersectiion.z = ray.origin.z + ray.direction.z * closest_distance;
 		colorout = get_color_on_intersection(ray, &obj[closest_object_index], scene, light, obj);
 	}
-	write_imagei(out, (int2)(x, y), (int4)(colorout.b, colorout.g, colorout.r, 0));
+	return (colorout);
+}
+
+__kernel void				pixel_raytracing_gpu(__write_only image2d_t out, global t_scene *scene, global t_camera *camera, global t_object *obj, global t_light *light)
+{
+	int					x;
+	int					y;
+	int			aliasing_iter;
+	float		aliasing_variation;
+	t_color		average;
+
+	int ALIASING = 2;
+
+	x = get_global_id(0);
+	y = get_global_id(1);
+	aliasing_iter = -1;
+	//TODO: set aliasing value into scene
+	while (++aliasing_iter < ALIASING)
+	{
+		aliasing_variation = (double)aliasing_iter / (double)ALIASING;
+		if (aliasing_iter == 0)
+			average = raytracing(scene, camera, obj, light, aliasing_variation);
+		else
+			average = average_color(average, raytracing(scene, camera, obj, light, aliasing_variation));
+	}
+	write_imagei(out, (int2)(x, y), (int4)(average.b, average.g, average.r, 0));
 }
