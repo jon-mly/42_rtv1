@@ -39,4 +39,5 @@ void			opencl_draw(t_opencl *opcl, t_env *e)
 	opcl->err = clEnqueueReadImage(opcl->commands, opcl->output,
 			CL_TRUE, opcl->region, opcl->origin, 0, 0, e->img_str,
 			0, NULL, NULL);
+			printf("err: %d\n", opcl->err);
 }

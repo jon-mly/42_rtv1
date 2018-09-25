@@ -2,7 +2,7 @@
 # power 40
 
 camera {
-position 0 5 -30
+position 0 20 -60
 angles -10 0
 }
 
@@ -23,38 +23,36 @@ power 900
 # power 300
 # }
 
-sphere {
-center 10 0 0
-radius 8
-color 100 0 0
-diffuse 10
-reflect 100
-brillance 100
-}
-
-sphere {
-center -10 0 0
-radius 8
-color 0 100 0
-diffuse 10
-reflect 100
-brillance 100
-}
-
-
-
-
-# cylinder {
-# finite
-# covered
-# height 6
-# radius 6
-# angles 10 -170
-# color 200 200 200
-# position 0 -2 0
-# diffuse 1
-# reflect 100
+# sphere {
+# center 10 0 0
+# radius 8
+# color 100 0 0
+# diffuse 10
+# reflect 60
+# brillance 100
 # }
+
+# sphere {
+# center -10 0 0
+# radius 8
+# color 0 100 0
+# diffuse 10
+# reflect 60
+# brillance 100
+# }
+
+cylinder {
+finite
+covered
+height 6
+radius 6
+angles 90 -170
+color 255 20 20
+position 0 -2 0
+diffuse 100
+reflect 20
+brillance 100
+}
 
 # cylinder {
 # finite

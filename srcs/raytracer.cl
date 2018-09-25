@@ -1249,7 +1249,7 @@ __kernel void				pixel_raytracing_gpu(__write_only image2d_t out, global t_scene
 	float		aliasing_variation;
 	t_color		average;
 
-	int ALIASING = 1;
+	int ALIASING = 2;
 
 	x = get_global_id(0);
 	y = get_global_id(1);
