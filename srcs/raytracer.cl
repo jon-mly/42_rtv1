@@ -1,7 +1,7 @@
 # define TRUE 1
 # define FALSE 0
 # define NULL 0
-# define MAX_REFLECTION_ITER 4
+# define MAX_REFLECTION_ITER 1
 
 typedef enum	e_object_type
 {
@@ -480,9 +480,9 @@ t_vector		cylinder_normal(t_object ray, t_object cylinder)
 	normal_point = (t_point){0, 0, distance.z};
 	normal = vector_points(normal_point, distance);
 	// Could be removed since light inside a cylinder is not to be managed
-	if ((!cylinder.finite || cylinder.covered) && revert_cylinder_normal(ray, cylinder))
-		normal = vector_points(distance, normal_point);
-	else if (dot_product(normalize_vector(normal), rotate_vector_angles(cylinder, ray.direction, 0)) > 0)
+	// if ((!cylinder.finite || cylinder.covered) && revert_cylinder_normal(ray, cylinder))
+	// 	normal = vector_points(distance, normal_point);
+	if (dot_product(normalize_vector(normal), rotate_vector_angles(cylinder, ray.direction, 0)) > 0)
 		normal = vector_points(distance, normal_point);
 	normal = rotate_vector_angles(cylinder, normal, 1);
 	return (normalize_vector(normal));
@@ -943,7 +943,7 @@ t_color			ambiant_light_for_intersection(t_object light_ray, t_object ray, t_obj
 	float		distance;
 	float		cosinus;
 
-	cosinus = dot_product(light_ray.direction, shape_normal(ray, object));
+	cosinus = dot_product(light_ray.direction, shape_normal(ray, object)) * object.diffuse;
 	if (cosinus <= 0)
 		return (light_ray.color);
 	distance = 100.0 * (100.0 / light.power);
@@ -971,7 +971,7 @@ t_color			omni_light_for_intersection(t_object light_ray, t_object ray, t_object
 	// 		dot_product(shape_normal(ray, object),
 	// 			shape_normal(light_ray, object)) < 0)
 	// 	return ((t_color){0, 0, 0, 0});
-	cosinus = dot_product(light_ray.direction, normal);
+	cosinus = dot_product(light_ray.direction, normal) * object.diffuse;
 	if (cosinus >= 0)
 		return (light_ray.color);
 	distance = points_norm(ray.intersectiion, light_ray.origin) * (100.0 / light.power);
@@ -1002,6 +1002,7 @@ t_color			projector_light_for_intersection(t_object light_ray, t_object ray, t_o
 	distance = points_norm(ray.intersectiion, light_ray.origin) * (100.0 / light.power);
 	cosinus = dot_product(light.direction, light_ray.direction);
 	intensity = (1 / (1 - cos(light.angle))) * cosinus - (cos(light.angle) / (1 - cos(light.angle)));
+	intensity *= object.diffuse;
 	cosinus = dot_product(light_ray.direction, normal);
 	if (cosinus >= 0)
 		return (light_ray.color);
@@ -1196,6 +1197,8 @@ t_color			reflected_raytracing(global t_scene *scene, global t_object *obj, glob
 			added_color.b *= ray.reflection;
 			added_color.a *= ray.reflection;
 		}
+		else
+			added_color = color(0, 0, 255, 0);
 		colorout = add_color(colorout, added_color);
 		ray = init_reflected_ray(ray, obj[closest_object_index], ray.reflection);
 	}
@@ -1233,7 +1236,7 @@ t_color			raytracing(global t_scene *scene, global t_camera *camera, global t_ob
 	{
 		ray.norm = closest_distance;
 		ray.intersectiion = point_from_vector(ray.origin, ray.direction, closest_distance);
-		colorout = get_color_on_intersection(ray, &obj[closest_object_index], scene, light, obj);
+		// colorout = get_color_on_intersection(ray, &obj[closest_object_index], scene, light, obj);
 		if (&obj[closest_object_index].reflection > 0)
 			colorout = add_color(colorout, reflected_raytracing(scene, obj, light,
 				init_reflected_ray(ray, obj[closest_object_index], 1), color(0, 0, 0, 0)));
@@ -1249,7 +1252,7 @@ __kernel void				pixel_raytracing_gpu(__write_only image2d_t out, global t_scene
 	float		aliasing_variation;
 	t_color		average;
 
-	int ALIASING = 2;
+	int ALIASING = 1;
 
 	x = get_global_id(0);
 	y = get_global_id(1);
