@@ -448,9 +448,9 @@ t_vector		cone_normal(t_object ray, t_object cone)
 				distance))
 		normal_point = normal_point_2;
 	normal = vector_points(normal_point, distance);
-	if ((!cone.finite || cone.covered) && revert_cone_normal(ray, cone))
-		normal = vector_points(distance, normal_point);
-	else if (dot_product(normalize_vector(normal), rotate_vector_angles(cone, ray.direction, 0)) > 0)
+	// if ((!cone.finite || cone.covered) && revert_cone_normal(ray, cone))
+	// 	normal = vector_points(distance, normal_point);
+	if (dot_product(normalize_vector(normal), rotate_vector_angles(cone, ray.direction, 0)) > 0)
 		normal = vector_points(distance, normal_point);
 	normal = rotate_vector_angles(cone, normal, 1);
 	return (normalize_vector(normal));
@@ -1115,7 +1115,7 @@ t_color			get_color_on_intersection(t_object ray, global t_object *closest_objec
 			{
 				if (closest_object == &obj[object_index] && light_ray.norm > 0.01)
 					is_direct_hit = 0;
-				else if (closest_object != &obj[object_index] && light_ray.norm > 0/01)
+				else if (closest_object != &obj[object_index] && light_ray.norm > 0)
 					is_direct_hit = 0;
 			}
 		}

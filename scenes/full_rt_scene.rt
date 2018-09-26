@@ -10,18 +10,18 @@ light {
 type AMBIANT
 position 10 4 0
 color 255 255 255
-direction -4 -4 -2
+direction -4 -4 2
 power 900
 }
 
-# light {
-# type PROJECTOR
-# color 255 255 255
-# position 15 5 0
-# direction -5 -3 0
-# angle 60
-# power 300
-# }
+light {
+type PROJECTOR
+color 255 255 255
+position 15 5 0
+direction -5 0 2
+angle 90
+power 600
+}
 
 # sphere {
 # center 10 0 0
@@ -41,21 +41,22 @@ power 900
 # brillance 100
 # }
 
-cylinder {
-finite
-covered
-height 6
-radius 6
-angles 90 -170
-color 255 20 20
-position 0 -2 0
-diffuse 100
-reflect 20
-brillance 100
-}
+# cylinder {
+# finite
+# covered
+# height 6
+# radius 6
+# angles 90 -170
+# color 255 20 20
+# position 0 -2 0
+# diffuse 100
+# reflect 20
+# brillance 100
+# }
 
 # cylinder {
 # finite
+# covered
 # height 8
 # radius 3
 # angles 0 -90
@@ -65,18 +66,18 @@ brillance 100
 # reflect 10
 # }
 
-# cone {
-# finite
+cone {
+finite
 # covered
-# height 10
-# pi_divider 6
-# angles 0 -80
-# color 200 200 200
-# center 0 0 0
-# diffuse 10
-# reflect 100
-# brillance 100
-# }
+height 10
+pi_divider 6
+angles -30 -160
+color 200 200 0
+center 0 6 0
+diffuse 100
+reflect 0
+brillance 100
+}
 
 # rectangle {
 # point -20 0 0
@@ -113,5 +114,5 @@ normal 0 1 0
 color 0 0 0
 diffuse 30
 brillance 0
-reflect 10
+reflect 100
 }
