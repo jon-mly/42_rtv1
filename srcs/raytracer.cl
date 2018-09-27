@@ -1,7 +1,8 @@
 # define TRUE 1
 # define FALSE 0
 # define NULL 0
-# define MAX_REFLECTION_ITER 1
+# define MAX_REFLECTION_ITER 2
+# define ALIASING 1
 
 typedef enum	e_object_type
 {
@@ -89,6 +90,8 @@ typedef struct	s_object
 	float				brillance;
 	float				diffuse;
 	float				reflection;
+	float				transparency;
+	float				refraction;
 	float			height;
 	float				width;
 	t_object_type	typpe;
@@ -170,6 +173,8 @@ t_object		parallelogram_intersection(t_object ray, t_object parallelogram);
 t_object		init_reflected_ray(t_object original_ray, t_object intersected_object, float previous_reflection);
 t_color			reflected_raytracing(global t_scene *scene, global t_object *obj, global t_light *light,
 	t_object ray, t_color colorout);
+t_vector		refracted_vector(t_object object, t_object ray, float next_refraction_index);
+
 
 
 
@@ -558,6 +563,8 @@ t_object		cone_intersection(t_object ray, t_object cone)
 	b = 2 * (dot_product(distance, ray_dir) + k * ray_dir.z * distance.z);
 	c = pow((float)vector_norm(distance), (float)2) + k * pow((float)distance.z, (float)2);
 	ray.norm = closest_distance_quadratic(a, b, c);
+	if (ray.norm < 0.01)
+		ray.norm = farest_distance_quadratic(a, b, c);
 	ray.intersect = ray.norm > 0;
 	return (ray);
 }
@@ -801,6 +808,42 @@ t_vector		reflected_vector(t_vector incident, t_vector normal)
 	return (normalize_vector(reflected));
 }
 
+
+/*
+** ========== REFRACTED VECTOR CALCULATION
+*/
+
+/*
+** Returns the refracted vector of the ray's direction when hitting the surface
+** of the object.
+** The initial refraction index is expected to be set in the ray's parameters.
+**
+** The angle between the normal and the source vector is calculated using the
+** oriented angle between the normal (from intersection to outside) and the 
+** inverse of the ray's direction, which is originally from outside to the
+** intersection.
+*/
+
+t_vector		refracted_vector(t_object object, t_object ray, float next_refraction_index)
+{
+	t_vector	normal;
+	t_vector	opposed_direction;
+	t_vector	refracted;
+	float		incident_cos;
+	float		refraction_indexes_ratio;
+
+	normal = shape_normal(ray, object);
+	opposed_direction = scale_vector(ray.direction, -1);
+	refraction_indexes_ratio = ray.refraction / next_refraction_index;
+	incident_cos = dot_product(normal, opposed_direction);
+	refracted = scale_vector(ray.direction, refraction_indexes_ratio);
+	normal = scale_vector(normal, incident_cos + refraction_indexes_ratio
+		* dot_product(ray.direction, normal));
+	refracted.x -= normal.x;
+	refracted.y -= normal.y;
+	refracted.z -= normal.z;
+	return (refracted);
+}
 
 
 /*
@@ -1130,27 +1173,8 @@ t_color			get_color_on_intersection(t_object ray, global t_object *closest_objec
 }
 
 /*
-** ========== MAIN FUNCTIONS
+** ========== REFLECTED LIGHT
 */
-
-t_object		init_ray(int x, int y, t_camera camera, float aliasing_variation)
-{
-	t_object	ray;
-	t_point		projector_point;
-	double			virtual_x;
-	double			virtual_y;			
-
-	virtual_x = (double)x + aliasing_variation;
-	virtual_y = (double)y + aliasing_variation;
-	projector_point.x = camera.up_left_corner.x + virtual_x * camera.horizontal_vect.x + virtual_y * camera.vertical_vect.x;
-	projector_point.y = camera.up_left_corner.y + virtual_x * camera.horizontal_vect.y + virtual_y * camera.vertical_vect.y;
-	projector_point.z = camera.up_left_corner.z + virtual_x * camera.horizontal_vect.z + virtual_y * camera.vertical_vect.z;
-	ray.direction = vector_points(camera.spot, projector_point);
-	ray.direction = normalize_vector(ray.direction);
-	ray.origin = camera.spot;
-	ray.intersect = FALSE;
-	return (ray);
-}
 
 t_object		init_reflected_ray(t_object original_ray, t_object intersected_object, float previous_reflection)
 {
@@ -1197,12 +1221,33 @@ t_color			reflected_raytracing(global t_scene *scene, global t_object *obj, glob
 			added_color.b *= ray.reflection;
 			added_color.a *= ray.reflection;
 		}
-		else
-			added_color = color(0, 0, 255, 0);
 		colorout = add_color(colorout, added_color);
 		ray = init_reflected_ray(ray, obj[closest_object_index], ray.reflection);
 	}
 	return (colorout);
+}
+
+/*
+** ========== INITIAL INTERSECTION
+*/
+
+t_object		init_ray(int x, int y, t_camera camera, float aliasing_variation)
+{
+	t_object	ray;
+	t_point		projector_point;
+	double			virtual_x;
+	double			virtual_y;			
+
+	virtual_x = (double)x + aliasing_variation;
+	virtual_y = (double)y + aliasing_variation;
+	projector_point.x = camera.up_left_corner.x + virtual_x * camera.horizontal_vect.x + virtual_y * camera.vertical_vect.x;
+	projector_point.y = camera.up_left_corner.y + virtual_x * camera.horizontal_vect.y + virtual_y * camera.vertical_vect.y;
+	projector_point.z = camera.up_left_corner.z + virtual_x * camera.horizontal_vect.z + virtual_y * camera.vertical_vect.z;
+	ray.direction = vector_points(camera.spot, projector_point);
+	ray.direction = normalize_vector(ray.direction);
+	ray.origin = camera.spot;
+	ray.intersect = FALSE;
+	return (ray);
 }
 
 t_color			raytracing(global t_scene *scene, global t_camera *camera, global t_object *obj, global t_light *light, float aliasing_variation)
@@ -1236,13 +1281,17 @@ t_color			raytracing(global t_scene *scene, global t_camera *camera, global t_ob
 	{
 		ray.norm = closest_distance;
 		ray.intersectiion = point_from_vector(ray.origin, ray.direction, closest_distance);
-		// colorout = get_color_on_intersection(ray, &obj[closest_object_index], scene, light, obj);
+		colorout = get_color_on_intersection(ray, &obj[closest_object_index], scene, light, obj);
 		if (&obj[closest_object_index].reflection > 0)
 			colorout = add_color(colorout, reflected_raytracing(scene, obj, light,
 				init_reflected_ray(ray, obj[closest_object_index], 1), color(0, 0, 0, 0)));
 	}
 	return (colorout);
 }
+
+/*
+** ========== MAIN FUNCTION
+*/
 
 __kernel void				pixel_raytracing_gpu(__write_only image2d_t out, global t_scene *scene, global t_camera *camera, global t_object *obj, global t_light *light)
 {
@@ -1251,8 +1300,6 @@ __kernel void				pixel_raytracing_gpu(__write_only image2d_t out, global t_scene
 	int			aliasing_iter;
 	float		aliasing_variation;
 	t_color		average;
-
-	int ALIASING = 1;
 
 	x = get_global_id(0);
 	y = get_global_id(1);

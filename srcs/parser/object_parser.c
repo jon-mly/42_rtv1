@@ -47,6 +47,10 @@ t_object        parse_object(int fd, t_object *object)
 			object->brillance = fmin(fmax(ft_atoi(line[1]) / 100.0, 0), 1);
 		else if (line_len(line) == 2 && ft_strequ(line[0], "reflect"))
 			object->reflection = fmin(fmax(ft_atoi(line[1]) / 100.0, 0), 1);
+		else if (line_len(line) == 2 && ft_strequ(line[1], "transparency"))
+			object->transparency = fmin(fmax(ft_atoi(line[1]) / 100.0, 0), 1);
+		else if (line_len(line) == 2 && ft_strequ(line[1], "refraction_index"))
+			object->refraction = fmax(ft_atoi(line[1]), 1) / 100.0;
 		else if (line_len(line) == 1 && ft_strequ(line[0], "finite"))
 			object->finite = 1;
 		else if (line_len(line) == 1 && ft_strequ(line[0], "covered"))

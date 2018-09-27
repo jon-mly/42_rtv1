@@ -113,6 +113,8 @@ typedef struct			s_object
 	float				brillance;
 	float				diffuse;
 	float				reflection;
+	float				transparency;
+	float				refraction;
 	float				height;
 	float				width;
 	t_object_type		typpe;

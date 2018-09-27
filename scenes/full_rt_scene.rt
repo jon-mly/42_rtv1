@@ -2,17 +2,17 @@
 # power 40
 
 camera {
-position 0 10 -60
+position 0 5 -40
 angles 0 0
 }
 
-# light {
-# type AMBIANT
-# position 10 4 0
-# color 255 255 255
-# direction -4 -3 2
-# power 900
-# }
+light {
+type AMBIANT
+position 10 4 0
+color 255 255 255
+direction 4 -3 2
+power 500
+}
 
 light {
 type PROJECTOR
@@ -23,23 +23,23 @@ angle 90
 power 600
 }
 
-# sphere {
-# center 10 0 0
-# radius 8
-# color 100 0 0
-# diffuse 10
-# reflect 60
-# brillance 100
-# }
+sphere {
+center 20 0 0
+radius 4
+color 100 0 0
+diffuse 10
+reflect 60
+brillance 100
+}
 
-# sphere {
-# center -10 0 0
-# radius 8
-# color 0 100 0
-# diffuse 10
-# reflect 60
-# brillance 100
-# }
+sphere {
+center -20 0 0
+radius 4
+color 0 100 0
+diffuse 10
+reflect 60
+brillance 100
+}
 
 # cylinder {
 # finite
@@ -108,11 +108,11 @@ brillance 0
 # radius 6
 # }
 
-# plane {
-# point 0 -5 0
-# normal 0 1 0
-# color 0 0 0
-# diffuse 100
-# brillance 0
-# reflect 80
-# }
+plane {
+point 0 -5 0
+normal 0 1 0
+color 0 0 0
+diffuse 100
+brillance 0
+reflect 80
+}
