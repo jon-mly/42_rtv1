@@ -121,6 +121,7 @@ typedef struct			s_object
 	int					intersect;
 	int					finite;
 	int					covered;
+	int					has_density;
 	char				*name;
 }						t_object;
 

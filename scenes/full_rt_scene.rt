@@ -41,16 +41,29 @@ reflect 60
 brillance 100
 }
 
+# sphere {
+# center 0 7 0
+# radius 10
+# color 100 0 0
+# diffuse 10
+# reflect 40
+# brillance 100
+# refraction_index 130
+# transparency 100
+# }
+
 # cylinder {
 # finite
 # covered
 # height 6
 # radius 6
-# angles 90 -170
+# angles 130 -140
 # color 255 20 20
 # position 0 -2 0
-# diffuse 100
-# reflect 20
+# diffuse 30
+# reflect 40
+# refraction_index 130
+# transparency 60
 # brillance 100
 # }
 
@@ -75,8 +88,8 @@ angles 0 80
 color 200 200 0
 center 0 6 0
 diffuse 100
-reflect 100
-brillance 0
+reflect 80
+brillance 30
 }
 
 # rectangle {
@@ -114,5 +127,7 @@ normal 0 1 0
 color 0 0 0
 diffuse 100
 brillance 0
-reflect 80
+transparency 0
+refraction_index 100
+reflect 70
 }

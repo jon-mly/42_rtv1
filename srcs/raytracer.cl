@@ -1,8 +1,10 @@
 # define TRUE 1
 # define FALSE 0
 # define NULL 0
-# define MAX_REFLECTION_ITER 2
-# define ALIASING 1
+# define MAX_REFLECTION_ITER 3
+# define MAX_REFRACTION_ITER 2
+# define ALIASING 2
+# define EPSILON 0.01
 
 typedef enum	e_object_type
 {
@@ -70,36 +72,37 @@ typedef struct	s_light
 	float			power;
 }				t_light;
 
-typedef struct	s_object
+typedef struct			s_object
 {
-	t_color			color;
-	t_point			center;
-	t_point			point;
-	t_point			origin;
-	t_point			intersectiion;
-	t_vector		direction;
-	t_vector		normal;
-	t_vector		first_vect;
-	t_vector		second_vect;
-	float			norm;
-	float			test;
-	float			radius;
-	float			angle;
-	float			y_angle;
-	float			x_angle;
+	t_color				color;
+	t_point				center;
+	t_point				point;
+	t_point				origin;
+	t_point				intersectiion;
+	t_vector			direction;
+	t_vector			normal;
+	t_vector			first_vect;
+	t_vector			second_vect;
+	float				norm;
+	float				test;
+	float				radius;
+	float				angle;
+	float				y_angle;
+	float				x_angle;
 	float				brillance;
 	float				diffuse;
 	float				reflection;
 	float				transparency;
 	float				refraction;
-	float			height;
+	float				height;
 	float				width;
-	t_object_type	typpe;
-	int				intersect;
+	t_object_type		typpe;
+	int					intersect;
 	int					finite;
 	int					covered;
-	char			*name;
-}				t_object;
+	int					has_density;
+	char				*name;
+}						t_object;
 
 typedef struct	s_scene
 {
@@ -174,7 +177,10 @@ t_object		init_reflected_ray(t_object original_ray, t_object intersected_object,
 t_color			reflected_raytracing(global t_scene *scene, global t_object *obj, global t_light *light,
 	t_object ray, t_color colorout);
 t_vector		refracted_vector(t_object object, t_object ray, float next_refraction_index);
-
+t_object		init_refracted_ray(t_object original_ray, t_object intersected_object,
+	float next_refraction, float next_transparency);
+t_color			refracted_raytracing(global t_scene *scene, global t_object *obj, global t_light *light,
+	t_object ray);
 
 
 
@@ -563,7 +569,7 @@ t_object		cone_intersection(t_object ray, t_object cone)
 	b = 2 * (dot_product(distance, ray_dir) + k * ray_dir.z * distance.z);
 	c = pow((float)vector_norm(distance), (float)2) + k * pow((float)distance.z, (float)2);
 	ray.norm = closest_distance_quadratic(a, b, c);
-	if (ray.norm < 0.01)
+	if (ray.norm < EPSILON)
 		ray.norm = farest_distance_quadratic(a, b, c);
 	ray.intersect = ray.norm > 0;
 	return (ray);
@@ -590,7 +596,7 @@ t_object	finite_cone_intersection(t_object ray, t_object cone)
 	ray.intersect = FALSE;
 	closest_norm = closest_distance_quadratic(a, b, c);
 	farest_norm = farest_distance_quadratic(a, b, c);
-	if (closest_norm > 0.01)
+	if (closest_norm > EPSILON)
 	{
 		ray.norm = closest_norm;
 		ray.intersectiion = point_from_vector(ray.origin, ray.direction, ray.norm);
@@ -598,7 +604,7 @@ t_object	finite_cone_intersection(t_object ray, t_object cone)
 		distance = rotate_vector_angles(cone, distance, 0);
 		ray.intersect = (distance.z >= 0 && distance.z <= cone.height);
 	}
-	if (!ray.intersect && farest_norm > 0.01)
+	if (!ray.intersect && farest_norm > EPSILON)
 	{
 		ray.norm = farest_norm;
 		ray.intersectiion = point_from_vector(ray.origin, ray.direction, ray.norm);
@@ -686,7 +692,7 @@ t_object		finite_cylinder_intersection(t_object ray, t_object cylinder)
 	closest_norm = closest_distance_quadratic(a, b, c);
 	farest_norm = farest_distance_quadratic(a, b, c);
 	ray.intersect = FALSE;
-	if (closest_norm > 0.01)
+	if (closest_norm > EPSILON)
 	{
 		ray.norm = closest_norm;
 		ray.intersectiion = point_from_vector(ray.origin, ray.direction, ray.norm);
@@ -694,7 +700,7 @@ t_object		finite_cylinder_intersection(t_object ray, t_object cylinder)
 		distance = rotate_vector_angles(cylinder, distance, 0);
 		ray.intersect = (distance.z >= 0 && distance.z <= cylinder.height);
 	}
-	if (!ray.intersect && farest_norm > 0.01)
+	if (!ray.intersect && farest_norm > EPSILON)
 	{
 		ray.norm = farest_norm;
 		ray.intersectiion = point_from_vector(ray.origin, ray.direction, ray.norm);
@@ -833,6 +839,7 @@ t_vector		refracted_vector(t_object object, t_object ray, float next_refraction_
 	float		refraction_indexes_ratio;
 
 	normal = shape_normal(ray, object);
+	printf("normal : %.2f, %.2f, %.2f\n", normal.x, normal.y, normal.z);
 	opposed_direction = scale_vector(ray.direction, -1);
 	refraction_indexes_ratio = ray.refraction / next_refraction_index;
 	incident_cos = dot_product(normal, opposed_direction);
@@ -1098,7 +1105,7 @@ t_color			specular_light_for_intersection(t_object light_ray, t_object ray,
 
 int				hit_test(global t_object *clt_obj, global t_object *obj, t_object l_ray, float norm)
 {
-	if (!(l_ray.intersect && l_ray.norm > 0.01))
+	if (!(l_ray.intersect && l_ray.norm > EPSILON))
 		return (0);
 	if (clt_obj == obj)
 		return (l_ray.norm < norm - 0.1);
@@ -1157,7 +1164,7 @@ t_color			get_color_on_intersection(t_object ray, global t_object *closest_objec
 				is_direct_hit = 0;
 			else if (light[light_index].typpe == AMBIANT && light_ray.intersect)
 			{
-				if (closest_object == &obj[object_index] && light_ray.norm > 0.01)
+				if (closest_object == &obj[object_index] && light_ray.norm > EPSILON)
 					is_direct_hit = 0;
 				else if (closest_object != &obj[object_index] && light_ray.norm > 0)
 					is_direct_hit = 0;
@@ -1170,6 +1177,83 @@ t_color			get_color_on_intersection(t_object ray, global t_object *closest_objec
 		}
 	}
 	return (coloration);
+}
+
+/*
+** ==================================================================
+** INTERSECTION
+** ==================================================================
+*/
+
+/*
+** ========== REFRACTED LIGHT
+*/
+
+t_object		init_refracted_ray(t_object original_ray, t_object intersected_object,
+	float next_refraction, float next_transparency)
+{
+	t_object		ray;
+
+	ray.direction = refracted_vector(original_ray, intersected_object, next_refraction);
+		// printf("%.2f, %.2f, %.2f\n", ray.direction.x, ray.direction.y, ray.direction.z);
+	ray.direction = normalize_vector(ray.direction);
+	ray.origin = original_ray.intersectiion;
+	ray.intersect = FALSE;
+	// FIXME: this is essentially wrong
+	ray.transparency = next_transparency;
+	ray.refraction = next_refraction;
+	return (ray);
+}
+
+t_color			refracted_raytracing(global t_scene *scene, global t_object *obj, global t_light *light,
+	t_object ray)
+{
+	int					object_index;
+	int 				closest_object_index;
+	float				closest_distance;
+	t_color				added_color;
+	t_color				colorout;
+	int					iter_count;
+
+	iter_count = -1;
+	colorout = color(0, 0, 0, 0);
+	while (++iter_count < MAX_REFRACTION_ITER) {
+		added_color = color(0, 0, 0, 0);
+		closest_object_index = -1;
+		object_index = -1;
+		while (++object_index < scene->objects_count)
+		{
+			ray = intersect_object(ray, obj[object_index]);
+			if (ray.intersect && ((closest_object_index != -1 && ray.norm < closest_distance) || closest_object_index == -1) && ray.norm > EPSILON)
+			{
+				closest_object_index = object_index;
+				closest_distance = ray.norm;
+			}
+		}
+		// Test : only the ray that touches a new object produces light.
+		// Supposes that once inside an object, the ray will only touch
+		// the other side of the same object.
+		if (closest_object_index != -1 && iter_count % 2 == 1)
+		{
+			// printf("%.2f\n", closest_distance);
+			ray.norm = closest_distance;
+			ray.intersectiion = point_from_vector(ray.origin, ray.direction, closest_distance);
+			added_color = get_color_on_intersection(ray, &obj[closest_object_index], scene, light, obj);
+			added_color.r *= ray.transparency;
+			added_color.g *= ray.transparency;
+			added_color.b *= ray.transparency;
+			added_color.a *= ray.transparency;
+		}
+		added_color = add_color(colorout, added_color);
+		if (iter_count % 2 == 0)
+			ray = init_refracted_ray(ray, obj[closest_object_index],
+				1, 1);
+		else
+			ray = init_refracted_ray(ray, obj[closest_object_index],
+				obj[closest_object_index].transparency, obj[closest_object_index].refraction);
+	}
+	// printf("%d, %d, %d\n", colorout.r, colorout.g, colorout.b);
+	return (colorout);
 }
 
 /*
@@ -1205,7 +1289,7 @@ t_color			reflected_raytracing(global t_scene *scene, global t_object *obj, glob
 		while (++object_index < scene->objects_count)
 		{
 			ray = intersect_object(ray, obj[object_index]);
-			if (ray.intersect && ((closest_object_index != -1 && ray.norm < closest_distance) || closest_object_index == -1) && ray.norm > 0.01)
+			if (ray.intersect && ((closest_object_index != -1 && ray.norm < closest_distance) || closest_object_index == -1) && ray.norm > EPSILON)
 			{
 				closest_object_index = object_index;
 				closest_distance = ray.norm;
@@ -1270,8 +1354,10 @@ t_color			raytracing(global t_scene *scene, global t_camera *camera, global t_ob
 	object_index = -1;
 	while (++object_index < scene->objects_count)
 	{
+		if (x == 0 && y == 0)
+			printf("%s : %.2f\n", obj[object_index].name, obj[object_index].transparency);
 		ray = intersect_object(ray, obj[object_index]);
-		if (ray.intersect && ((closest_object_index != -1 && ray.norm < closest_distance) || closest_object_index == -1) && ray.norm > 0.01)
+		if (ray.intersect && ((closest_object_index != -1 && ray.norm < closest_distance) || closest_object_index == -1) && ray.norm > EPSILON)
 		{
 			closest_object_index = object_index;
 			closest_distance = ray.norm;
@@ -1282,9 +1368,13 @@ t_color			raytracing(global t_scene *scene, global t_camera *camera, global t_ob
 		ray.norm = closest_distance;
 		ray.intersectiion = point_from_vector(ray.origin, ray.direction, closest_distance);
 		colorout = get_color_on_intersection(ray, &obj[closest_object_index], scene, light, obj);
-		if (&obj[closest_object_index].reflection > 0)
+		if (obj[closest_object_index].reflection > 0)
 			colorout = add_color(colorout, reflected_raytracing(scene, obj, light,
 				init_reflected_ray(ray, obj[closest_object_index], 1), color(0, 0, 0, 0)));
+		// if (obj[closest_object_index].transparency > 0)
+		// 	colorout = add_color(colorout, refracted_raytracing(scene, obj, light,
+		// 		init_refracted_ray(ray, obj[closest_object_index],
+		// 			obj[closest_object_index].transparency, 1)));
 	}
 	return (colorout);
 }
