@@ -1,10 +1,10 @@
 # define TRUE 1
 # define FALSE 0
 # define NULL 0
-# define MAX_REFLECTION_ITER 3
+# define MAX_REFLECTION_ITER 4
 # define MAX_REFRACTION_ITER 2
 # define ALIASING 2
-# define EPSILON 0.01
+# define EPSILON 0.1
 
 typedef enum	e_object_type
 {
