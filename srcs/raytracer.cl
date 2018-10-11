@@ -181,6 +181,7 @@ t_object		init_refracted_ray(t_object original_ray, t_object intersected_object,
 	float next_refraction, float next_transparency);
 t_color			refracted_raytracing(global t_scene *scene, global t_object *obj, global t_light *light,
 	t_object ray);
+t_vector	sum_vectors(t_vector vect1, t_vector vect2);
 
 
 
@@ -228,6 +229,16 @@ t_vector	scale_vector(t_vector vect, float scale)
 	vect.y *= scale;
 	vect.z *= scale;
 	return (vect);
+}
+
+t_vector	sum_vectors(t_vector vect1, t_vector vect2)
+{
+	t_vector	sum;
+
+	sum.x = vect1.x + vect2.x;
+	sum.y = vect1.y + vect2.y;
+	sum.z = vect1.z + vect2.z;
+	return (sum);
 }
 
 t_vector	vector_points(t_point p1, t_point p2)
@@ -841,14 +852,18 @@ t_vector		refracted_vector(t_object ray, t_object object, float next_refraction_
 	normal = shape_normal(ray, object);
 	opposed_direction = scale_vector(ray.direction, -1);
 	refraction_indexes_ratio = ray.refraction / next_refraction_index;
-	incident_cos = dot_product(normal, opposed_direction);
+	incident_cos = 1.0 - refraction_indexes_ratio * refraction_indexes_ratio * (1.0 - pow(dot_product(normal, ray.direction), 2));
+	// incident_cos = dot_product(normal, opposed_direction);
 	// printf("ratio : %.2f, cos : %.2f\n", refraction_indexes_ratio, incident_cos);
+	// refracted = scale_vector(ray.direction, refraction_indexes_ratio);
+	// normal = scale_vector(normal, incident_cos + refraction_indexes_ratio
+	// 	* dot_product(ray.direction, normal));
+	// refracted.x -= normal.x;
+	// refracted.y -= normal.y;
+	// refracted.z -= normal.z;
 	refracted = scale_vector(ray.direction, refraction_indexes_ratio);
-	normal = scale_vector(normal, incident_cos + refraction_indexes_ratio
-		* dot_product(ray.direction, normal));
-	refracted.x -= normal.x;
-	refracted.y -= normal.y;
-	refracted.z -= normal.z;
+	refracted = sum_vectors(refracted, scale_vector(normal, -incident_cos));
+	refracted = sum_vectors(refracted, scale_vector(normal, -refraction_indexes_ratio * dot_product(ray.direction, normal)));
 	return (refracted);
 }
 
@@ -1379,7 +1394,7 @@ t_color			raytracing(global t_scene *scene, global t_camera *camera, global t_ob
 		if (obj[closest_object_index].transparency > 0)
 			colorout = add_color(colorout, refracted_raytracing(scene, obj, light,
 				init_refracted_ray(ray, obj[closest_object_index],
-					obj[closest_object_index].transparency, 1)));
+					obj[closest_object_index].refraction, 1)));
 	}
 	return (colorout);
 }

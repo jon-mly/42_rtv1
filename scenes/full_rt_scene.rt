@@ -2,7 +2,7 @@
 # power 40
 
 camera {
-position 0 5 -40
+position 0 2 -40
 angles 0 0
 }
 
@@ -30,7 +30,7 @@ color 100 0 0
 diffuse 100
 reflect 60
 brillance 100
-refraction_index 100
+refraction_index 130
 transparency 0
 }
 
