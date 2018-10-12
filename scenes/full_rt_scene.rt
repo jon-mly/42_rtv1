@@ -47,9 +47,9 @@ transparency 0
 
 sphere {
 center 0 0 -20
-radius 3
+radius 4
 color 0 0 1000
-diffuse 10
+diffuse 0
 reflect 60
 brillance 100
 refraction_index 100
@@ -146,5 +146,16 @@ diffuse 100
 brillance 0
 transparency 0
 refraction_index 100
-reflect 70
+reflect 40
+}
+
+plane {
+point 0 -5 60
+normal 0 0 1
+color 200 0 200
+diffuse 100
+brillance 0
+transparency 0
+refraction_index 100
+reflect 40
 }
