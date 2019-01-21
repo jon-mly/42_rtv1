@@ -54,6 +54,20 @@ static int			color_coord(float cosinus, float distance, int obj_color,
 	return ((int)color_value);
 }
 
+static int		specular_color_coord(float intensity, float distance,
+	int obj_color, int light_color)
+{
+	float		color_value;
+	float		distance_factor;
+	float		k;
+
+	distance_factor = 0.02 * pow((float)(distance / 1.3), (float)2) + 1;
+	k = intensity / distance_factor;
+	color_value = ((float)obj_color + (float)light_color) * k;
+	color_value = fmax(fmin(color_value, 255), 0);
+	return ((int)color_value);
+}
+
 /*
 ** Returns the color that has to be applied if the object is enlighted, or its
 ** shadowed color otherwise.
@@ -103,6 +117,27 @@ static t_color		add_color(t_color base, t_color overlay)
 	return (final);
 }
 
+t_color			specular_light_for_intersection(t_object light_ray, t_object ray,
+	t_object object, t_light light)
+{
+	float		distance;
+	float		intensity;
+	t_vector	incident;
+	t_vector	reflected;
+	t_color		specular;
+	
+	incident = scale_vector(light_ray.direction, -1);
+	distance = points_norm(ray.intersectiion, light_ray.origin) * 0.05;
+	// distance = 1;
+	reflected = reflected_vector(incident, shape_normal(ray, object));
+	intensity = pow(fmax(dot_product(reflected, ray.direction), 0), (int)(object.brillance * 100)) * pow(object.brillance, 2);
+	specular.r = specular_color_coord(intensity, distance, object.color.r, light_ray.color.r);
+	specular.g = specular_color_coord(intensity, distance, object.color.g, light_ray.color.g);
+	specular.b = specular_color_coord(intensity, distance, object.color.b, light_ray.color.b);
+	specular.a = 0;
+	return (specular);
+}
+
 /*
 ** For each light  light ray created.
 ** For each object that is not the intersected one, check if the ray
@@ -134,8 +169,12 @@ t_color				get_color_on_intersection(t_object ray,
 				e->is_direct_hit = 0;
 		}
 		if (e->is_direct_hit)
+		{
 			col = add_color(col, light_for_intersection(light_r, ray,
 						*clt_obj, e->scene.lights[e->light_i]));
+			col = add_color(col, specular_light_for_intersection(light_r, ray,
+				*clt_obj, e->scene.lights[e->light_i]));
+		}
 	}
 	return (col);
 }

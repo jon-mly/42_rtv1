@@ -90,6 +90,7 @@ typedef struct			s_object
 	t_point				intersectiion;
 	t_vector			direction;
 	t_vector			normal;
+	float				brillance;
 	float				norm;
 	float				test;
 	float				radius;
@@ -222,4 +223,7 @@ void					init_cylinder(t_object *cylinder);
 size_t					file_len(int fd);
 int						hit_test(t_object *clt_obj, t_object *obj,
 		t_object l_ray, float norm);
+t_vector				scale_vector(t_vector vect, float scale);
+t_vector				reflected_vector(t_vector incident, t_vector normal);
+
 #endif

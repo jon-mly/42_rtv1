@@ -35,18 +35,21 @@ sphere {
 radius 9
 center 10 13 -4
 color 80 80 80
+brillance 50
 }
 
 plane {
 point 0 0 10
 normal 0 0 -1
 color 50 50 50
+brillance 50
 }
 
 plane {
 point 0 0 0
 normal 0 1 0
 color 80 80 80
+brillance 50
 }
 
 cylinder {
@@ -54,4 +57,5 @@ position -15 3 -13
 radius 4
 angles 0 90
 color 80 255 80
+brillance 50
 }

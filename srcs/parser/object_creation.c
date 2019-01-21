@@ -32,6 +32,7 @@ static t_object		add_new_sphere(int fd)
 	sphere.radius = 1;
 	sphere.center = point(10, 12, 6);
 	sphere.color = color(255, 255, 255, 0);
+	sphere.brillance = 0.0;
 	while ((line = split_new_line(fd)) && ft_strequ(line[0], "}") == FALSE)
 	{
 		if (line_len(line) == 2 && ft_strequ(line[0], "radius"))
@@ -42,10 +43,11 @@ static t_object		add_new_sphere(int fd)
 		else if (line_len(line) == 4 && ft_strequ(line[0], "color"))
 			sphere.color = color(ft_atoi(line[1]), ft_atoi(line[2]),
 					ft_atoi(line[3]), 0);
+		else if (line_len(line) == 2 && ft_strequ(line[0], "brillance"))
+			sphere.brillance = fmax(fmin((float)ft_atoi(line[1]), 100), 0) / 100.0;
 		clear_line(line);
 	}
 	clear_line(line);
-	sphere.name = "Sphere";
 	return (sphere);
 }
 
@@ -69,6 +71,7 @@ static t_object		add_new_plane(int fd)
 	plane.normal = normalize_vector(vector(0, 1, 0));
 	plane.point = point(0, 0, 0);
 	plane.color = color(255, 255, 255, 0);
+	plane.brillance = 0.0;
 	while ((line = split_new_line(fd)) && ft_strequ(line[0], "}") == FALSE)
 	{
 		if (line_len(line) == 4 && ft_strequ(line[0], "normal"))
@@ -80,10 +83,11 @@ static t_object		add_new_plane(int fd)
 		else if (line_len(line) == 4 && ft_strequ(line[0], "color"))
 			plane.color = color(ft_atoi(line[1]), ft_atoi(line[2]),
 					ft_atoi(line[3]), 0);
+		else if (line_len(line) == 2 && ft_strequ(line[0], "brillance"))
+			plane.brillance = fmax(fmin((float)ft_atoi(line[1]), 100), 0) / 100.0;
 		clear_line(line);
 	}
 	clear_line(line);
-	plane.name = "Plane";
 	return (plane);
 }
 
@@ -122,6 +126,8 @@ static t_object		add_new_cone(int fd, char **line)
 			cone.y_angle = degrees_to_radian(ft_atoi(line[1]));
 			cone.x_angle = degrees_to_radian(ft_atoi(line[2]));
 		}
+		else if (line_len(line) == 2 && ft_strequ(line[0], "brillance"))
+			cone.brillance = fmax(fmin((float)ft_atoi(line[1]), 100), 0) / 100.0;
 		clear_line(line);
 	}
 	clear_line(line);
@@ -164,6 +170,9 @@ static t_object		add_new_cylinder(int fd, char **line)
 			cylinder.y_angle = degrees_to_radian(ft_atoi(line[1]));
 			cylinder.x_angle = degrees_to_radian(ft_atoi(line[2]));
 		}
+		else if (line_len(line) == 2 && ft_strequ(line[0], "brillance"))
+			cylinder.brillance = fmax(fmin((float)ft_atoi(line[1]), 100), 0)
+			/ 100.0;
 		clear_line(line);
 	}
 	clear_line(line);

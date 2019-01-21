@@ -29,6 +29,7 @@ SRCS = main.c \
 		$(HELPER_REP)constructors.c \
 		$(HELPER_REP)math_tools.c \
 		$(HELPER_REP)math_tools2.c \
+		$(HELPER_REP)math_tools3.c \
 		$(HELPER_REP)parser_helper.c \
 		$(HELPER_REP)lighting_helper.c \
 		$(PARSER_REP)light_creation.c \

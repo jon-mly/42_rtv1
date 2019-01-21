@@ -19,7 +19,7 @@ void		init_cone(t_object *cone)
 	cone->direction = normalize_vector(vector(0, 1, 0));
 	cone->center = point(0, 0, 0);
 	cone->color = color(255, 255, 255, 0);
-	cone->name = "Cone";
+	cone->brillance = 0.0;
 }
 
 void		init_cylinder(t_object *cylinder)
@@ -29,5 +29,5 @@ void		init_cylinder(t_object *cylinder)
 	cylinder->direction = normalize_vector(vector(0, 1, 0));
 	cylinder->point = point(0, 0, 0);
 	cylinder->color = color(255, 255, 255, 0);
-	cylinder->name = "Cylinder";
+	cylinder->brillance = 0.0;
 }
