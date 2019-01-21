@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#import "rtv1.h"
+#include "rtv1.h"
 
 int			hit_test(t_object *clt_obj, t_object *obj, t_object l_ray,
 		float norm)

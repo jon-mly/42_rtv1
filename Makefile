@@ -25,13 +25,6 @@ SRCS = main.c \
 		raytracing.c \
 		lighting.c \
 		deinit.c \
-		opencl_init.c \
-		opencl_init2.c \
-		opencl_draw.c \
-		opencl_free.c \
-		ft_ocl_init_error.c \
-		ft_ocl_kernel_error.c \
-		error_gpu.c \
 		init_obj.c \
 		$(HELPER_REP)constructors.c \
 		$(HELPER_REP)math_tools.c \
@@ -55,10 +48,10 @@ O_SRCS = $(SRC:.c=.o)
 W_FLAGS = -Wall -Wextra -Werror
 
 MLX_FLAGS = -I ~/Library -g -L ~/Library -lmlx -framework OpenGL -framework \
-			AppKit -framework OpenCL
+			AppKit -
 
 MLX_FLAGS_LOCAL = -I $(MLX) -g -L $(MLX) -lmlx -framework OpenGL -framework \
-			AppKit -framework OpenCL
+			AppKit 
 
 MATH_FLAG = -lm
 
@@ -88,7 +81,6 @@ clean:
 
 fclean: clean
 	make fclean -C $(LIBFT_REP)
-#	make fclean -C $(MLX)
 	rm -rf $(NAME) $(ASSOCIATED_REP)
 
 re: fclean all

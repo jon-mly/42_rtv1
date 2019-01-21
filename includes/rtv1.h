@@ -24,12 +24,6 @@
 # include <sys/stat.h>
 # include <math.h>
 
-# ifdef __APPLE__
-#  include <OpenCL/cl.h>
-# else
-#  include <CL/cl.h>
-# endif
-
 /*
 ** ======= macros
 */
@@ -144,32 +138,6 @@ typedef struct			s_scene
 	int					lights_count;
 }						t_scene;
 
-typedef	struct			s_opencl
-{
-	size_t				img_s;
-	size_t				imgxy[2];
-	size_t				origin[3];
-	size_t				region[3];
-	int					*bufhst;
-	char				*kernel_src;
-	cl_device_type		dev_type;
-	cl_int				err;
-	cl_uint				num_dev;
-	cl_mem				input_scene;
-	cl_mem				input_cam;
-	cl_mem				output;
-	cl_mem				structobj;
-	cl_mem				structlight;
-	cl_platform_id		platform_id;
-	cl_image_format		format;
-	cl_image_desc		desc;
-	cl_device_id		device_id;
-	cl_context			context;
-	cl_command_queue	commands;
-	cl_program			program;
-	cl_kernel			kernel;
-}						t_opencl;
-
 typedef struct			s_env
 {
 	void				*mlx_ptr;
@@ -189,22 +157,12 @@ typedef struct			s_env
 	t_scene				scene;
 	t_object			object;
 	t_camera			camera;
-	t_opencl			opcl;
 }						t_env;
 
 /*
 ** ======= prototypes
 */
 
-int						error_gpu(t_opencl *opcl);
-void					opencl_init2(t_opencl *opcl, t_env *e);
-void					opencl_draw(t_opencl *opcl, t_env *e);
-void					set_opencl_env(t_opencl *opcl);
-void					create_kernel(cl_program program,
-		cl_kernel *kernel, const char *func);
-char					*get_kernel_source(char *file);
-void					opencl_init(t_opencl *opcl, t_env *env);
-void					create_prog(t_opencl *opcl);
 void					exit_error(t_env *env);
 void					exit_normally(t_env *env);
 void					exit_usage(void);
@@ -259,8 +217,6 @@ t_vector				vect_rotate_y(t_vector vector, float angle,
 		int inverse);
 t_object				init_ray(int x, int y, t_camera camera);
 float					closest_distance_quadratic(float a, float b, float c);
-void					ft_ocl_init_error(const int ret);
-void					ft_ocl_kernel_error(const int ret, const size_t index);
 void					init_cone(t_object *cone);
 void					init_cylinder(t_object *cylinder);
 size_t					file_len(int fd);

@@ -27,7 +27,7 @@ void		exit_normally(t_env *env)
 
 void		exit_usage(void)
 {
-	ft_putendl("Usage : rtv1 [-cpu || -gpu] [scene descriptor file]");
+	ft_putendl("Usage : ./rtv1 [scene descriptor file]");
 	exit(0);
 }
 
