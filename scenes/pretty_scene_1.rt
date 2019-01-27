@@ -34,28 +34,33 @@ position 0 0 0
 angles 0 0
 color 0 40 180
 radius 10
+brillance 100
 }
 
 sphere {
 center 0 0 20
 radius 2
 color 20 20 180
+brillance 100
 }
 
 sphere {
 center 0 0 40
 radius 2
 color 20 20 180
+brillance 100
 }
 
 sphere {
 center 0 0 60
 radius 2
 color 20 20 180
+brillance 100
 }
 
 sphere {
 center 0 0 80
 radius 2
 color 20 20 180
+brillance 100
 }

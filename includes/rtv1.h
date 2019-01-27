@@ -225,5 +225,8 @@ int						hit_test(t_object *clt_obj, t_object *obj,
 		t_object l_ray, float norm);
 t_vector				scale_vector(t_vector vect, float scale);
 t_vector				reflected_vector(t_vector incident, t_vector normal);
+t_color					specular_light_for_intersection(t_object light_ray,
+	t_object ray, t_object object, t_light light);
+t_color					add_color(t_color base, t_color overlay);
 
 #endif

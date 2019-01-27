@@ -26,6 +26,7 @@ SRCS = main.c \
 		lighting.c \
 		deinit.c \
 		init_obj.c \
+		brillance.c \
 		$(HELPER_REP)constructors.c \
 		$(HELPER_REP)math_tools.c \
 		$(HELPER_REP)math_tools2.c \

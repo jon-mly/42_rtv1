@@ -18,6 +18,7 @@ position 0 0 0
 angles 0 0
 color 20 60 255
 radius 12
+brillance 100
 }
 
 cone {
@@ -25,10 +26,12 @@ center 0 0 60
 angles 0 0
 pi_divider 8
 color 255 60 20
+brillance 100
 }
 
 sphere {
 center 0 0 30
 radius 4
 color 20 255 255
+brillance 100
 } 

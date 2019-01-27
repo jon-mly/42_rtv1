@@ -48,6 +48,7 @@ position 0 0 0
 radius 6
 color 200 10 60
 angles 0 0
+brillance 100
 }
 
 cylinder {
@@ -55,6 +56,7 @@ position 0 0 0
 radius 6
 color 200 10 60
 angles 0 90
+brillance 100
 }
 
 cylinder {
@@ -62,31 +64,37 @@ position 0 0 0
 radius 6
 color 200 10 60
 angles 90 0
+brillance 100
 }
 
 sphere {
 center 0 0 0
 radius 10
 color 0 130 80
+brillance 100
 }
 
 sphere {
 center 10 0 10
 radius 4
 color 0 130 80
+brillance 100
 }
 sphere {
 center -10 0 10
 radius 4
 color 0 130 80
+brillance 100
 }
 sphere {
 center 10 0 -10
 radius 4
 color 0 130 80
+brillance 100
 }
 sphere {
 center -10 0 -10
 radius 4
 color 0 130 80
+brillance 100
 }
